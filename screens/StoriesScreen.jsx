@@ -15,6 +15,7 @@ import ListEmpty from '../components/ListEmpty';
 import Text from '../components/Text';
 
 import useStore from '../hooks/useStore';
+import useTheme from '../hooks/useTheme';
 
 import GearIcon from '../assets/gearshape.svg';
 
@@ -23,6 +24,8 @@ const ItemSeparatorComponent = () => (
 );
 
 export default function StoriesScreen({ navigation }) {
+  const { colors } = useTheme();
+
   useEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
@@ -31,15 +34,11 @@ export default function StoriesScreen({ navigation }) {
             navigation.push('Settings');
           }}
         >
-          <GearIcon
-            width={20}
-            height={20}
-            color={PlatformColor('systemBlue')}
-          />
+          <GearIcon width={20} height={20} color={colors.blue} />
         </TouchableOpacity>
       ),
     });
-  });
+  }, []);
 
   const stories = useStore((state) => state.stories);
   const fetchStories = useStore((state) => state.fetchStories);
