@@ -50,10 +50,11 @@ export default function SettingsScreen({ navigation }) {
 
   const [canRate, setCanRate] = useState(false);
   useEffect(() => {
+    if (Constants.appOwnership === 'expo' || !Constants.isDevice) return;
     StoreReview.isAvailableAsync().then((available) => {
       setCanRate(available);
     });
-  });
+  }, []);
 
   function Settings() {
     return (
