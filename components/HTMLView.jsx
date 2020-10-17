@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
+  View,
   ScrollView,
   PlatformColor,
   DynamicColorIOS,
@@ -25,13 +26,15 @@ const nodeStyles = StyleSheet.create({
     fontSize: baseFontSize,
   },
   pre: {
-    paddingVertical: 10,
     backgroundColor: DynamicColorIOS({
       dark: 'rgba(255,255,255,.05)',
       light: 'rgba(0,0,0,.025)',
     }),
     borderRadius: 8,
     marginBottom: 12,
+  },
+  preInner: {
+    paddingVertical: 10,
   },
   code: {
     fontFamily: 'Menlo',
@@ -73,7 +76,12 @@ function dom2elements(nodes, parentName) {
             style={style}
             decelerationRate={0} // Easier to read the code
           >
-            {elements}
+            <View
+              style={nodeStyles.preInner}
+              onStartShouldSetResponder={() => true}
+            >
+              {elements}
+            </View>
           </ScrollView>
         );
       }
