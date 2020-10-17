@@ -53,7 +53,7 @@ export default function Comment(item) {
             title: `Comment by ${user}`,
             options: [
               'View profile',
-              'View comment on web site',
+              'View comment on HN web site',
               'Share comment…',
               'Cancel',
             ],
