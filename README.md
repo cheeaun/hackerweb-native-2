@@ -29,6 +29,7 @@ After cloning this repository:
 
 ```
 cd hackerweb-native-2
+npm i
 npm start
 ```
 
