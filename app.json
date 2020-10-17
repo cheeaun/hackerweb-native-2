@@ -1,8 +1,9 @@
 {
   "expo": {
-    "name": "hackerweb-native-2",
+    "name": "HackerWeb",
     "slug": "hackerweb-native-2",
-    "version": "1.0.0",
+    "version": "2.0.0",
+    "description": "A read-only Hacker News client.",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -13,14 +14,31 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["assets/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "bundleIdentifier": "cheeaun.hackerweb"
     },
+    "platforms": ["ios"],
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "userInterfaceStyle": "automatic",
+    "packagerOpts": {
+      "config": "metro.config.js",
+      "sourceExts": [
+        "expo.ts",
+        "expo.tsx",
+        "expo.js",
+        "expo.jsx",
+        "ts",
+        "tsx",
+        "js",
+        "jsx",
+        "json",
+        "wasm",
+        "svg"
+      ]
     }
   }
 }
