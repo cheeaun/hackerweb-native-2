@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   InteractionManager,
-  PlatformColor,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
