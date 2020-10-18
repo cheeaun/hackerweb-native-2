@@ -127,7 +127,7 @@ export default function SettingsScreen({ navigation }) {
             Not affiliated with Hacker News or YCombinator.
           </Text>
           <Text size="footnote" type="insignificant" style={{ marginTop: 16 }}>
-            Version {Constants.nativeAppVersion}
+            {Constants.manifest.name} {Constants.nativeAppVersion}
           </Text>
           <Text size="footnote" type="insignificant">
             Expo {Constants.expoVersion}
