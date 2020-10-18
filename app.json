@@ -14,12 +14,17 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["assets/*"],
+    "assetBundlePatterns": [
+      "assets/*"
+    ],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "cheeaun.hackerweb"
+      "bundleIdentifier": "cheeaun.hackerweb",
+      "buildNumber": "2.0.0"
     },
-    "platforms": ["ios"],
+    "platforms": [
+      "ios"
+    ],
     "web": {
       "favicon": "./assets/favicon.png"
     },
