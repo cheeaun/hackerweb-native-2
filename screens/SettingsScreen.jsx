@@ -3,6 +3,7 @@ import { View, Pressable, StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
 import * as StoreReview from 'expo-store-review';
 import { StatusBar } from 'expo-status-bar';
+import * as Updates from 'expo-updates';
 
 import { createStackNavigator } from '@react-navigation/stack';
 const Stack = createStackNavigator();
@@ -131,6 +132,11 @@ export default function SettingsScreen({ navigation }) {
           <Text size="footnote" type="insignificant" style={{ marginTop: 16 }}>
             {Constants.manifest.name} {Constants.nativeAppVersion}
           </Text>
+          {Updates.updateId && (
+            <Text size="footnote" type="insignificant">
+              Update {Updates.updateId}
+            </Text>
+          )}
           <Text size="footnote" type="insignificant">
             Expo {Constants.expoVersion}
           </Text>
