@@ -48,9 +48,9 @@ export default function StoriesScreen({ navigation }) {
       setStoriesLoading(true);
       fetchStories().finally(() => {
         if (ignore) return;
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setStoriesLoading(false);
       });
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     });
 
     return () => {
