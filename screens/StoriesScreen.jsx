@@ -84,8 +84,7 @@ export default function StoriesScreen({ navigation }) {
       ItemSeparatorComponent={ItemSeparatorComponent}
       ListEmptyComponent={() => (
         <ListEmpty
-          loading={storiesLoading}
-          error={noStories}
+          state={storiesLoading ? 'loading' : noStories ? 'error' : null}
           errorComponent={() => (
             <Text
               onPress={() => {

@@ -5,12 +5,11 @@ import Text from './Text';
 import ActivityIndicator from './ActivityIndicator';
 
 export default function ({
-  loading = false,
-  nada = false,
+  state = null, // loading, nada, error
   nadaText = '',
-  error = false,
   errorComponent = () => null,
 }) {
+  if (!state) return null;
   const { width, height } = useWindowDimensions();
   const padding = useMemo(() => Math.min(width, height) / 2, [width, height]);
 
@@ -21,13 +20,14 @@ export default function ({
         justifyContent: 'center',
         alignItems: 'center',
         paddingVertical: padding,
+        paddingHorizontal: 15,
       }}
     >
-      {loading ? (
+      {state === 'loading' ? (
         <ActivityIndicator />
-      ) : error ? (
+      ) : state === 'error' ? (
         errorComponent()
-      ) : nada ? (
+      ) : state === 'nada' ? (
         <Text type="insignificant">{nadaText}</Text>
       ) : null}
     </View>

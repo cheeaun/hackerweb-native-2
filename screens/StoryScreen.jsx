@@ -251,8 +251,13 @@ export default function StoryScreen({ route, navigation }) {
       renderItem={renderItem}
       ListEmptyComponent={() => (
         <ListEmpty
-          loading={storyLoading}
-          nada={!comments.length}
+          state={
+            storyLoading
+              ? 'loading'
+              : !isJob && !comments.length
+              ? 'nada'
+              : null
+          }
           nadaText="No comments yet."
         />
       )}
