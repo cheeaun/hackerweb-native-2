@@ -6,7 +6,7 @@ const DAYS_IN_WEEK = 7;
 const MINUTES_IN_WEEK = MINUTES_IN_DAY * DAYS_IN_WEEK;
 
 export default function ({ time }) {
-  if (!time || !isValid(time)) return;
+  if (!time || !isValid(time)) return null;
   const now = new Date();
   const seconds = differenceInSeconds(now, time);
   const minutes = Math.round(seconds / 60);
