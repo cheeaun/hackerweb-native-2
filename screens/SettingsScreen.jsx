@@ -62,7 +62,7 @@ export default function SettingsScreen({ navigation }) {
   const [updateAvailable, setUpdateAvailable] = useState(false);
   useEffect(() => {
     let ignore = false;
-    Updates.checkForUpdateAsync().then((isAvailable) => {
+    Updates.checkForUpdateAsync().then(({ isAvailable }) => {
       if (ignore) return;
       setUpdateAvailable(isAvailable);
     });
