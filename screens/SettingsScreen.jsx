@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
+import { View, Pressable, StyleSheet, Alert } from 'react-native';
 import Constants from 'expo-constants';
 import * as StoreReview from 'expo-store-review';
 import { StatusBar } from 'expo-status-bar';
@@ -57,6 +57,18 @@ export default function SettingsScreen({ navigation }) {
         setCanRate(hasAction && isAvailable);
       },
     );
+  }, []);
+
+  const [updateAvailable, setUpdateAvailable] = useState(false);
+  useEffect(() => {
+    let ignore = false;
+    Updates.checkForUpdateAsync().then((isAvailable) => {
+      if (ignore) return;
+      setUpdateAvailable(isAvailable);
+    });
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   function Settings() {
@@ -130,16 +142,42 @@ export default function SettingsScreen({ navigation }) {
             Not affiliated with Hacker News or YCombinator.
           </Text>
           <Text size="footnote" type="insignificant" style={{ marginTop: 16 }}>
-            {Constants.manifest.name} {Constants.nativeAppVersion}
+            {Constants.manifest.name} {Constants.nativeAppVersion} (
+            {Constants.nativeBuildVersion})
           </Text>
           {Updates.updateId && (
             <Text size="footnote" type="insignificant">
-              Update {Updates.updateId}
+              Update: {Updates.updateId}
+            </Text>
+          )}
+          {Updates.releaseChannel && (
+            <Text size="footnote" type="insignificant">
+              Channel: {Updates.releaseChannel}
             </Text>
           )}
           <Text size="footnote" type="insignificant">
             Expo {Constants.expoVersion}
           </Text>
+          {updateAvailable && (
+            <Text
+              size="footnote"
+              type="link"
+              style={{ marginTop: 16 }}
+              onPress={() => {
+                Alert.alert('Update app', 'Install the latest update now?', [
+                  {
+                    text: 'OK',
+                    onPress: () => {
+                      Updates.reloadAsync();
+                    },
+                  },
+                  { text: 'Cancel', style: 'cancel' },
+                ]);
+              }}
+            >
+              Update available.
+            </Text>
+          )}
         </OuterSpacer>
       </View>
     );
