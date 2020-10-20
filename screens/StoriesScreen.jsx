@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   InteractionManager,
+  ActivityIndicator,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -61,6 +62,14 @@ export default function StoriesScreen({ navigation }) {
   useFocusEffect(onFetchStories);
 
   const noStories = !stories.length;
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <ActivityIndicator animating={!noStories && storiesLoading} />
+      ),
+    });
+  }, [noStories, storiesLoading]);
 
   return (
     <FlatList
