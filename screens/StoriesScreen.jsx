@@ -4,10 +4,10 @@ import {
   LayoutAnimation,
   StyleSheet,
   TouchableOpacity,
-  InteractionManager,
   ActivityIndicator,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { useAppState } from '@react-native-community/hooks';
 
 import StoryItem from '../components/StoryItem';
 import Separator from '../components/Separator';
@@ -45,21 +45,22 @@ export default function StoriesScreen({ navigation }) {
   const [storiesLoading, setStoriesLoading] = useState(false);
   const onFetchStories = useCallback(() => {
     let ignore = false;
-    const task = InteractionManager.runAfterInteractions(() => {
-      setStoriesLoading(true);
-      fetchStories().finally(() => {
-        if (ignore) return;
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        setStoriesLoading(false);
-      });
+    setStoriesLoading(true);
+    fetchStories().finally(() => {
+      if (ignore) return;
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      setStoriesLoading(false);
     });
 
     return () => {
       ignore = true;
-      task.cancel();
     };
   }, []);
   useFocusEffect(onFetchStories);
+  const currentAppState = useAppState();
+  useEffect(() => {
+    if (currentAppState === 'active') onFetchStories();
+  }, [currentAppState]);
 
   const noStories = !stories.length;
 
