@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { enableScreens } from 'react-native-screens';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 import Constants from 'expo-constants';
+import { useAppState } from '@react-native-community/hooks';
+import * as Updates from 'expo-updates';
 
 import StoriesScreen from './screens/StoriesScreen';
 import StoryScreen from './screens/StoryScreen';
@@ -20,6 +22,24 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const initLinks = useStore((state) => state.initLinks);
   initLinks();
+
+  const setUpdateIsAvailable = useStore((state) => state.setUpdateIsAvailable);
+  const currentAppState = useAppState();
+  useEffect(() => {
+    if (currentAppState === 'active') {
+      Updates.checkForUpdateAsync()
+        .then(({ isAvailable }) => {
+          if (isAvailable) {
+            Updates.fetchUpdateAsync().then(({ isNew }) => {
+              if (isNew) {
+                setUpdateIsAvailable(true);
+              }
+            });
+          }
+        })
+        .catch(() => {});
+    }
+  }, [currentAppState]);
 
   const { isDark, colors } = useTheme();
 

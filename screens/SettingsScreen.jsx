@@ -14,6 +14,7 @@ import Separator from '../components/Separator';
 import OuterSpacer from '../components/OuterSpacer';
 
 import useTheme from '../hooks/useTheme';
+import useStore from '../hooks/useStore';
 
 import openBrowser from '../utils/openBrowser';
 
@@ -59,17 +60,7 @@ export default function SettingsScreen({ navigation }) {
     );
   }, []);
 
-  const [updateAvailable, setUpdateAvailable] = useState(false);
-  useEffect(() => {
-    let ignore = false;
-    Updates.checkForUpdateAsync().then(({ isAvailable }) => {
-      if (ignore) return;
-      setUpdateAvailable(isAvailable);
-    });
-    return () => {
-      ignore = true;
-    };
-  }, []);
+  const updateIsAvailable = useStore((state) => state.updateIsAvailable);
 
   function Settings() {
     return (
@@ -158,7 +149,7 @@ export default function SettingsScreen({ navigation }) {
           <Text size="footnote" type="insignificant">
             Expo {Constants.expoVersion}
           </Text>
-          {updateAvailable && (
+          {updateIsAvailable && (
             <Text
               size="footnote"
               type="link"

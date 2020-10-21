@@ -51,6 +51,8 @@ async function getItem(key) {
 }
 
 const useStore = create((set, get) => ({
+  updateIsAvailable: false,
+  setUpdateIsAvailable: (updateIsAvailable) => set({ updateIsAvailable }),
   stories: [],
   fetchStories: async () => {
     let stories = await getItem('stories');
