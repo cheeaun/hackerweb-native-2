@@ -6,7 +6,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "viz": "npx react-native-bundle-visualizer --expo managed"
   },
   "dependencies": {
     "@expo/metro-config": "~0.1.33",
