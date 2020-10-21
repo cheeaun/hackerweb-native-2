@@ -59,7 +59,9 @@ export default function StoriesScreen({ navigation }) {
   useFocusEffect(onFetchStories);
   const currentAppState = useAppState();
   useEffect(() => {
-    if (currentAppState === 'active') onFetchStories();
+    if (currentAppState === 'active' && navigation.isFocused()) {
+      onFetchStories();
+    }
   }, [currentAppState]);
 
   const noStories = !stories.length;
