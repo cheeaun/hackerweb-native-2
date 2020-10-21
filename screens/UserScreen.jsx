@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { StyleSheet, View, LayoutAnimation } from 'react-native';
 import ky from 'ky';
-import { format } from 'date-fns';
+import format from 'date-fns/format';
 import { Modalize } from 'react-native-modalize';
 import * as Haptics from 'expo-haptics';
 
