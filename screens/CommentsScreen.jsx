@@ -145,7 +145,11 @@ export default function CommentsScreen({ route, navigation }) {
           }
         >
           <SafeAreaView style={{ alignItems: 'center' }}>
-            <BlurView intensity={99} style={{ borderRadius: 25 }}>
+            <BlurView
+              intensity={99}
+              tint={isDark ? 'dark' : 'light'}
+              style={{ borderRadius: 25 }}
+            >
               <TouchableOpacity
                 onPress={() => {
                   navigation.pop();
