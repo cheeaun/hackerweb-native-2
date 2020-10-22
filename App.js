@@ -24,20 +24,27 @@ export default function App() {
   initLinks();
 
   const setUpdateIsAvailable = useStore((state) => state.setUpdateIsAvailable);
+  const setLastBackgroundTime = useStore(
+    (state) => state.setLastBackgroundTime,
+  );
   const currentAppState = useAppState();
   useEffect(() => {
     if (currentAppState === 'active') {
       Updates.checkForUpdateAsync()
         .then(({ isAvailable }) => {
           if (isAvailable) {
-            Updates.fetchUpdateAsync().then(({ isNew }) => {
-              if (isNew) {
-                setUpdateIsAvailable(true);
-              }
-            });
+            Updates.fetchUpdateAsync()
+              .then(({ isNew }) => {
+                if (isNew) {
+                  setUpdateIsAvailable(true);
+                }
+              })
+              .catch(() => {}); // Silent fail
           }
         })
-        .catch(() => {});
+        .catch(() => {}); // Silent fail
+    } else {
+      setLastBackgroundTime(new Date());
     }
   }, [currentAppState]);
 

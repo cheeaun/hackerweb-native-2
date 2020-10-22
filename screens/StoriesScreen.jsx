@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useAppState } from '@react-native-community/hooks';
+import * as Updates from 'expo-updates';
 
 import StoryItem from '../components/StoryItem';
 import Separator from '../components/Separator';
@@ -22,6 +23,8 @@ import GearIcon from '../assets/gearshape.svg';
 const ItemSeparatorComponent = () => (
   <Separator style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }} />
 );
+
+const BACKGROUND_BUFFER = 1 * 60 * 1000; // 30min
 
 export default function StoriesScreen({ navigation }) {
   const { colors } = useTheme();
@@ -40,6 +43,10 @@ export default function StoriesScreen({ navigation }) {
     });
   }, []);
 
+  const lastBackgroundTime = useStore((state) => state.lastBackgroundTime);
+  const backgroundedTooLong =
+    !!lastBackgroundTime && new Date() - lastBackgroundTime > BACKGROUND_BUFFER;
+
   const stories = useStore((state) => state.stories);
   const fetchStories = useStore((state) => state.fetchStories);
   const [storiesLoading, setStoriesLoading] = useState(false);
@@ -57,12 +64,22 @@ export default function StoriesScreen({ navigation }) {
     };
   }, []);
   useFocusEffect(onFetchStories);
+
+  const updateIsAvailable = useStore((state) => state.updateIsAvailable);
   const currentAppState = useAppState();
-  useEffect(() => {
-    if (currentAppState === 'active' && navigation.isFocused()) {
-      onFetchStories();
-    }
-  }, [currentAppState]);
+  useEffect(
+    useCallback(() => {
+      if (currentAppState === 'active' && navigation.isFocused()) {
+        // If there's an update, auto reload
+        if (updateIsAvailable && backgroundedTooLong) {
+          Updates.reloadAsync();
+        } else {
+          onFetchStories();
+        }
+      }
+    }, [updateIsAvailable, lastBackgroundTime]),
+    [currentAppState],
+  );
 
   const noStories = !stories.length;
 

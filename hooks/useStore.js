@@ -51,6 +51,8 @@ async function getItem(key) {
 }
 
 const useStore = create((set, get) => ({
+  lastBackgroundTime: null,
+  setLastBackgroundTime: (lastBackgroundTime) => set({ lastBackgroundTime }),
   updateIsAvailable: false,
   setUpdateIsAvailable: (updateIsAvailable) => set({ updateIsAvailable }),
   stories: [],
