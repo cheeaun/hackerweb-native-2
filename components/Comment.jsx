@@ -7,6 +7,7 @@ import {
   ActionSheetIOS,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import * as Haptics from 'expo-haptics';
 
 import Text from './Text';
 import HTMLView from './HTMLView';
@@ -48,6 +49,7 @@ export default function Comment(item) {
   return (
     <Pressable
       onLongPress={() => {
+        Haptics.selectionAsync();
         ActionSheetIOS.showActionSheetWithOptions(
           {
             title: `Comment by ${user}`,
