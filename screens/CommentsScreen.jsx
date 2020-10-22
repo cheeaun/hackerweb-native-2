@@ -1,9 +1,16 @@
-import React, { useEffect, useMemo } from 'react';
-import { View, FlatList, useWindowDimensions } from 'react-native';
+import React, { useState, useEffect, useMemo } from 'react';
+import {
+  View,
+  FlatList,
+  SafeAreaView,
+  useWindowDimensions,
+  StyleSheet,
+} from 'react-native';
 import MaskedView from '@react-native-community/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import { StatusBar } from 'expo-status-bar';
+import { BlurView } from 'expo-blur';
 
 import { createStackNavigator } from '@react-navigation/stack';
 const Stack = createStackNavigator();
@@ -18,32 +25,36 @@ import OuterSpacer from '../components/OuterSpacer';
 
 import useTheme from '../hooks/useTheme';
 
+import getCommentsMetadata from '../utils/getCommentsMetadata';
+
+const HEADER_HEIGHT = 56;
+
 export default function CommentsScreen({ route, navigation }) {
   const { isDark, colors } = useTheme();
   const item = route.params;
-  const { comments, content } = item;
+  const { comments = [], content } = item;
+  const { repliesCount, totalComments } = getCommentsMetadata(item);
+  const countDiffer = repliesCount !== totalComments;
 
   useEffect(() => {
-    (async () => {
-      const commentsScreenCount = navigation
-        .dangerouslyGetState()
-        .routes.filter((r) => r.name.toLowerCase() === 'comments').length;
-      Haptics.impactAsync(
-        Haptics.ImpactFeedbackStyle[
-          commentsScreenCount === 1
-            ? 'Light'
-            : commentsScreenCount === 2
-            ? 'Medium'
-            : 'Heavy'
-        ],
-      );
-    })();
+    const commentsScreenCount = navigation
+      .dangerouslyGetState()
+      .routes.filter((r) => r.name.toLowerCase() === 'comments').length;
+    Haptics.impactAsync(
+      Haptics.ImpactFeedbackStyle[
+        commentsScreenCount === 1
+          ? 'Light'
+          : commentsScreenCount === 2
+          ? 'Medium'
+          : 'Heavy'
+      ],
+    );
   }, []);
 
   const windowHeight = useWindowDimensions().height;
   const ListHeaderComponent = useMemo(
     () => (
-      <View pointerEvents="none">
+      <View pointerEvents="none" style={{ marginTop: HEADER_HEIGHT }}>
         <MaskedView
           style={{
             padding: 15,
@@ -74,7 +85,31 @@ export default function CommentsScreen({ route, navigation }) {
           style={{
             backgroundColor: colors.opaqueSecondaryBackground,
           }}
-        />
+          align="bottom"
+          size="large"
+        >
+          <Text>
+            <Text
+              type="insignificant"
+              size="footnote"
+              style={{ textTransform: 'uppercase' }}
+            >
+              {repliesCount.toLocaleString()}{' '}
+              {repliesCount != 1 ? 'replies' : 'reply'}
+            </Text>
+            {countDiffer && (
+              <Text
+                type="insignificant"
+                size="footnote"
+                style={{ textTransform: 'uppercase' }}
+              >
+                {' '}
+                &middot; {totalComments.toLocaleString()}{' '}
+                {totalComments !== 1 ? 'comments' : 'comment'}
+              </Text>
+            )}
+          </Text>
+        </OuterSpacer>
         <Separator />
       </View>
     ),
@@ -86,46 +121,61 @@ export default function CommentsScreen({ route, navigation }) {
   );
 
   function Comments() {
+    const [footerHeight, setFooterHeight] = useState(0);
     return (
-      <FlatList
-        ListHeaderComponent={ListHeaderComponent}
-        data={comments}
-        renderItem={renderItem}
-        keyExtractor={(item) => '' + item.id}
-        ItemSeparatorComponent={Separator}
-        contentInsetAdjustmentBehavior="automatic"
-        ListFooterComponent={() => (
-          <>
-            <Separator />
-            <TouchableOpacity
-              onPress={() => {
-                navigation.pop();
-              }}
-              style={{ padding: 15, paddingBottom: 45 }}
-            >
-              <Text
-                type="link"
-                bold
-                style={{ textAlign: 'center', opacity: 0.5 }}
+      <>
+        <FlatList
+          scrollIndicatorInsets={{
+            top: HEADER_HEIGHT,
+            right: 0,
+            bottom: 0,
+            left: 0,
+          }}
+          ListHeaderComponent={ListHeaderComponent}
+          data={comments}
+          renderItem={renderItem}
+          keyExtractor={(item) => '' + item.id}
+          ItemSeparatorComponent={Separator}
+          contentInsetAdjustmentBehavior="automatic"
+          ListFooterComponent={() => <View style={{ height: footerHeight }} />}
+        />
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            padding: 15,
+            width: '100%',
+          }}
+          onLayout={({ nativeEvent }) =>
+            setFooterHeight(nativeEvent.layout.height)
+          }
+        >
+          <SafeAreaView style={{ alignItems: 'center' }}>
+            <BlurView intensity={99} style={{ borderRadius: 25 }}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.pop();
+                }}
+                style={{
+                  paddingVertical: 15,
+                  paddingHorizontal: 30,
+                  backgroundColor: colors.opaqueBackground,
+                }}
               >
-                Close thread
-              </Text>
-            </TouchableOpacity>
-          </>
-        )}
-      />
+                <Text type="link" bold>
+                  Close thread
+                </Text>
+              </TouchableOpacity>
+            </BlurView>
+          </SafeAreaView>
+        </View>
+      </>
     );
   }
 
-  const title = `${comments.length} ${
-    comments.length === 1 ? 'reply' : 'replies'
-  } to ${item.user}`;
+  const title = `${item.user}`;
   const headerTitle = () => (
-    <Text type="insignificant" numberOfLines={1}>
-      <Text bold>
-        {comments.length} {comments.length === 1 ? 'reply' : 'replies'}
-      </Text>{' '}
-      to{' '}
+    <Text numberOfLines={1}>
       <Text
         bold
         style={{ color: colors.red }}
@@ -135,7 +185,7 @@ export default function CommentsScreen({ route, navigation }) {
       >
         {item.user}
       </Text>
-      <Text type="insignificant" size="footnote">
+      <Text type="insignificant">
         {' '}
         &middot; <TimeAgo time={new Date(item.time * 1000)} />
       </Text>
@@ -165,10 +215,12 @@ export default function CommentsScreen({ route, navigation }) {
             headerTitle,
             headerTitleAlign: 'left',
             headerRight,
+            headerTransparent: true,
+            headerBackground: () => (
+              <BlurView intensity={100} style={StyleSheet.absoluteFill} />
+            ),
             headerStyle: {
-              backgroundColor: 'transparent',
-              shadowOpacity: 0,
-              height: 56,
+              height: HEADER_HEIGHT,
             },
           }}
         />

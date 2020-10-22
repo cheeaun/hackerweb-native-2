@@ -8,6 +8,8 @@ import Comment from './Comment';
 
 import useTheme from '../hooks/useTheme';
 
+import getCommentsMetadata from '../utils/getCommentsMetadata';
+
 const styles = StyleSheet.create({
   comment: {
     padding: 15,
@@ -38,12 +40,13 @@ function RepliesCommentsButton({ replies, comments, ...props }) {
     >
       <Text style={{ textAlign: 'center' }}>
         <Text size="subhead" type="link" bold>
-          {replies} {replies !== 1 ? 'replies' : 'reply'}
+          {replies.toLocaleString()} {replies !== 1 ? 'replies' : 'reply'}
         </Text>
         {countDiffer && (
           <Text size="footnote" type="insignificant">
             {' '}
-            &middot; {comments} {comments !== 1 ? 'comments' : 'comment'}
+            &middot; {comments.toLocaleString()}{' '}
+            {comments !== 1 ? 'comments' : 'comment'}
           </Text>
         )}
       </Text>
@@ -98,21 +101,6 @@ function InnerCommentContainer({ item, accWeight, maxWeight, level = 1 }) {
       </View>
     </View>
   );
-}
-
-function getCommentsMetadata(item) {
-  const { comments } = item;
-  const repliesCount = comments.length;
-  let totalComments = repliesCount;
-  (function dive(comments) {
-    for (let i = 0, l = comments.length; i < l; i++) {
-      const c = comments[i];
-      const len = c.comments.length;
-      totalComments += len;
-      if (len) dive(c.comments);
-    }
-  })(comments);
-  return { repliesCount, totalComments };
 }
 
 function calcCommentWeight(comment) {
