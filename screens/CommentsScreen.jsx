@@ -54,7 +54,7 @@ export default function CommentsScreen({ route, navigation }) {
   const windowHeight = useWindowDimensions().height;
   const ListHeaderComponent = useMemo(
     () => (
-      <View pointerEvents="none" style={{ marginTop: HEADER_HEIGHT }}>
+      <View pointerEvents="none">
         <MaskedView
           style={{
             padding: 15,
@@ -125,12 +125,6 @@ export default function CommentsScreen({ route, navigation }) {
     return (
       <>
         <FlatList
-          scrollIndicatorInsets={{
-            top: HEADER_HEIGHT,
-            right: 0,
-            bottom: 0,
-            left: 0,
-          }}
           ListHeaderComponent={ListHeaderComponent}
           data={comments}
           renderItem={renderItem}
@@ -215,11 +209,9 @@ export default function CommentsScreen({ route, navigation }) {
             headerTitle,
             headerTitleAlign: 'left',
             headerRight,
-            headerTransparent: true,
-            headerBackground: () => (
-              <BlurView intensity={100} style={StyleSheet.absoluteFill} />
-            ),
             headerStyle: {
+              backgroundColor: 'transparent',
+              shadowOpacity: 0,
               height: HEADER_HEIGHT,
             },
           }}
