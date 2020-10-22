@@ -137,18 +137,21 @@ export default function CommentsScreen({ route, navigation }) {
           style={{
             position: 'absolute',
             bottom: 0,
-            padding: 15,
             width: '100%',
           }}
           onLayout={({ nativeEvent }) =>
             setFooterHeight(nativeEvent.layout.height)
           }
+          pointerEvents="box-none"
         >
-          <SafeAreaView style={{ alignItems: 'center' }}>
+          <SafeAreaView
+            style={{ alignItems: 'center' }}
+            pointerEvents="box-none"
+          >
             <BlurView
               intensity={99}
               tint={isDark ? 'dark' : 'light'}
-              style={{ borderRadius: 25 }}
+              style={{ borderRadius: 25, marginBottom: 15 }}
             >
               <TouchableOpacity
                 onPress={() => {
