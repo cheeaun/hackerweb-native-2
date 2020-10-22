@@ -139,9 +139,6 @@ export default function CommentsScreen({ route, navigation }) {
             bottom: 0,
             width: '100%',
           }}
-          onLayout={({ nativeEvent }) =>
-            setFooterHeight(nativeEvent.layout.height)
-          }
           pointerEvents="box-none"
         >
           <SafeAreaView
@@ -152,6 +149,9 @@ export default function CommentsScreen({ route, navigation }) {
               intensity={99}
               tint={isDark ? 'dark' : 'light'}
               style={{ borderRadius: 25, marginBottom: 15 }}
+              onLayout={({ nativeEvent }) =>
+                setFooterHeight(nativeEvent.layout.height)
+              }
             >
               <TouchableOpacity
                 onPress={() => {
