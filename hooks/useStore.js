@@ -66,6 +66,7 @@ const useStore = create((set, get) => ({
   updateIsAvailable: false,
   setUpdateIsAvailable: (updateIsAvailable) => set({ updateIsAvailable }),
   stories: [],
+  clearStories: () => set({ stories: [] }),
   fetchStories: async () => {
     let stories = await getItem('stories');
     if (stories) {
