@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -46,9 +46,13 @@ export default function Comment(item) {
   const currentOP = useStore((state) => state.currentOP);
   if (deleted && !comments.length) return null;
   const hnURL = `https://news.ycombinator.com/item?id=${id}`;
+  const [selected, setSelected] = useState(false);
+
   return (
     <Pressable
+      style={selected && { transform: [{ scale: 0.995 }] }}
       onLongPress={() => {
+        setSelected(true);
         Haptics.selectionAsync();
         ActionSheetIOS.showActionSheetWithOptions(
           {
@@ -62,13 +66,18 @@ export default function Comment(item) {
             cancelButtonIndex: 3,
           },
           (index) => {
-            if (index === 0) {
-              navigation.push('User', user);
-            } else if (index === 1) {
-              openBrowser(hnURL);
-            } else if (index === 2) {
-              openShare({ url: hnURL });
+            switch (index) {
+              case 0:
+                navigation.push('User', user);
+                break;
+              case 1:
+                openBrowser(hnURL);
+                break;
+              case 2:
+                openShare({ url: hnURL });
+                break;
             }
+            setSelected(false);
           },
         );
       }}
