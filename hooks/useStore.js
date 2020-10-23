@@ -73,8 +73,12 @@ const useStore = create((set, get) => ({
       set({ stories });
     } else {
       stories = await api('news').json();
-      set({ stories });
-      setItem('stories', stories, STORIES_TTL);
+      if (stories.length) {
+        set({ stories });
+        setItem('stories', stories, STORIES_TTL);
+      } else {
+        throw new Error('Zero stories');
+      }
     }
   },
   isStoriesExpired: async () => await isExpired('stories'),
