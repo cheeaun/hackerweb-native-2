@@ -48,7 +48,9 @@ export default function StoriesScreen({ navigation }) {
     !!lastBackgroundTime && new Date() - lastBackgroundTime > BACKGROUND_BUFFER;
 
   const stories = useStore((state) => state.stories);
+  const isStoriesExpired = useStore((state) => state.isStoriesExpired);
   const fetchStories = useStore((state) => state.fetchStories);
+
   const [storiesLoading, setStoriesLoading] = useState(false);
   const onFetchStories = useCallback(() => {
     let ignore = false;
@@ -63,7 +65,11 @@ export default function StoriesScreen({ navigation }) {
       ignore = true;
     };
   }, []);
-  useFocusEffect(onFetchStories);
+  useFocusEffect(() => {
+    isStoriesExpired()
+      .then((expired) => expired && onFetchStories())
+      .catch(() => {});
+  });
 
   const updateIsAvailable = useStore((state) => state.updateIsAvailable);
   const currentAppState = useAppState();

@@ -50,6 +50,16 @@ async function getItem(key) {
   return null;
 }
 
+async function isExpired(key) {
+  if (!key) return;
+  const json = await AsyncStorage.getItem(key);
+  if (json) {
+    const { expire } = JSON.parse(json);
+    return expire && expire <= Date.now();
+  }
+  return true;
+}
+
 const useStore = create((set, get) => ({
   lastBackgroundTime: null,
   setLastBackgroundTime: (lastBackgroundTime) => set({ lastBackgroundTime }),
@@ -67,6 +77,7 @@ const useStore = create((set, get) => ({
       setItem('stories', stories, STORIES_TTL);
     }
   },
+  isStoriesExpired: async () => await isExpired('stories'),
   fetchStory: async (id) => {
     const { stories } = get();
     const index = stories.findIndex((s) => s.id === id);
