@@ -4,7 +4,21 @@ import ky from 'ky';
 import arrayMove from 'array-move';
 
 const API_ROOT = 'https://api.hackerwebapp.com';
-const api = ky.create({ prefixUrl: API_ROOT });
+const api = ky.create({
+  prefixUrl: API_ROOT,
+  hooks: {
+    beforeRequest: [
+      (request) => {
+        console.log(`🐕 ${request.method} ${request.url}`);
+      },
+    ],
+    beforeRetry: [
+      (request) => {
+        console.log(`♻️ ${request.method} ${request.url}`);
+      },
+    ],
+  },
+});
 const STORIES_TTL = 10 * 60 * 1000; // 10 mins
 
 function setItem(key, val, ttl) {
