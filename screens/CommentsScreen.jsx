@@ -160,7 +160,7 @@ export default function CommentsScreen({ route, navigation }) {
                 style={{
                   paddingVertical: 15,
                   paddingHorizontal: 30,
-                  backgroundColor: colors.opaqueBackground,
+                  backgroundColor: colors.opaqueBackground3,
                 }}
               >
                 <Text type="link" bold>
