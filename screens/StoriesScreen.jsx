@@ -24,7 +24,7 @@ const ItemSeparatorComponent = () => (
   <Separator style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }} />
 );
 
-const BACKGROUND_BUFFER = 1 * 60 * 1000; // 30min
+const BACKGROUND_BUFFER = 15 * 60 * 1000; // 15min
 
 export default function StoriesScreen({ navigation }) {
   const { colors } = useTheme();
@@ -44,8 +44,14 @@ export default function StoriesScreen({ navigation }) {
   }, []);
 
   const lastBackgroundTime = useStore((state) => state.lastBackgroundTime);
+  const backgroundedDuration = new Date() - lastBackgroundTime;
   const backgroundedTooLong =
-    !!lastBackgroundTime && new Date() - lastBackgroundTime > BACKGROUND_BUFFER;
+    !!lastBackgroundTime && backgroundedDuration > BACKGROUND_BUFFER;
+  useEffect(() => {
+    console.log(
+      `🎢 Backgrounded for ${Math.floor(backgroundedDuration / 1000 / 60)}m`,
+    );
+  }, [+lastBackgroundTime]);
 
   const stories = useStore((state) => state.stories);
   const isStoriesExpired = useStore((state) => state.isStoriesExpired);
