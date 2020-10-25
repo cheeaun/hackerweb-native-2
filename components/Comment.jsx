@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useRef, useCallback } from 'react';
 import {
   StyleSheet,
   View,
   Alert,
   Pressable,
   ActionSheetIOS,
+  Animated,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
@@ -46,13 +47,27 @@ export default function Comment(item) {
   const currentOP = useStore((state) => state.currentOP);
   if (deleted && !comments.length) return null;
   const hnURL = `https://news.ycombinator.com/item?id=${id}`;
-  const [selected, setSelected] = useState(false);
+
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const bobble = useCallback(() => {
+    Animated.sequence([
+      Animated.timing(scaleAnim, {
+        toValue: 0.97,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [scaleAnim]);
 
   return (
     <Pressable
-      style={selected && { transform: [{ scale: 0.995 }] }}
       onLongPress={() => {
-        setSelected(true);
+        bobble();
         Haptics.selectionAsync();
         ActionSheetIOS.showActionSheetWithOptions(
           {
@@ -77,46 +92,53 @@ export default function Comment(item) {
                 openShare({ url: hnURL });
                 break;
             }
-            setSelected(false);
           },
         );
       }}
     >
-      {!deleted && (
-        <View style={styles.metadata}>
-          <Text
-            size="subhead"
-            bold
-            style={{ color: colors.red }}
-            numberOfLines={1}
-            onPress={() => {
-              navigation.push('User', user);
-            }}
-          >
-            {user}
-          </Text>
-          {user === currentOP && (
-            <TouchableOpacity
-              style={[styles.opBox, { backgroundColor: colors.red }]}
+      <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+        {!deleted && (
+          <View style={styles.metadata}>
+            <Text
+              size="subhead"
+              bold
+              style={{ color: colors.red }}
+              numberOfLines={1}
               onPress={() => {
-                Alert.alert(
-                  'What is OP',
-                  'OP is short for Original Poster — the person who posted this story.',
-                );
+                navigation.push('User', user);
               }}
             >
-              <Text size="caption2" style={styles.op}>
-                OP
-              </Text>
-            </TouchableOpacity>
-          )}
-          <Text size="subhead" type="insignificant">
-            {' '}
-            &middot; <TimeAgo time={datetime} />
-          </Text>
-        </View>
-      )}
-      <HTMLView html={content} />
+              {user}
+            </Text>
+            {user === currentOP && (
+              <TouchableOpacity
+                style={[styles.opBox, { backgroundColor: colors.red }]}
+                onPress={() => {
+                  Alert.alert(
+                    'What is OP',
+                    'OP is short for Original Poster — the person who posted this story.',
+                  );
+                }}
+                hitSlop={{
+                  top: 10,
+                  right: 10,
+                  bottom: 20,
+                  left: 10,
+                }}
+              >
+                <Text size="caption2" style={styles.op}>
+                  OP
+                </Text>
+              </TouchableOpacity>
+            )}
+            <Text size="subhead" type="insignificant">
+              {' '}
+              &middot; <TimeAgo time={datetime} />
+            </Text>
+          </View>
+        )}
+        <HTMLView html={content} />
+      </Animated.View>
     </Pressable>
   );
 }
