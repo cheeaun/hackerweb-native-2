@@ -180,6 +180,12 @@ export default function SettingsScreen({ navigation }) {
         navigation.pop();
       }}
       style={{ paddingHorizontal: 15 }}
+      hitSlop={{
+        top: 44,
+        right: 44,
+        bottom: 44,
+        left: 44,
+      }}
     >
       <Text type="link" bold>
         Done

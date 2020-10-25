@@ -129,6 +129,12 @@ export default function StoryScreen({ route, navigation }) {
           onLongPress={() => {
             openShare({ url: hnURL });
           }}
+          hitSlop={{
+            top: 44,
+            right: 44,
+            bottom: 44,
+            left: 44,
+          }}
         >
           <ShareIcon width={20} height={20} color={colors.primary} />
         </TouchableOpacity>

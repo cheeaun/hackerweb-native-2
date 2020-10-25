@@ -150,7 +150,15 @@ export default function UserScreen({ route, navigation }) {
           <Text size="title2" bold numberOfLines={1} style={{ flex: 1 }}>
             {user}
           </Text>
-          <TouchableOpacity onPress={onClose}>
+          <TouchableOpacity
+            onPress={onClose}
+            hitSlop={{
+              top: 44,
+              right: 44,
+              bottom: 44,
+              left: 44,
+            }}
+          >
             <Text type="link" bold>
               Close
             </Text>

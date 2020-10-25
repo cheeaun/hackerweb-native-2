@@ -162,6 +162,12 @@ export default function CommentsScreen({ route, navigation }) {
                   paddingHorizontal: 30,
                   backgroundColor: colors.opaqueBackground3,
                 }}
+                hitSlop={{
+                  top: 44,
+                  right: 44,
+                  bottom: 44,
+                  left: 44,
+                }}
               >
                 <Text type="link" bold>
                   Close thread
@@ -198,6 +204,12 @@ export default function CommentsScreen({ route, navigation }) {
         navigation.pop();
       }}
       style={{ paddingHorizontal: 15 }}
+      hitSlop={{
+        top: 44,
+        right: 44,
+        bottom: 44,
+        left: 44,
+      }}
     >
       <Text type="link" bold>
         Done

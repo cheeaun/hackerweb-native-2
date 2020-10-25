@@ -3,13 +3,13 @@ import {
   FlatList,
   LayoutAnimation,
   StyleSheet,
-  TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useAppState } from '@react-native-community/hooks';
 import * as Updates from 'expo-updates';
 
+import TouchableOpacity from '../components/TouchableOpacity';
 import StoryItem from '../components/StoryItem';
 import Separator from '../components/Separator';
 import ListEmpty from '../components/ListEmpty';
@@ -35,6 +35,12 @@ export default function StoriesScreen({ navigation }) {
         <TouchableOpacity
           onPress={() => {
             navigation.push('Settings');
+          }}
+          hitSlop={{
+            top: 44,
+            right: 44,
+            bottom: 44,
+            left: 44,
           }}
         >
           <GearIcon width={20} height={20} color={colors.blue} />
