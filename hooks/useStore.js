@@ -23,6 +23,7 @@ const STORIES_TTL = 10 * 60 * 1000; // 10 mins
 
 function setItem(key, val, ttl) {
   if (!key || !val) return;
+  console.log(`💾 SET ${key} ${ttl}`);
   return AsyncStorage.setItem(
     key,
     JSON.stringify({
@@ -34,6 +35,7 @@ function setItem(key, val, ttl) {
 
 async function updateItem(key, val) {
   if (!key || !val) return;
+  console.log(`💾 UPDATE ${key}`);
   const json = await AsyncStorage.getItem(key);
   if (json) {
     const { expire } = JSON.parse(json);
@@ -51,10 +53,12 @@ async function updateItem(key, val) {
 
 async function getItem(key) {
   if (!key) return;
+  console.log(`💾 GET ${key}`);
   const json = await AsyncStorage.getItem(key);
   if (json) {
     const { data, expire } = JSON.parse(json);
     if (expire && expire <= Date.now()) {
+      console.log(`💾 REMOVE ${key}`);
       AsyncStorage.removeItem(key);
       return null;
     } else {
@@ -76,12 +80,19 @@ async function isExpired(key) {
 
 const useStore = create((set, get) => ({
   lastBackgroundTime: null,
-  setLastBackgroundTime: (lastBackgroundTime) => set({ lastBackgroundTime }),
+  setLastBackgroundTime: (lastBackgroundTime) => {
+    console.log(`🥞 setLastBackgroundTime ${lastBackgroundTime}`);
+    set({ lastBackgroundTime });
+  },
   updateIsAvailable: false,
-  setUpdateIsAvailable: (updateIsAvailable) => set({ updateIsAvailable }),
+  setUpdateIsAvailable: (updateIsAvailable) => {
+    console.log(`🥞 setUpdateIsAvailable ${updateIsAvailable}`);
+    set({ updateIsAvailable });
+  },
   stories: [],
   clearStories: () => set({ stories: [] }),
   fetchStories: async () => {
+    console.log(`🥞 fetchStories`);
     let stories = await getItem('stories');
     if (stories) {
       if (get().stories.length) return;
@@ -98,6 +109,7 @@ const useStore = create((set, get) => ({
   },
   isStoriesExpired: async () => await isExpired('stories'),
   fetchStory: async (id) => {
+    console.log(`🥞 fetchStory ${id}`);
     const { stories } = get();
     const index = stories.findIndex((s) => s.id === id);
     let story = stories[index];
@@ -110,9 +122,13 @@ const useStore = create((set, get) => ({
     }
   },
   currentOP: null,
-  setCurrentOP: (currentOP) => set({ currentOP }),
+  setCurrentOP: (currentOP) => {
+    console.log(`🥞 setCurrentOP ${currentOP}`);
+    set({ currentOP });
+  },
   links: [],
   initLinks: async () => {
+    console.log(`🥞 initLinks`);
     let links = await getItem('links');
     if (links) set({ links });
   },
@@ -121,6 +137,7 @@ const useStore = create((set, get) => ({
     return links.indexOf(link) !== -1;
   },
   addLink: (link) => {
+    console.log(`🥞 addLink ${link}`);
     let { links } = get();
     const index = links.indexOf(link);
     if (index === -1) {
@@ -136,6 +153,7 @@ const useStore = create((set, get) => ({
   },
   userInfo: new Map(),
   setUserInfo: (user, info) => {
+    console.log(`🥞 setUserInfo ${user}`);
     const { userInfo } = get();
     userInfo.set(user, info);
     set({ userInfo });
