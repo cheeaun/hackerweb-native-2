@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   View,
   FlatList,
@@ -26,6 +26,7 @@ import OuterSpacer from '../components/OuterSpacer';
 import useTheme from '../hooks/useTheme';
 
 import getCommentsMetadata from '../utils/getCommentsMetadata';
+import repliesCount2MaxWeight from '../utils/repliesCount2MaxWeight';
 
 const HEADER_HEIGHT = 56;
 
@@ -116,22 +117,35 @@ export default function CommentsScreen({ route, navigation }) {
     [windowHeight, content],
   );
 
-  const renderItem = ({ item }) => (
-    <CommentContainer item={item} maxWeight={15} />
+  const renderItem = useCallback(
+    ({ item }) => (
+      <CommentContainer
+        item={item}
+        maxWeight={repliesCount2MaxWeight(repliesCount)}
+      />
+    ),
+    [repliesCount],
   );
+
+  const keyExtractor = useCallback((item) => '' + item.id, []);
 
   function Comments() {
     const [footerHeight, setFooterHeight] = useState(0);
+    const ListFooterComponent = useMemo(
+      () => <View style={{ height: footerHeight }} />,
+      [footerHeight],
+    );
+
     return (
       <>
         <FlatList
           ListHeaderComponent={ListHeaderComponent}
           data={comments}
           renderItem={renderItem}
-          keyExtractor={(item) => '' + item.id}
+          keyExtractor={keyExtractor}
           ItemSeparatorComponent={Separator}
           contentInsetAdjustmentBehavior="automatic"
-          ListFooterComponent={() => <View style={{ height: footerHeight }} />}
+          ListFooterComponent={ListFooterComponent}
         />
         <View
           style={{

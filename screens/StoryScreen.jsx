@@ -27,6 +27,7 @@ import OuterSpacer from '../components/OuterSpacer';
 
 import openBrowser from '../utils/openBrowser';
 import openShare from '../utils/openShare';
+import repliesCount2MaxWeight from '../utils/repliesCount2MaxWeight';
 
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
@@ -47,8 +48,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 });
-
-const renderItem = ({ item }) => <CommentContainer item={item} />;
 
 export default function StoryScreen({ route, navigation }) {
   const { colors } = useTheme();
@@ -159,6 +158,7 @@ export default function StoryScreen({ route, navigation }) {
   );
 
   const [headerHeight, setHeaderHeight] = useState(0);
+  const repliesCount = comments.length;
 
   const ListHeaderComponent = useMemo(
     () => (
@@ -226,7 +226,7 @@ export default function StoryScreen({ route, navigation }) {
             <HTMLView html={content} />
           </View>
         )}
-        {comments.length > 0 && (
+        {repliesCount > 0 && (
           <>
             <Separator />
             <OuterSpacer
@@ -253,46 +253,63 @@ export default function StoryScreen({ route, navigation }) {
     [story],
   );
 
+  const renderItem = useCallback(
+    ({ item }) => (
+      <CommentContainer
+        item={item}
+        maxWeight={repliesCount2MaxWeight(repliesCount)}
+      />
+    ),
+    [repliesCount],
+  );
+
+  const ListEmptyComponent = useMemo(
+    () => (
+      <ListEmpty
+        state={
+          storyLoading ? 'loading' : !isJob && !comments.length ? 'nada' : null
+        }
+        nadaText="No comments yet."
+      />
+    ),
+    [storyLoading, isJob, comments.length],
+  );
+
+  const keyExtractor = useCallback((item) => '' + item.id, []);
+
   const scrolledDown = useRef(false);
+  const onScroll = useCallback(
+    (e) => {
+      const { y } = e.nativeEvent.contentOffset;
+      const scrolled = y + 44 > 16;
+      if (scrolled && scrolled === scrolledDown.current) return;
+      scrolledDown.current = scrolled;
+      navigation.setOptions({
+        title: scrolled ? title : '',
+        headerHideShadow: !scrolled,
+        headerStyle: scrolled
+          ? {
+              backgroundColor: colors.opaqueHeader,
+              blurEffect: 'prominent',
+            }
+          : {
+              backgroundColor: colors.background,
+            },
+      });
+    },
+    [title],
+  );
 
   return (
     <FlatList
       ListHeaderComponent={ListHeaderComponent}
       data={comments}
       renderItem={renderItem}
-      ListEmptyComponent={() => (
-        <ListEmpty
-          state={
-            storyLoading
-              ? 'loading'
-              : !isJob && !comments.length
-              ? 'nada'
-              : null
-          }
-          nadaText="No comments yet."
-        />
-      )}
-      keyExtractor={(item) => '' + item.id}
+      ListEmptyComponent={ListEmptyComponent}
+      keyExtractor={keyExtractor}
       ItemSeparatorComponent={Separator}
       contentInsetAdjustmentBehavior="automatic"
-      onScroll={(e) => {
-        const { y } = e.nativeEvent.contentOffset;
-        const scrolled = y + 44 > 16;
-        if (scrolled && scrolled === scrolledDown.current) return;
-        scrolledDown.current = scrolled;
-        navigation.setOptions({
-          title: scrolled ? title : '',
-          headerHideShadow: !scrolled,
-          headerStyle: scrolled
-            ? {
-                backgroundColor: colors.opaqueHeader,
-                blurEffect: 'prominent',
-              }
-            : {
-                backgroundColor: colors.background,
-              },
-        });
-      }}
+      onScroll={onScroll}
       scrollIndicatorInsets={{
         top: headerHeight,
         right: 0,
