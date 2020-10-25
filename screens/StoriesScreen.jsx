@@ -50,13 +50,13 @@ export default function StoriesScreen({ navigation }) {
   }, []);
 
   const lastBackgroundTime = useStore((state) => state.lastBackgroundTime);
-  const backgroundedDuration = new Date() - lastBackgroundTime;
   const backgroundedTooLong =
-    !!lastBackgroundTime && backgroundedDuration > BACKGROUND_BUFFER;
+    !!lastBackgroundTime && new Date() - lastBackgroundTime > BACKGROUND_BUFFER;
   useEffect(() => {
-    console.log(
-      `🎢 Backgrounded for ${Math.floor(backgroundedDuration / 1000 / 60)}m`,
-    );
+    if (lastBackgroundTime)
+      console.log(
+        `🎢 Backgrounded since ${lastBackgroundTime.toLocaleString()}`,
+      );
   }, [+lastBackgroundTime]);
 
   const stories = useStore((state) => state.stories);
@@ -95,7 +95,7 @@ export default function StoriesScreen({ navigation }) {
           onFetchStories();
         }
       }
-    }, [updateIsAvailable, lastBackgroundTime]),
+    }, [updateIsAvailable, backgroundedTooLong]),
     [currentAppState],
   );
 
