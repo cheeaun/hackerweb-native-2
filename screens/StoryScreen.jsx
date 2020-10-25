@@ -91,7 +91,9 @@ export default function StoryScreen({ route, navigation }) {
   const addLink = useStore((state) => state.addLink);
 
   const setCurrentOP = useStore((state) => state.setCurrentOP);
-  setCurrentOP(story.user);
+  useEffect(() => {
+    setCurrentOP(story.user);
+  }, [story.user]);
 
   const externalLink = !/^item/i.test(url);
   const isJob = type === 'job';
