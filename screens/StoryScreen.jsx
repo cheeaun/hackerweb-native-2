@@ -62,6 +62,9 @@ export default function StoryScreen({ route, navigation }) {
   const [storyLoading, setStoryLoading] = useState(false);
   useFocusEffect(
     useCallback(() => {
+      // Fortunately this `comments` key can be used to indicate
+      // if this story's comments are already fetched
+      if (story.comments?.length) return;
       let ignore = false;
       setStoryLoading(true);
       fetchStory(id).finally(() => {
@@ -72,7 +75,7 @@ export default function StoryScreen({ route, navigation }) {
       return () => {
         ignore = true;
       };
-    }, []),
+    }, [story.comments]),
   );
 
   const {
