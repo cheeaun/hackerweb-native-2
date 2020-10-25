@@ -21,7 +21,9 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const initLinks = useStore((state) => state.initLinks);
-  initLinks();
+  useEffect(() => {
+    initLinks();
+  }, []);
 
   const setUpdateIsAvailable = useStore((state) => state.setUpdateIsAvailable);
   const setLastBackgroundTime = useStore(
