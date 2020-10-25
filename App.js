@@ -103,6 +103,9 @@ export default function App() {
             component={CommentsScreen}
             options={{
               stackPresentation: 'modal',
+              contentStyle: {
+                backgroundColor: colors.modalBackground,
+              },
             }}
           />
           <Stack.Screen
@@ -121,6 +124,9 @@ export default function App() {
             component={SettingsScreen}
             options={{
               stackPresentation: 'modal',
+              contentStyle: {
+                backgroundColor: colors.background2,
+              },
             }}
           />
         </Stack.Navigator>

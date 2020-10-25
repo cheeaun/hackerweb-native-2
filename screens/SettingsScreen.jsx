@@ -64,12 +64,7 @@ export default function SettingsScreen({ navigation }) {
 
   function Settings() {
     return (
-      <View
-        style={{
-          backgroundColor: colors.background2,
-          flexGrow: 1,
-        }}
-      >
+      <>
         <OuterSpacer />
         <Separator />
         <ListItem>
@@ -170,7 +165,7 @@ export default function SettingsScreen({ navigation }) {
             </Text>
           )}
         </OuterSpacer>
-      </View>
+      </>
     );
   }
 
@@ -196,18 +191,19 @@ export default function SettingsScreen({ navigation }) {
   return (
     <>
       {!isDark && <StatusBar style="inverted" animated />}
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Settings"
-          component={Settings}
-          options={{
-            headerRight,
-            headerStyle: {
-              height: 56,
-              backgroundColor: colors.background,
-            },
-          }}
-        />
+      <Stack.Navigator
+        screenOptions={{
+          cardStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerRight,
+          headerStyle: {
+            height: 56,
+            backgroundColor: colors.background,
+          },
+        }}
+      >
+        <Stack.Screen name="Settings" component={Settings} />
       </Stack.Navigator>
     </>
   );

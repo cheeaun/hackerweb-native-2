@@ -220,21 +220,22 @@ export default function CommentsScreen({ route, navigation }) {
   return (
     <>
       {!isDark && <StatusBar style="inverted" animated />}
-      <Stack.Navigator>
-        <Stack.Screen
-          name={title}
-          component={Comments}
-          options={{
-            headerTitle,
-            headerTitleAlign: 'left',
-            headerRight,
-            headerStyle: {
-              backgroundColor: 'transparent',
-              shadowOpacity: 0,
-              height: HEADER_HEIGHT,
-            },
-          }}
-        />
+      <Stack.Navigator
+        screenOptions={{
+          cardStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerTitle,
+          headerTitleAlign: 'left',
+          headerRight,
+          headerStyle: {
+            backgroundColor: 'transparent',
+            shadowOpacity: 0,
+            height: HEADER_HEIGHT,
+          },
+        }}
+      >
+        <Stack.Screen name={title} component={Comments} />
       </Stack.Navigator>
     </>
   );
