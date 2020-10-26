@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { LayoutAnimation } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { enableScreens } from 'react-native-screens';
 import { NavigationContainer } from '@react-navigation/native';
@@ -16,6 +17,8 @@ import SettingsScreen from './screens/SettingsScreen';
 import useStore from './hooks/useStore';
 import useTheme from './hooks/useTheme';
 
+const BACKGROUND_BUFFER = 15 * 60 * 1000; // 15min
+
 enableScreens();
 const Stack = createNativeStackNavigator();
 
@@ -25,30 +28,60 @@ export default function App() {
     initLinks();
   }, []);
 
+  const navigationRef = useRef(null);
   const setUpdateIsAvailable = useStore((state) => state.setUpdateIsAvailable);
   const setLastBackgroundTime = useStore(
     (state) => state.setLastBackgroundTime,
   );
   const currentAppState = useAppState();
+  const updateIsAvailable = useStore((state) => state.updateIsAvailable);
+  const lastBackgroundTime = useStore((state) => state.lastBackgroundTime);
+  const backgroundedTooLong =
+    !!lastBackgroundTime && new Date() - lastBackgroundTime > BACKGROUND_BUFFER;
+
+  const [reloadKey, setReloadKey] = useState('');
+  const reload = useCallback(() => {
+    const key = '' + Math.random();
+    console.log(`✨ Reload Navigator ${key}`);
+    setReloadKey(key);
+  }, []);
+
   useEffect(() => {
-    if (currentAppState === 'active') {
-      Updates.checkForUpdateAsync()
-        .then(({ isAvailable }) => {
-          if (isAvailable) {
-            Updates.fetchUpdateAsync()
-              .then(({ isNew }) => {
-                if (isNew) {
-                  setUpdateIsAvailable(true);
-                }
-              })
-              .catch(() => {}); // Silent fail
-          }
-        })
-        .catch(() => {}); // Silent fail
+    console.log(`🏃 App Active: ${currentAppState === 'active'}`);
+    if (currentAppState === 'active' && backgroundedTooLong) {
+      // First, check for updates
+      if (!updateIsAvailable) {
+        console.log(`🆙 Check for updates`);
+        Updates.checkForUpdateAsync()
+          .then(({ isAvailable }) => {
+            if (isAvailable) {
+              Updates.fetchUpdateAsync()
+                .then(({ isNew }) => {
+                  if (isNew) {
+                    setUpdateIsAvailable(true);
+                  }
+                })
+                .catch(() => {}); // Silent fail
+            }
+          })
+          .catch(() => {}); // Silent fail
+      }
+
+      // Second, reload whole app if there's update
+      const currentRoute = navigationRef.current?.getCurrentRoute();
+      if (currentRoute.name === 'Home') {
+        console.log(`💫 Reload, updateIsAvailable: ${updateIsAvailable}`);
+        if (updateIsAvailable) {
+          Updates.reloadAsync();
+        } else {
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          reload();
+        }
+      }
     } else {
       setLastBackgroundTime(new Date());
     }
-  }, [currentAppState]);
+  }, [currentAppState === 'active']);
 
   const { isDark, colors } = useTheme();
 
@@ -67,12 +100,13 @@ export default function App() {
   return (
     <>
       <StatusBar style="auto" animated />
-      <NavigationContainer theme={theme}>
+      <NavigationContainer theme={theme} key={reloadKey} ref={navigationRef}>
         <Stack.Navigator>
           <Stack.Screen
-            name={Constants.manifest.name}
+            name="Home"
             component={StoriesScreen}
             options={{
+              title: Constants.manifest.name,
               headerLargeTitleHideShadow: true,
               headerLargeTitle: true,
               headerLargeStyle: {

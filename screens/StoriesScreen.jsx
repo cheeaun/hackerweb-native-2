@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   FlatList,
   LayoutAnimation,
@@ -6,8 +6,6 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { useAppState } from '@react-native-community/hooks';
-import * as Updates from 'expo-updates';
 
 import TouchableOpacity from '../components/TouchableOpacity';
 import StoryItem from '../components/StoryItem';
@@ -23,8 +21,6 @@ import GearIcon from '../assets/gearshape.svg';
 const ItemSeparatorComponent = () => (
   <Separator style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }} />
 );
-
-const BACKGROUND_BUFFER = 15 * 60 * 1000; // 15min
 
 export default function StoriesScreen({ navigation }) {
   const { colors } = useTheme();
@@ -49,22 +45,13 @@ export default function StoriesScreen({ navigation }) {
     });
   }, []);
 
-  const lastBackgroundTime = useStore((state) => state.lastBackgroundTime);
-  const backgroundedTooLong =
-    !!lastBackgroundTime && new Date() - lastBackgroundTime > BACKGROUND_BUFFER;
-  useEffect(() => {
-    if (lastBackgroundTime)
-      console.log(
-        `🎢 Backgrounded since ${lastBackgroundTime.toLocaleString()}`,
-      );
-  }, [+lastBackgroundTime]);
-
   const stories = useStore((state) => state.stories);
   const isStoriesExpired = useStore((state) => state.isStoriesExpired);
   const fetchStories = useStore((state) => state.fetchStories);
 
   const [storiesLoading, setStoriesLoading] = useState(false);
   const onFetchStories = useCallback(() => {
+    console.log('onFetchStories');
     let ignore = false;
     setStoriesLoading(true);
     fetchStories().finally(() => {
@@ -77,27 +64,26 @@ export default function StoriesScreen({ navigation }) {
       ignore = true;
     };
   }, []);
-  useFocusEffect(() => {
+  const fetchIfExpired = useCallback(() => {
+    console.log('🥏 fetchIfExpired');
     isStoriesExpired()
       .then((expired) => expired && onFetchStories())
       .catch(() => {});
-  });
+  }, []);
 
-  const updateIsAvailable = useStore((state) => state.updateIsAvailable);
-  const currentAppState = useAppState();
-  useEffect(
+  const isMountedRef = useRef(false);
+  useFocusEffect(
     useCallback(() => {
-      if (currentAppState === 'active' && navigation.isFocused()) {
-        // If there's an update, auto reload
-        if (updateIsAvailable && backgroundedTooLong) {
-          Updates.reloadAsync();
-        } else {
-          onFetchStories();
-        }
+      console.log('👀 StoriesScreen is focused');
+      if (isMountedRef.current) {
+        fetchIfExpired();
       }
-    }, [updateIsAvailable, backgroundedTooLong]),
-    [currentAppState],
+    }, []),
   );
+  useEffect(() => {
+    isMountedRef.current = true;
+    return onFetchStories();
+  }, []);
 
   const noStories = !stories.length;
 
