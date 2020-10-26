@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Pressable, StyleSheet, Alert } from 'react-native';
+import { Pressable, StyleSheet, Alert } from 'react-native';
 import Constants from 'expo-constants';
 import * as StoreReview from 'expo-store-review';
 import { StatusBar } from 'expo-status-bar';

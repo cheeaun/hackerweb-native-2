@@ -4,7 +4,6 @@ import {
   FlatList,
   SafeAreaView,
   useWindowDimensions,
-  StyleSheet,
 } from 'react-native';
 import MaskedView from '@react-native-community/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
