@@ -17,7 +17,6 @@ export default () => {
     opaqueHeader: 'rgba(0,0,0,0.002)',
     opaqueBackground: isDark ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.05)',
     opaqueBackground2: isDark ? 'rgba(255,255,255,.1)' : 'rgba(0,0,0,.1)',
-    opaqueBackground3: isDark ? 'rgba(255,255,255,.1)' : 'rgba(0,0,0,.05)',
     secondaryBackground: PlatformColor(
       isDark ? 'tertiarySystemBackground' : 'secondarySystemBackground',
     ),

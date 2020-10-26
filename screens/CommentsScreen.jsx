@@ -174,7 +174,7 @@ export default function CommentsScreen({ route, navigation }) {
                 style={{
                   paddingVertical: 15,
                   paddingHorizontal: 30,
-                  backgroundColor: colors.opaqueBackground3,
+                  backgroundColor: colors.opaqueBackground,
                 }}
                 hitSlop={{
                   top: 44,
