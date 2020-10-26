@@ -311,6 +311,7 @@ export default function StoryScreen({ route, navigation }) {
       ItemSeparatorComponent={Separator}
       contentInsetAdjustmentBehavior="automatic"
       onScroll={onScroll}
+      removeClippedSubviews
       scrollIndicatorInsets={{
         top: headerHeight,
         right: 0,

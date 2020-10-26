@@ -146,6 +146,7 @@ export default function CommentsScreen({ route, navigation }) {
           ItemSeparatorComponent={Separator}
           contentInsetAdjustmentBehavior="automatic"
           ListFooterComponent={ListFooterComponent}
+          removeClippedSubviews
         />
         <View
           style={{
