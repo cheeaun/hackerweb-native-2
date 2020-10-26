@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { LayoutAnimation } from 'react-native';
+import { LayoutAnimation, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { enableScreens } from 'react-native-screens';
 import { NavigationContainer } from '@react-navigation/native';
@@ -98,7 +98,7 @@ export default function App() {
   };
 
   return (
-    <>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <StatusBar style="auto" animated />
       <NavigationContainer theme={theme} key={reloadKey} ref={navigationRef}>
         <Stack.Navigator>
@@ -165,6 +165,6 @@ export default function App() {
           />
         </Stack.Navigator>
       </NavigationContainer>
-    </>
+    </View>
   );
 }
