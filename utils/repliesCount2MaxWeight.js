@@ -1,4 +1,4 @@
-const minReplies = 100;
+const minReplies = 30;
 const repliesRange = minReplies - 3;
 const minWeight = 1;
 const maxWeight = 15;
