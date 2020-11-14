@@ -6,7 +6,7 @@ import useTheme from '../hooks/useTheme';
 const COLORS = {
   default: 'text',
   insignificant: 'secondaryText',
-  link: 'primary',
+  link: 'link',
 };
 
 // https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/typography/

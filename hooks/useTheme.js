@@ -5,6 +5,7 @@ export default () => {
   const isDark = scheme === 'dark';
 
   const colors = {
+    link: PlatformColor('link'),
     primary: PlatformColor('systemBlue'),
     red: PlatformColor('systemRed'),
     background: PlatformColor(

@@ -41,7 +41,7 @@ const nodeStyles = StyleSheet.create({
     fontSize: baseFontSize - 2,
   },
   a: {
-    color: PlatformColor('systemBlue'),
+    color: PlatformColor('link'),
     fontSize: baseFontSize,
   },
   i: {
