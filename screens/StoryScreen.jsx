@@ -4,15 +4,26 @@ import React, {
   useCallback,
   useMemo,
   useRef,
+  useLayoutEffect,
 } from 'react';
 import {
   StyleSheet,
   View,
+  Linking,
   FlatList,
   LayoutAnimation,
   ActionSheetIOS,
+  Animated,
+  SafeAreaView,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { WebView } from 'react-native-webview';
+import SegmentedControl from '@react-native-community/segmented-control';
+import * as Haptics from 'expo-haptics';
+import { URL } from 'react-native-url-polyfill';
+import { BlurView } from 'expo-blur';
+import Constants from 'expo-constants';
+import { StatusBar } from 'expo-status-bar';
 
 import Text from '../components/Text';
 import Separator from '../components/Separator';
@@ -33,6 +44,8 @@ import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
 
 import ShareIcon from '../assets/square.and.arrow.up.svg';
+import BackIcon from '../assets/chevron.backward.svg';
+import MoreIcon from '../assets/ellipsis.circle.svg';
 
 const styles = StyleSheet.create({
   storyInfo: {
@@ -49,10 +62,19 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function StoryScreen({ route, navigation }) {
-  const { colors } = useTheme();
+function parseURL(url) {
+  if (!url) return {};
+  const link = new URL(url);
+  const domain = link.hostname.replace(/^www\./, '');
+  return {
+    domain,
+  };
+}
 
-  const id = route.params;
+export default function StoryScreen({ route, navigation }) {
+  const { isDark, colors } = useTheme();
+
+  const { id, tab } = route.params;
 
   const story = useStore(
     useCallback((state) => state.stories.find((s) => s.id === id) || {}, [id]),
@@ -102,48 +124,76 @@ export default function StoryScreen({ route, navigation }) {
   const isJob = type === 'job';
   const hnURL = `https://news.ycombinator.com/item?id=${id}`;
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          onPress={() => {
-            ActionSheetIOS.showActionSheetWithOptions(
-              {
-                title,
-                options: [
-                  'View web site',
-                  'View on HN web site',
-                  'Share…',
-                  'Cancel',
-                ],
-                cancelButtonIndex: 3,
-              },
-              (index) => {
-                if (index === 0) {
-                  openBrowser(url);
-                } else if (index === 1) {
-                  openBrowser(hnURL);
-                } else if (index === 2) {
-                  openShare({ url: hnURL });
-                }
-              },
-            );
-          }}
-          onLongPress={() => {
-            openShare({ url: hnURL });
-          }}
-          hitSlop={{
-            top: 44,
-            right: 44,
-            bottom: 44,
-            left: 44,
-          }}
-        >
-          <ShareIcon width={20} height={20} color={colors.primary} />
-        </TouchableOpacity>
-      ),
-    });
-  }, [id]);
+  const webHeaderRight = useCallback(
+    () => (
+      <TouchableOpacity
+        onPress={() => {
+          const pageTitle = navState.title || title;
+          const pageURL = navState.url || url;
+          ActionSheetIOS.showActionSheetWithOptions(
+            {
+              title: pageTitle + '\n' + pageURL,
+              options: ['Reload page', 'Open in browser…', 'Share…', 'Cancel'],
+              cancelButtonIndex: 3,
+            },
+            (index) => {
+              if (index === 0) {
+                webViewRef.current?.reload();
+              } else if (index === 1) {
+                Linking.openURL(pageURL);
+              } else if (index === 2) {
+                openShare({ url: pageURL });
+              }
+            },
+          );
+        }}
+        hitSlop={{
+          top: 44,
+          right: 44,
+          bottom: 44,
+          left: 44,
+        }}
+      >
+        <MoreIcon width={20} height={20} color={colors.primary} />
+      </TouchableOpacity>
+    ),
+    [],
+  );
+
+  const commentsHeaderRight = useCallback(
+    () => (
+      <TouchableOpacity
+        onPress={() => {
+          ActionSheetIOS.showActionSheetWithOptions(
+            {
+              title: title + '\n' + hnURL,
+              options: ['View on HN web site', 'Share…', 'Cancel'],
+              cancelButtonIndex: 2,
+            },
+            (index) => {
+              if (index === 0) {
+                openBrowser(hnURL);
+              } else if (index === 1) {
+                openShare({ url: hnURL });
+              }
+            },
+          );
+        }}
+        onLongPress={() => {
+          openShare({ url: hnURL });
+        }}
+        hitSlop={{
+          top: 44,
+          right: 44,
+          bottom: 44,
+          left: 44,
+        }}
+      >
+        <ShareIcon width={20} height={20} color={colors.primary} />
+      </TouchableOpacity>
+    ),
+    [url, hnURL],
+  );
 
   const titleLength = (title || '').length;
   const titleSize =
@@ -158,22 +208,18 @@ export default function StoryScreen({ route, navigation }) {
     [titleSize, title],
   );
 
-  const [headerHeight, setHeaderHeight] = useState(0);
   const repliesCount = comments.length;
 
   const ListHeaderComponent = useMemo(
     () => (
       <>
-        <View
-          style={[styles.storyInfo]}
-          onLayout={({ nativeEvent }) =>
-            setHeaderHeight(nativeEvent.layout.height)
-          }
-        >
+        <View style={[styles.storyInfo]}>
           {externalLink ? (
             <TouchableHighlight
               onPress={() => {
-                openBrowser(url);
+                // openBrowser(url);
+                Haptics.selectionAsync();
+                setTabView('web');
                 addLink(url);
               }}
               onLongPress={() => {
@@ -278,14 +324,37 @@ export default function StoryScreen({ route, navigation }) {
 
   const keyExtractor = useCallback((item) => '' + item.id, []);
 
+  const tabValues = ['Web', 'Comments'];
+  const [tabView, setTabView] = useState(tab);
+  useEffect(() => {
+    setTabView(tab);
+  }, [tab]);
+
+  const [webMounted, setWebMounted] = useState(false);
+  useFocusEffect(
+    useCallback(() => {
+      console.log('focus effect');
+      if (tabView === 'web') setWebMounted(true);
+      return () => setWebMounted(false);
+    }, []),
+  );
+
   const scrolledDown = useRef(false);
+  const commentsNavOptions = useRef({
+    title: '',
+    headerHideShadow: true,
+    headerStyle: {
+      backgroundColor: colors.background,
+    },
+  });
   const onScroll = useCallback(
     (e) => {
+      if (tabView !== 'comments') return;
       const { y } = e.nativeEvent.contentOffset;
       const scrolled = y + 44 > 16;
       if (scrolled && scrolled === scrolledDown.current) return;
       scrolledDown.current = scrolled;
-      navigation.setOptions({
+      const options = {
         title: scrolled ? title : '',
         headerHideShadow: !scrolled,
         headerStyle: scrolled
@@ -296,28 +365,270 @@ export default function StoryScreen({ route, navigation }) {
           : {
               backgroundColor: colors.background,
             },
-      });
+      };
+      navigation.setOptions(options);
+      commentsNavOptions.current = options;
     },
-    [title],
+    [tabView, title],
   );
 
+  const [navState, setNavState] = useState({});
+  useEffect(() => {
+    console.log({ navState });
+    if (tabView === 'web') {
+      navigation.setOptions({
+        title: parseURL(url || navState.url).domain || '',
+      });
+    }
+  }, [url, navState]);
+
+  useLayoutEffect(
+    useCallback(() => {
+      console.log('tabView', { tabView });
+      navigation.setOptions(
+        tabView === 'web'
+          ? {
+              title: parseURL(navState.url).domain || '',
+              headerHideShadow: false,
+              headerStyle: {
+                backgroundColor: colors.opaqueHeader,
+                blurEffect: 'prominent',
+              },
+              headerRight: webHeaderRight,
+            }
+          : {
+              ...commentsNavOptions.current,
+              headerRight: commentsHeaderRight,
+            },
+      );
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      Animated.timing(fadeAnim, {
+        toValue: tabView === 'web' ? 1 : 0,
+        duration: isDark ? 300 : 150,
+        // Slower for dark mode because non-dark-mode web pages can be quite blinding
+        useNativeDriver: true,
+      }).start();
+      if (tabView === 'web') setWebMounted(true);
+    }, [tabView, commentsHeaderRight, isDark]),
+    [tabView],
+  );
+
+  const [toolbarHeight, setToolbarHeight] = useState(0);
+  const [toolbarWidth, setToolbarWidth] = useState(0);
+  const progressAnim = useRef(new Animated.Value(0)).current;
+  const progressOpacityAnim = useRef(new Animated.Value(1)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const webViewRef = useRef(null);
+
   return (
-    <FlatList
-      ListHeaderComponent={ListHeaderComponent}
-      data={comments}
-      renderItem={renderItem}
-      ListEmptyComponent={ListEmptyComponent}
-      keyExtractor={keyExtractor}
-      ItemSeparatorComponent={Separator}
-      contentInsetAdjustmentBehavior="automatic"
-      onScroll={onScroll}
-      removeClippedSubviews
-      scrollIndicatorInsets={{
-        top: headerHeight,
-        right: 0,
-        bottom: 0,
-        left: 0,
-      }}
-    />
+    <>
+      <FlatList
+        pointerEvents={tabView === 'comments' ? 'auto' : 'none'}
+        ListHeaderComponent={ListHeaderComponent}
+        data={comments}
+        renderItem={renderItem}
+        ListEmptyComponent={ListEmptyComponent}
+        keyExtractor={keyExtractor}
+        ItemSeparatorComponent={Separator}
+        contentInsetAdjustmentBehavior="automatic"
+        onScroll={onScroll}
+        removeClippedSubviews
+        scrollIndicatorInsets={{
+          top: 0,
+          right: 0,
+          bottom: toolbarHeight,
+          left: 0,
+        }}
+        ListFooterComponent={() => <View style={{ height: toolbarHeight }} />}
+        // onViewableItemsChanged={useCallback(({ viewableItems }) => {
+        //   const indices = viewableItems.map((item) => item.index);
+        //   console.log({ indices });
+        // }, [])}
+        // viewabilityConfig={{
+        //   itemVisiblePercentThreshold: 50,
+        // }}
+      />
+      {externalLink && (
+        <View
+          pointerEvents="box-none"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+        >
+          <Animated.View
+            pointerEvents={tabView === 'web' ? 'auto' : 'none'}
+            style={{
+              flex: 1,
+              opacity: fadeAnim,
+              transform: [
+                {
+                  scale: fadeAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0.98, 1],
+                  }),
+                },
+              ],
+            }}
+          >
+            {webMounted && (
+              <>
+                {/*
+                  Fix bug for react-native-webview
+                  This is fixed in 10.9.0
+                https://github.com/react-native-webview/react-native-webview/issues/735#issuecomment-692393488
+                */}
+                <StatusBar style="auto" />
+                <WebView
+                  ref={webViewRef}
+                  style={{ backgroundColor: colors.background }}
+                  applicationNameForUserAgent={`${Constants.manifest.name}/${Constants.nativeAppVersion}`}
+                  source={{ uri: url }}
+                  originWhitelist={['*']}
+                  decelerationRate="normal"
+                  allowsInlineMediaPlayback
+                  contentInsetAdjustmentBehavior="automatic"
+                  allowsBackForwardNavigationGestures
+                  renderLoading={() => null}
+                  onNavigationStateChange={(navState) => {
+                    setNavState(navState);
+                  }}
+                  onLoadStart={() => {
+                    progressAnim.setValue(0);
+                    progressOpacityAnim.setValue(1);
+                  }}
+                  onLoadEnd={() => {
+                    progressAnim.setValue(1);
+                    Animated.timing(progressOpacityAnim, {
+                      toValue: 0,
+                      duration: 300,
+                      useNativeDriver: false,
+                    }).start();
+                  }}
+                  onLoadProgress={(e) => {
+                    const { progress, loading } = e.nativeEvent;
+                    console.log({ progress });
+                    Animated.timing(progressAnim, {
+                      toValue: progress,
+                      duration: 1000,
+                      useNativeDriver: false,
+                    }).start();
+                    setNavState({
+                      ...navState,
+                      loading,
+                    });
+                  }}
+                />
+              </>
+            )}
+          </Animated.View>
+          {tabView === 'web' && (
+            <View
+              style={{
+                width: '100%',
+                marginTop: -2,
+              }}
+              pointerEvents="none"
+            >
+              <Animated.View
+                style={{
+                  width: '100%',
+                  backgroundColor: colors.primary,
+                  height: 2,
+                  shadowOpacity: 0.7,
+                  shadowOffset: {
+                    width: 0,
+                    height: 0,
+                  },
+                  shadowColor: colors.primary,
+                  shadowRadius: 2,
+                  transform: [
+                    {
+                      // translateX: 0,
+                      translateX:
+                        0 ||
+                        progressAnim.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [-toolbarWidth, 0],
+                        }),
+                    },
+                  ],
+                  // opacity: 1,
+                  opacity: progressOpacityAnim,
+                }}
+              />
+            </View>
+          )}
+          <Separator />
+          <BlurView intensity={99} tint={isDark ? 'dark' : 'light'}>
+            <SafeAreaView
+              onLayout={(e) => {
+                const { height, width } = e.nativeEvent.layout;
+                // console.log({ height });
+                setToolbarWidth(width);
+                setToolbarHeight(height);
+              }}
+              style={{
+                backgroundColor:
+                  tabView === 'web'
+                    ? colors.secondaryBackground
+                    : 'transparent',
+              }}
+            >
+              <View
+                style={{
+                  paddingVertical: 15,
+                  flexShrink: 0,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+              >
+                <View style={{ width: 60, alignItems: 'center' }}>
+                  {navState.canGoBack && tabView === 'web' && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        webViewRef.current?.goBack();
+                      }}
+                      hitSlop={{
+                        top: 22,
+                        right: 22,
+                        bottom: 22,
+                        left: 22,
+                      }}
+                    >
+                      <BackIcon width={18} height={18} color={colors.primary} />
+                    </TouchableOpacity>
+                  )}
+                </View>
+                <SegmentedControl
+                  style={{ flexGrow: 1 }}
+                  appearance={isDark ? 'dark' : 'light'}
+                  tintColor={colors.primary}
+                  fontStyle={{ fontSize: 16 }}
+                  activeFontStyle={{
+                    fontSize: 16,
+                    color: colors.primaryInvert,
+                  }}
+                  values={tabValues}
+                  selectedIndex={tabValues.findIndex(
+                    (v) => v.toLowerCase() === tabView,
+                  )}
+                  onChange={(e) => {
+                    Haptics.selectionAsync();
+                    const index = e.nativeEvent.selectedSegmentIndex;
+                    const tab = tabValues[index].toLowerCase();
+                    setTabView(tab);
+                  }}
+                />
+                <View style={{ width: 60 }}></View>
+              </View>
+            </SafeAreaView>
+          </BlurView>
+        </View>
+      )}
+    </>
   );
 }

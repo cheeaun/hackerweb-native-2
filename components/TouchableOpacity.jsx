@@ -14,10 +14,10 @@ export default function (props) {
         setPressed(false);
       }}
       style={[
-        style,
         {
           opacity: pressed ? 0.5 : 1,
         },
+        style,
       ]}
     />
   );

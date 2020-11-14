@@ -7,6 +7,7 @@ export default () => {
   const colors = {
     link: PlatformColor('link'),
     primary: PlatformColor('systemBlue'),
+    primaryInvert: PlatformColor('lightText'),
     red: PlatformColor('systemRed'),
     background: PlatformColor(
       isDark ? 'secondarySystemBackground' : 'systemBackground',

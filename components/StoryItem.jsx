@@ -100,9 +100,10 @@ export default function StoryItem({ id, position }) {
       }}
       onPress={() => {
         if (externalLink) {
-          openBrowser(url);
+          // openBrowser(url);
+          navigation.push('Story', { id, tab: 'web' });
         } else {
-          navigation.push('Story', id);
+          navigation.push('Story', { id, tab: 'comments' });
         }
         addLink(url);
       }}
@@ -174,7 +175,7 @@ export default function StoryItem({ id, position }) {
               setPressed2(false);
             }}
             onPress={() => {
-              navigation.push('Story', id);
+              navigation.push('Story', { id, tab: 'comments' });
             }}
             style={[styles.storyComments, pressed2 && { opacity: 0.5 }]}
           >
