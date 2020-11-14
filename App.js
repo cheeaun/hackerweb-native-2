@@ -78,7 +78,7 @@ export default function App() {
           reload();
         }
       }
-    } else {
+    } else if (currentAppState !== 'active') {
       setLastBackgroundTime(new Date());
     }
   }, [currentAppState === 'active']);
