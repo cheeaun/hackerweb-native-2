@@ -24,6 +24,7 @@ import { URL } from 'react-native-url-polyfill';
 import { BlurView } from 'expo-blur';
 import Constants from 'expo-constants';
 import { StatusBar } from 'expo-status-bar';
+import create from 'zustand';
 
 import Text from '../components/Text';
 import Separator from '../components/Separator';
@@ -69,6 +70,14 @@ function parseURL(url) {
   return {
     domain,
   };
+}
+
+const useHeaderRight = create((set) => ({
+  children: null,
+  setChildren: (children) => set({ children }),
+}));
+function HeaderRight() {
+  return useHeaderRight((state) => state.children);
 }
 
 export default function StoryScreen({ route, navigation }) {
@@ -124,7 +133,15 @@ export default function StoryScreen({ route, navigation }) {
   const isJob = type === 'job';
   const hnURL = `https://news.ycombinator.com/item?id=${id}`;
 
-  const webHeaderRight = useCallback(
+  const [navState, setNavState] = useState({});
+  const [toolbarHeight, setToolbarHeight] = useState(0);
+  const [toolbarWidth, setToolbarWidth] = useState(0);
+  const progressAnim = useRef(new Animated.Value(0)).current;
+  const progressOpacityAnim = useRef(new Animated.Value(1)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const webViewRef = useRef(null);
+
+  const webHeaderRight = useMemo(
     () => (
       <TouchableOpacity
         onPress={() => {
@@ -157,10 +174,10 @@ export default function StoryScreen({ route, navigation }) {
         <MoreIcon width={20} height={20} color={colors.primary} />
       </TouchableOpacity>
     ),
-    [],
+    [title, navState.title, url, navState.url, webViewRef.current],
   );
 
-  const commentsHeaderRight = useCallback(
+  const commentsHeaderRight = useMemo(
     () => (
       <TouchableOpacity
         onPress={() => {
@@ -372,12 +389,19 @@ export default function StoryScreen({ route, navigation }) {
     [tabView, title],
   );
 
-  const [navState, setNavState] = useState({});
-  useEffect(() => {
+  const setChildren = useHeaderRight((state) => state.setChildren);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: HeaderRight,
+    });
+  }, []);
+  useLayoutEffect(() => {
     if (tabView === 'web') {
       navigation.setOptions({
         title: parseURL(url || navState.url).domain || '',
       });
+      setChildren(webHeaderRight);
     }
   }, [url, navState]);
 
@@ -392,13 +416,11 @@ export default function StoryScreen({ route, navigation }) {
                 backgroundColor: colors.opaqueHeader,
                 blurEffect: 'prominent',
               },
-              headerRight: webHeaderRight,
             }
-          : {
-              ...commentsNavOptions.current,
-              headerRight: commentsHeaderRight,
-            },
+          : commentsNavOptions.current,
       );
+      setChildren(tabView === 'web' ? webHeaderRight : commentsHeaderRight);
+
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       Animated.timing(fadeAnim, {
         toValue: tabView === 'web' ? 1 : 0,
@@ -406,17 +428,11 @@ export default function StoryScreen({ route, navigation }) {
         // Slower for dark mode because non-dark-mode web pages can be quite blinding
         useNativeDriver: true,
       }).start();
+
       if (tabView === 'web') setWebMounted(true);
     }, [tabView, commentsHeaderRight, isDark]),
     [tabView],
   );
-
-  const [toolbarHeight, setToolbarHeight] = useState(0);
-  const [toolbarWidth, setToolbarWidth] = useState(0);
-  const progressAnim = useRef(new Animated.Value(0)).current;
-  const progressOpacityAnim = useRef(new Animated.Value(1)).current;
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const webViewRef = useRef(null);
 
   return (
     <>
