@@ -374,7 +374,6 @@ export default function StoryScreen({ route, navigation }) {
 
   const [navState, setNavState] = useState({});
   useEffect(() => {
-    console.log({ navState });
     if (tabView === 'web') {
       navigation.setOptions({
         title: parseURL(url || navState.url).domain || '',
@@ -384,7 +383,6 @@ export default function StoryScreen({ route, navigation }) {
 
   useLayoutEffect(
     useCallback(() => {
-      console.log('tabView', { tabView });
       navigation.setOptions(
         tabView === 'web'
           ? {
@@ -510,7 +508,6 @@ export default function StoryScreen({ route, navigation }) {
                   }}
                   onLoadProgress={(e) => {
                     const { progress, loading } = e.nativeEvent;
-                    console.log({ progress });
                     Animated.timing(progressAnim, {
                       toValue: progress,
                       duration: 1000,
