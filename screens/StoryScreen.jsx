@@ -25,7 +25,6 @@ import { URL } from 'react-native-url-polyfill';
 import { BlurView } from 'expo-blur';
 import Constants from 'expo-constants';
 import { StatusBar } from 'expo-status-bar';
-import create from 'zustand';
 
 import Text from '../components/Text';
 import Separator from '../components/Separator';
@@ -71,14 +70,6 @@ function parseURL(url) {
   return {
     domain,
   };
-}
-
-const useHeaderRight = create((set) => ({
-  children: null,
-  setChildren: (children) => set({ children }),
-}));
-function HeaderRight() {
-  return useHeaderRight((state) => state.children);
 }
 
 export default function StoryScreen({ route, navigation }) {
@@ -143,7 +134,7 @@ export default function StoryScreen({ route, navigation }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const webViewRef = useRef(null);
 
-  const webHeaderRight = useMemo(
+  const webHeaderRight = useCallback(
     () => (
       <TouchableOpacity
         onPress={() => {
@@ -179,7 +170,7 @@ export default function StoryScreen({ route, navigation }) {
     [title, navState.title, url, navState.url, webViewRef.current],
   );
 
-  const commentsHeaderRight = useMemo(
+  const commentsHeaderRight = useCallback(
     () => (
       <TouchableOpacity
         onPress={() => {
@@ -435,19 +426,12 @@ export default function StoryScreen({ route, navigation }) {
     [tabView, title],
   );
 
-  const setChildren = useHeaderRight((state) => state.setChildren);
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: HeaderRight,
-    });
-  }, []);
   useLayoutEffect(() => {
     if (tabView === 'web') {
       navigation.setOptions({
         title: parseURL(url || navState.url).domain || '',
+        headerRight: webHeaderRight,
       });
-      setChildren(webHeaderRight);
     }
   }, [url, navState]);
 
@@ -462,10 +446,13 @@ export default function StoryScreen({ route, navigation }) {
                 backgroundColor: colors.opaqueHeader,
                 blurEffect: 'prominent',
               },
+              headerRight: webHeaderRight,
             }
-          : commentsNavOptions.current,
+          : {
+              ...commentsNavOptions.current,
+              headerRight: commentsHeaderRight,
+            },
       );
-      setChildren(tabView === 'web' ? webHeaderRight : commentsHeaderRight);
 
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       Animated.timing(fadeAnim, {
