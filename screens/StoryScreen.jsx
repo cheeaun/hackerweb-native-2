@@ -584,12 +584,6 @@ export default function StoryScreen({ route, navigation }) {
                 setToolbarWidth(width);
                 setToolbarHeight(height);
               }}
-              style={{
-                backgroundColor:
-                  tabView === 'web'
-                    ? colors.secondaryBackground
-                    : 'transparent',
-              }}
             >
               <View
                 style={{
