@@ -117,6 +117,7 @@ export default function StoryScreen({ route, navigation }) {
     comments_count,
     url,
     content,
+    poll,
     comments = [],
     type,
   } = story;
@@ -227,6 +228,11 @@ export default function StoryScreen({ route, navigation }) {
 
   const repliesCount = comments.length;
 
+  let maxPollPoints = 0;
+  if (!!poll) {
+    maxPollPoints = poll.reduce((acc, p) => Math.max(acc, p.points), 0);
+  }
+
   const ListHeaderComponent = useMemo(
     () => (
       <>
@@ -285,9 +291,47 @@ export default function StoryScreen({ route, navigation }) {
             )}
           </View>
         </View>
-        {!!content && (
+        {(!!content || !!poll) && (
           <View style={styles.content}>
             <HTMLView html={content} />
+            {poll.map((p, i) => (
+              <>
+                <View
+                  key={i}
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-end',
+                  }}
+                >
+                  <Text bold size="subhead" style={{ flexShrink: 1 }}>
+                    {p.item}
+                  </Text>
+                  <Text size="subhead" style={{ marginLeft: 15 }}>
+                    {p.points.toLocaleString()} point{p.points === 0 ? '' : 's'}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    backgroundColor: colors.fill,
+                    height: 3,
+                    marginTop: 3,
+                    marginBottom: 8,
+                    borderRadius: 3,
+                    overflow: 'hidden',
+                  }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: colors.primary,
+                      height: 3,
+                      borderRadius: 3,
+                      width: (p.points / maxPollPoints) * 100 + '%',
+                    }}
+                  />
+                </View>
+              </>
+            ))}
           </View>
         )}
         {repliesCount > 0 && (
