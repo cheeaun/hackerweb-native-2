@@ -1,13 +1,15 @@
 import React from 'react';
-import { StyleSheet, View, PlatformColor } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import useTheme from '../hooks/useTheme';
 
 export default function Separator(props) {
-  const { style, vertical, ...otherProps } = props;
+  const { colors } = useTheme();
+  const { style, vertical, opaque, ...otherProps } = props;
   return (
     <View
       style={[
         {
-          backgroundColor: PlatformColor('separator'),
+          backgroundColor: opaque ? colors.opaqueSeparator : colors.separator,
         },
         vertical
           ? {

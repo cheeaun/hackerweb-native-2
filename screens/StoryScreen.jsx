@@ -575,7 +575,7 @@ export default function StoryScreen({ route, navigation }) {
               />
             </View>
           )}
-          <Separator />
+          <Separator opaque style={{ marginTop: -1 }} />
           <BlurView intensity={99} tint={isDark ? 'dark' : 'light'}>
             <SafeAreaView
               onLayout={(e) => {
