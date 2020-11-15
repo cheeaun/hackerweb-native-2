@@ -297,9 +297,8 @@ export default function StoryScreen({ route, navigation }) {
             {!!content && <HTMLView html={content} />}
             {!!poll &&
               poll.map((p, i) => (
-                <>
+                <View key={i}>
                   <View
-                    key={i}
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'space-between',
@@ -333,7 +332,7 @@ export default function StoryScreen({ route, navigation }) {
                       }}
                     />
                   </View>
-                </>
+                </View>
               ))}
           </View>
         )}
