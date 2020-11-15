@@ -15,6 +15,7 @@ import {
   ActionSheetIOS,
   Animated,
   SafeAreaView,
+  ScrollView,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
@@ -582,43 +583,6 @@ export default function StoryScreen({ route, navigation }) {
               </>
             )}
           </Animated.View>
-          {tabView === 'web' && (
-            <View
-              style={{
-                width: '100%',
-                marginTop: -2,
-              }}
-              pointerEvents="none"
-            >
-              <Animated.View
-                style={{
-                  width: '100%',
-                  backgroundColor: colors.primary,
-                  height: 2,
-                  shadowOpacity: 0.7,
-                  shadowOffset: {
-                    width: 0,
-                    height: 0,
-                  },
-                  shadowColor: colors.primary,
-                  shadowRadius: 2,
-                  transform: [
-                    {
-                      // translateX: 0,
-                      translateX:
-                        0 ||
-                        progressAnim.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: [-toolbarWidth, 0],
-                        }),
-                    },
-                  ],
-                  // opacity: 1,
-                  opacity: progressOpacityAnim,
-                }}
-              />
-            </View>
-          )}
           <Separator opaque style={{ marginTop: -1 }} />
           <BlurView intensity={99} tint={isDark ? 'dark' : 'light'}>
             <SafeAreaView
@@ -678,6 +642,54 @@ export default function StoryScreen({ route, navigation }) {
               </View>
             </SafeAreaView>
           </BlurView>
+          {tabView === 'web' && (
+            <ScrollView
+              pointerEvents="none"
+              removeClippedSubviews
+              contentInsetAdjustmentBehavior="automatic"
+              style={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0,
+              }}
+            >
+              <View
+                style={{
+                  width: '100%',
+                }}
+              >
+                <Animated.View
+                  style={{
+                    width: '100%',
+                    backgroundColor: colors.primary,
+                    height: 2,
+                    shadowOpacity: 0.7,
+                    shadowOffset: {
+                      width: 0,
+                      height: 0,
+                    },
+                    shadowColor: colors.primary,
+                    shadowRadius: 2,
+                    transform: [
+                      {
+                        // translateX: 0,
+                        translateX:
+                          0 ||
+                          progressAnim.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [-toolbarWidth, 0],
+                          }),
+                      },
+                    ],
+                    // opacity: 1,
+                    opacity: progressOpacityAnim,
+                  }}
+                />
+              </View>
+            </ScrollView>
+          )}
         </View>
       )}
     </>
