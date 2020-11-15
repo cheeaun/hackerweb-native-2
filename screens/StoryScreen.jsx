@@ -294,45 +294,47 @@ export default function StoryScreen({ route, navigation }) {
         </View>
         {(!!content || !!poll) && (
           <View style={styles.content}>
-            <HTMLView html={content} />
-            {poll.map((p, i) => (
-              <>
-                <View
-                  key={i}
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-end',
-                  }}
-                >
-                  <Text bold size="subhead" style={{ flexShrink: 1 }}>
-                    {p.item}
-                  </Text>
-                  <Text size="subhead" style={{ marginLeft: 15 }}>
-                    {p.points.toLocaleString()} point{p.points === 0 ? '' : 's'}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    backgroundColor: colors.fill,
-                    height: 3,
-                    marginTop: 3,
-                    marginBottom: 8,
-                    borderRadius: 3,
-                    overflow: 'hidden',
-                  }}
-                >
+            {!!content && <HTMLView html={content} />}
+            {!!poll &&
+              poll.map((p, i) => (
+                <>
+                  <View
+                    key={i}
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'flex-end',
+                    }}
+                  >
+                    <Text bold size="subhead" style={{ flexShrink: 1 }}>
+                      {p.item}
+                    </Text>
+                    <Text size="subhead" style={{ marginLeft: 15 }}>
+                      {p.points.toLocaleString()} point
+                      {p.points === 0 ? '' : 's'}
+                    </Text>
+                  </View>
                   <View
                     style={{
-                      backgroundColor: colors.primary,
+                      backgroundColor: colors.fill,
                       height: 3,
+                      marginTop: 3,
+                      marginBottom: 8,
                       borderRadius: 3,
-                      width: (p.points / maxPollPoints) * 100 + '%',
+                      overflow: 'hidden',
                     }}
-                  />
-                </View>
-              </>
-            ))}
+                  >
+                    <View
+                      style={{
+                        backgroundColor: colors.primary,
+                        height: 3,
+                        borderRadius: 3,
+                        width: (p.points / maxPollPoints) * 100 + '%',
+                      }}
+                    />
+                  </View>
+                </>
+              ))}
           </View>
         )}
         {repliesCount > 0 && (
