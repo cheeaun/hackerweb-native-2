@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { StyleSheet, View, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import numbro from 'numbro';
 
 import Text from './Text';
 import PrettyURL from './PrettyURL';
@@ -38,6 +39,7 @@ const styles = StyleSheet.create({
   },
   storyComments: {
     padding: 16,
+    alignItems: 'center',
   },
   // storyDisclosure: {
   //   paddingVertical: 15,
@@ -152,18 +154,16 @@ export default function StoryItem({ id, position }) {
           {!isJob && (
             <View style={styles.storyMetadataWrap}>
               <Text type="insignificant" size="footnote">
-                {points} point{points != 1 && 's'}{' '}
+                {numbro(points).format({
+                  average: true,
+                  totalLength: 2,
+                  trimMantissa: true,
+                })}{' '}
+                point{points != 1 && 's'}{' '}
               </Text>
               <Text type="insignificant" size="footnote">
                 by {user} &middot; <TimeAgo time={datetime} />
-                {comments_count > 0 && <> &middot; </>}
               </Text>
-              {comments_count > 0 && (
-                <Text type="insignificant" size="footnote">
-                  {comments_count.toLocaleString('en-US')} comment
-                  {comments_count != 1 && 's'}
-                </Text>
-              )}
             </View>
           )}
         </View>
@@ -181,6 +181,19 @@ export default function StoryItem({ id, position }) {
             style={[styles.storyComments, pressed2 && { opacity: 0.5 }]}
           >
             <CommentIcon width={18} height={18} color={colors.primary} />
+            {comments_count > 0 && (
+              <Text
+                style={{ marginTop: 8 }}
+                type="insignificant"
+                size="footnote"
+              >
+                {numbro(comments_count).format({
+                  average: true,
+                  totalLength: 2,
+                  trimMantissa: true,
+                })}
+              </Text>
+            )}
           </Pressable>
         )}
       </View>

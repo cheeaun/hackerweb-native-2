@@ -34,6 +34,7 @@
     "expo-web-browser": "~8.5.0",
     "htmlparser2": "~4.1.0",
     "ky": "~0.24.0",
+    "numbro": "^2.3.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.3.tar.gz",
