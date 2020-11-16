@@ -24,7 +24,7 @@ import * as Haptics from 'expo-haptics';
 import { URL } from 'react-native-url-polyfill';
 import { BlurView } from 'expo-blur';
 import Constants from 'expo-constants';
-import { StatusBar } from 'expo-status-bar';
+import { setStatusBarStyle } from 'expo-status-bar';
 
 import Text from '../components/Text';
 import Separator from '../components/Separator';
@@ -522,74 +522,63 @@ export default function StoryScreen({ route, navigation }) {
             }}
           >
             {webMounted && (
-              <>
-                {/*
-                  Fix bug for react-native-webview
-                  This is fixed in 10.9.0
-                https://github.com/react-native-webview/react-native-webview/issues/735#issuecomment-692393488
-                */}
-                <StatusBar style="auto" />
-                <WebView
-                  ref={webViewRef}
-                  style={{ backgroundColor: colors.background }}
-                  applicationNameForUserAgent={`${Constants.manifest.name}/${Constants.nativeAppVersion}`}
-                  source={{ uri: url }}
-                  originWhitelist={[
-                    'http://*',
-                    'https://*',
-                    'data:*',
-                    'about:*',
-                  ]}
-                  decelerationRate="normal"
-                  allowsInlineMediaPlayback
-                  contentInsetAdjustmentBehavior="automatic"
-                  allowsBackForwardNavigationGestures
-                  renderLoading={() => null}
-                  onNavigationStateChange={(navState) => {
-                    setNavState(navState);
-                  }}
-                  onLoadStart={() => {
-                    progressAnim.setValue(0);
-                    progressOpacityAnim.setValue(1);
-                    addLink(url);
-                  }}
-                  onLoadEnd={() => {
-                    Animated.timing(progressAnim, {
-                      toValue: 1,
+              <WebView
+                ref={webViewRef}
+                style={{ backgroundColor: colors.background }}
+                applicationNameForUserAgent={`${Constants.manifest.name}/${Constants.nativeAppVersion}`}
+                source={{ uri: url }}
+                originWhitelist={['http://*', 'https://*', 'data:*', 'about:*']}
+                decelerationRate="normal"
+                allowsInlineMediaPlayback
+                contentInsetAdjustmentBehavior="automatic"
+                allowsBackForwardNavigationGestures
+                renderLoading={() => null}
+                onNavigationStateChange={(navState) => {
+                  setNavState(navState);
+                  // Quick fix: https://github.com/react-native-webview/react-native-webview/issues/735#issuecomment-629073261
+                  setStatusBarStyle(isDark ? 'light' : 'dark');
+                }}
+                onLoadStart={() => {
+                  progressAnim.setValue(0);
+                  progressOpacityAnim.setValue(1);
+                  addLink(url);
+                }}
+                onLoadEnd={() => {
+                  Animated.timing(progressAnim, {
+                    toValue: 1,
+                    duration: 300,
+                    useNativeDriver: false,
+                  }).start(() => {
+                    Animated.timing(progressOpacityAnim, {
+                      toValue: 0,
+                      delay: 100,
                       duration: 300,
                       useNativeDriver: false,
-                    }).start(() => {
+                    }).start();
+                  });
+                }}
+                onLoadProgress={(e) => {
+                  const { progress, loading } = e.nativeEvent;
+                  Animated.timing(progressAnim, {
+                    toValue: progress,
+                    duration: 1000,
+                    useNativeDriver: false,
+                  }).start(() => {
+                    if (progress > 0.99) {
                       Animated.timing(progressOpacityAnim, {
                         toValue: 0,
                         delay: 100,
                         duration: 300,
                         useNativeDriver: false,
                       }).start();
-                    });
-                  }}
-                  onLoadProgress={(e) => {
-                    const { progress, loading } = e.nativeEvent;
-                    Animated.timing(progressAnim, {
-                      toValue: progress,
-                      duration: 1000,
-                      useNativeDriver: false,
-                    }).start(() => {
-                      if (progress > 0.99) {
-                        Animated.timing(progressOpacityAnim, {
-                          toValue: 0,
-                          delay: 100,
-                          duration: 300,
-                          useNativeDriver: false,
-                        }).start();
-                      }
-                    });
-                    setNavState({
-                      ...navState,
-                      loading,
-                    });
-                  }}
-                />
-              </>
+                    }
+                  });
+                  setNavState({
+                    ...navState,
+                    loading,
+                  });
+                }}
+              />
             )}
           </Animated.View>
           <Separator opaque style={{ marginTop: -1 }} />
