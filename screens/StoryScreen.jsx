@@ -561,7 +561,16 @@ export default function StoryScreen({ route, navigation }) {
                       toValue: progress,
                       duration: 1000,
                       useNativeDriver: false,
-                    }).start();
+                    }).start(() => {
+                      if (progress > 0.99) {
+                        Animated.timing(progressOpacityAnim, {
+                          toValue: 0,
+                          delay: 100,
+                          duration: 300,
+                          useNativeDriver: false,
+                        }).start();
+                      }
+                    });
                     setNavState({
                       ...navState,
                       loading,
