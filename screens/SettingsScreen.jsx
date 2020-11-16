@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Pressable, StyleSheet, Alert } from 'react-native';
+import { Pressable, StyleSheet, Alert, View } from 'react-native';
 import Constants from 'expo-constants';
 import * as StoreReview from 'expo-store-review';
 import { StatusBar } from 'expo-status-bar';
@@ -17,6 +17,15 @@ import useTheme from '../hooks/useTheme';
 import useStore from '../hooks/useStore';
 
 import openBrowser from '../utils/openBrowser';
+
+function ListMenu(props) {
+  return (
+    <View
+      {...props}
+      style={{ marginHorizontal: 15, borderRadius: 8, overflow: 'hidden' }}
+    />
+  );
+}
 
 function ListItem({ style = {}, ...props }) {
   const { colors } = useTheme();
@@ -66,11 +75,11 @@ export default function SettingsScreen({ navigation }) {
     return (
       <>
         <OuterSpacer />
-        <Separator />
-        <ListItem>
-          <Text type="insignificant">No settings available yet.</Text>
-        </ListItem>
-        <Separator />
+        <ListMenu>
+          <ListItem>
+            <Text type="insignificant">No settings available yet.</Text>
+          </ListItem>
+        </ListMenu>
         <OuterSpacer size="large">
           <Text
             size="footnote"
@@ -82,47 +91,47 @@ export default function SettingsScreen({ navigation }) {
             About
           </Text>
         </OuterSpacer>
-        <Separator />
-        <ListItem onPress={() => openBrowser('https://twitter.com/cheeaun')}>
-          <Text type="link">Made by @cheeaun</Text>
-        </ListItem>
-        <Separator
-          style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
-        />
-        <ListItem
-          onPress={() =>
-            openBrowser('http://github.com/cheeaun/hackerweb-native-2')
-          }
-        >
-          <Text type="link">Open-sourced on GitHub</Text>
-        </ListItem>
-        <Separator
-          style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
-        />
-        {(canRate || !!STORE_URL) && (
-          <>
-            <ListItem
-              onPress={() => {
-                if (canRate) {
-                  StoreReview.requestReview();
-                } else if (STORE_URL) {
-                  openBrowser(STORE_URL);
-                }
-              }}
-            >
-              <Text type="link">Rate {Constants.manifest.name}</Text>
-            </ListItem>
-            <Separator
-              style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
-            />
-          </>
-        )}
-        <ListItem
-          onPress={() => openBrowser('https://hackerwebapp.com/privacy.md')}
-        >
-          <Text type="link">Privacy Policy</Text>
-        </ListItem>
-        <Separator />
+        <ListMenu>
+          <ListItem onPress={() => openBrowser('https://twitter.com/cheeaun')}>
+            <Text type="link">Made by @cheeaun</Text>
+          </ListItem>
+          <Separator
+            style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
+          />
+          <ListItem
+            onPress={() =>
+              openBrowser('http://github.com/cheeaun/hackerweb-native-2')
+            }
+          >
+            <Text type="link">Open-sourced on GitHub</Text>
+          </ListItem>
+          <Separator
+            style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
+          />
+          {(canRate || !!STORE_URL) && (
+            <>
+              <ListItem
+                onPress={() => {
+                  if (canRate) {
+                    StoreReview.requestReview();
+                  } else if (STORE_URL) {
+                    openBrowser(STORE_URL);
+                  }
+                }}
+              >
+                <Text type="link">Rate {Constants.manifest.name}</Text>
+              </ListItem>
+              <Separator
+                style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
+              />
+            </>
+          )}
+          <ListItem
+            onPress={() => openBrowser('https://hackerwebapp.com/privacy.md')}
+          >
+            <Text type="link">Privacy Policy</Text>
+          </ListItem>
+        </ListMenu>
         <OuterSpacer size="large" align="top">
           <Text size="footnote" type="insignificant">
             Not affiliated with Hacker News or YCombinator.
