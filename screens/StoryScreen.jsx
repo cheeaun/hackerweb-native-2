@@ -548,12 +548,18 @@ export default function StoryScreen({ route, navigation }) {
                     addLink(url);
                   }}
                   onLoadEnd={() => {
-                    Animated.timing(progressOpacityAnim, {
-                      toValue: 0,
-                      delay: 100,
+                    Animated.timing(progressAnim, {
+                      toValue: 1,
                       duration: 300,
                       useNativeDriver: false,
-                    }).start();
+                    }).start(() => {
+                      Animated.timing(progressOpacityAnim, {
+                        toValue: 0,
+                        delay: 100,
+                        duration: 300,
+                        useNativeDriver: false,
+                      }).start();
+                    });
                   }}
                   onLoadProgress={(e) => {
                     const { progress, loading } = e.nativeEvent;
