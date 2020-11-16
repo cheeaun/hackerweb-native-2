@@ -39,6 +39,7 @@ import OuterSpacer from '../components/OuterSpacer';
 
 import openBrowser from '../utils/openBrowser';
 import openShare from '../utils/openShare';
+import { isHTTPLink } from '../utils/url';
 import repliesCount2MaxWeight from '../utils/repliesCount2MaxWeight';
 
 import useStore from '../hooks/useStore';
@@ -122,7 +123,7 @@ export default function StoryScreen({ route, navigation }) {
     setCurrentOP(story.user);
   }, [story.user]);
 
-  const externalLink = !/^item/i.test(url);
+  const httpLink = isHTTPLink(url);
   const isJob = type === 'job';
   const hnURL = `https://news.ycombinator.com/item?id=${id}`;
 
@@ -229,7 +230,7 @@ export default function StoryScreen({ route, navigation }) {
     () => (
       <>
         <View style={[styles.storyInfo]}>
-          {externalLink ? (
+          {httpLink ? (
             <TouchableHighlight
               onPress={() => {
                 // openBrowser(url);
@@ -494,7 +495,7 @@ export default function StoryScreen({ route, navigation }) {
         //   itemVisiblePercentThreshold: 50,
         // }}
       />
-      {externalLink && (
+      {httpLink && (
         <View
           pointerEvents="box-none"
           style={{

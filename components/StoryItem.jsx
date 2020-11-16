@@ -8,6 +8,7 @@ import TimeAgo from './TimeAgo';
 
 import openBrowser from '../utils/openBrowser';
 import openShare from '../utils/openShare';
+import { isHTTPLink } from '../utils/url';
 
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
@@ -78,9 +79,8 @@ export default function StoryItem({ id, position }) {
   const datetime = new Date(time * 1000);
 
   const visited = useStore(useCallback((state) => state.visited(url), [url]));
-  const addLink = useStore((state) => state.addLink);
 
-  const externalLink = !/^item/i.test(url);
+  const httpLink = isHTTPLink(url);
   const isJob = type === 'job';
   const [pressed, setPressed] = useState(false);
   const [pressed2, setPressed2] = useState(false);
@@ -99,16 +99,18 @@ export default function StoryItem({ id, position }) {
         setPressed(false);
       }}
       onPress={() => {
-        if (externalLink) {
-          // openBrowser(url);
-          navigation.push('Story', { id, tab: 'web' });
+        if (httpLink) {
+          if (isJob) {
+            openBrowser(url);
+          } else {
+            navigation.push('Story', { id, tab: 'web' });
+          }
         } else {
           navigation.push('Story', { id, tab: 'comments' });
         }
       }}
       onLongPress={() => {
-        if (!externalLink) return;
-        openShare({ url });
+        if (httpLink) openShare({ url });
       }}
     >
       <View
@@ -127,7 +129,7 @@ export default function StoryItem({ id, position }) {
         <View style={styles.storyInfo}>
           <Text type={visited && 'insignificant'}>{title}</Text>
           {isJob ? (
-            externalLink ? (
+            httpLink ? (
               <Text>
                 <PrettyURL url={url} size="footnote" domainOnly />
                 {isJob && (
@@ -143,7 +145,7 @@ export default function StoryItem({ id, position }) {
               </Text>
             )
           ) : (
-            externalLink && (
+            httpLink && (
               <PrettyURL url={url} size="footnote" numberOfLines={1} />
             )
           )}
@@ -165,7 +167,7 @@ export default function StoryItem({ id, position }) {
             </View>
           )}
         </View>
-        {!isJob && externalLink && (
+        {!isJob && httpLink && (
           <Pressable
             onPressIn={() => {
               setPressed2(true);
