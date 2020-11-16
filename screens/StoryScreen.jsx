@@ -630,54 +630,53 @@ export default function StoryScreen({ route, navigation }) {
               </View>
             </SafeAreaView>
           </BlurView>
-          {tabView === 'web' && (
-            <ScrollView
-              pointerEvents="none"
-              removeClippedSubviews
-              contentInsetAdjustmentBehavior="automatic"
+          <ScrollView
+            pointerEvents="none"
+            removeClippedSubviews
+            contentInsetAdjustmentBehavior="automatic"
+            style={{
+              opacity: tabView === 'web' ? 1 : 0,
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+            }}
+          >
+            <View
               style={{
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                bottom: 0,
-                left: 0,
+                width: '100%',
               }}
             >
-              <View
+              <Animated.View
                 style={{
                   width: '100%',
-                }}
-              >
-                <Animated.View
-                  style={{
-                    width: '100%',
-                    backgroundColor: colors.primary,
-                    height: 2,
-                    shadowOpacity: 0.7,
-                    shadowOffset: {
-                      width: 0,
-                      height: 0,
+                  backgroundColor: colors.primary,
+                  height: 2,
+                  shadowOpacity: 0.7,
+                  shadowOffset: {
+                    width: 0,
+                    height: 0,
+                  },
+                  shadowColor: colors.primary,
+                  shadowRadius: 2,
+                  transform: [
+                    {
+                      // translateX: 0,
+                      translateX:
+                        0 ||
+                        progressAnim.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [-toolbarWidth + 10, 0],
+                        }),
                     },
-                    shadowColor: colors.primary,
-                    shadowRadius: 2,
-                    transform: [
-                      {
-                        // translateX: 0,
-                        translateX:
-                          0 ||
-                          progressAnim.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: [-toolbarWidth, 0],
-                          }),
-                      },
-                    ],
-                    // opacity: 1,
-                    opacity: progressOpacityAnim,
-                  }}
-                />
-              </View>
-            </ScrollView>
-          )}
+                  ],
+                  // opacity: 1,
+                  opacity: progressOpacityAnim,
+                }}
+              />
+            </View>
+          </ScrollView>
         </View>
       )}
     </>
