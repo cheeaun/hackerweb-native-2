@@ -160,7 +160,7 @@ export default function StoryItem({ id, position }) {
               </Text>
               {comments_count > 0 && (
                 <Text type="insignificant" size="footnote">
-                  {comments_count.toLocaleString()} comment
+                  {comments_count.toLocaleString('en-US')} comment
                   {comments_count != 1 && 's'}
                 </Text>
               )}

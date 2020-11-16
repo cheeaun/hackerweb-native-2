@@ -94,7 +94,7 @@ export default function CommentsScreen({ route, navigation }) {
               size="footnote"
               style={{ textTransform: 'uppercase' }}
             >
-              {repliesCount.toLocaleString()}{' '}
+              {repliesCount.toLocaleString('en-US')}{' '}
               {repliesCount != 1 ? 'replies' : 'reply'}
             </Text>
             {countDiffer && (
@@ -104,7 +104,7 @@ export default function CommentsScreen({ route, navigation }) {
                 style={{ textTransform: 'uppercase' }}
               >
                 {' '}
-                &middot; {totalComments.toLocaleString()}{' '}
+                &middot; {totalComments.toLocaleString('en-US')}{' '}
                 {totalComments !== 1 ? 'comments' : 'comment'}
               </Text>
             )}

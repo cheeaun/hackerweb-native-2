@@ -40,12 +40,13 @@ function RepliesCommentsButton({ replies, comments, ...props }) {
     >
       <Text style={{ textAlign: 'center' }}>
         <Text size="subhead" type="link" bold>
-          {replies.toLocaleString()} {replies !== 1 ? 'replies' : 'reply'}
+          {replies.toLocaleString('en-US')}{' '}
+          {replies !== 1 ? 'replies' : 'reply'}
         </Text>
         {countDiffer && (
           <Text size="footnote" type="insignificant">
             {' '}
-            &middot; {comments.toLocaleString()}{' '}
+            &middot; {comments.toLocaleString('en-US')}{' '}
             {comments !== 1 ? 'comments' : 'comment'}
           </Text>
         )}

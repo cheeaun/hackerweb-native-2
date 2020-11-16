@@ -300,7 +300,7 @@ export default function StoryScreen({ route, navigation }) {
                       {p.item}
                     </Text>
                     <Text size="subhead" style={{ marginLeft: 15 }}>
-                      {p.points.toLocaleString()} point
+                      {p.points.toLocaleString('en-US')} point
                       {p.points === 0 ? '' : 's'}
                     </Text>
                   </View>
@@ -342,7 +342,7 @@ export default function StoryScreen({ route, navigation }) {
                 size="footnote"
                 style={{ textTransform: 'uppercase' }}
               >
-                {comments_count.toLocaleString()} comment
+                {comments_count.toLocaleString('en-US')} comment
                 {comments_count != 1 && 's'}
               </Text>
             </OuterSpacer>
