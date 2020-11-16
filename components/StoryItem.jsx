@@ -105,7 +105,6 @@ export default function StoryItem({ id, position }) {
         } else {
           navigation.push('Story', { id, tab: 'comments' });
         }
-        addLink(url);
       }}
       onLongPress={() => {
         if (!externalLink) return;

@@ -235,7 +235,6 @@ export default function StoryScreen({ route, navigation }) {
                 // openBrowser(url);
                 Haptics.selectionAsync();
                 setTabView('web');
-                addLink(url);
               }}
               onLongPress={() => {
                 openShare({ url });
@@ -546,11 +545,12 @@ export default function StoryScreen({ route, navigation }) {
                   onLoadStart={() => {
                     progressAnim.setValue(0);
                     progressOpacityAnim.setValue(1);
+                    addLink(url);
                   }}
                   onLoadEnd={() => {
-                    progressAnim.setValue(1);
                     Animated.timing(progressOpacityAnim, {
                       toValue: 0,
+                      delay: 100,
                       duration: 300,
                       useNativeDriver: false,
                     }).start();
