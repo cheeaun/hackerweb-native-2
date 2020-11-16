@@ -534,7 +534,12 @@ export default function StoryScreen({ route, navigation }) {
                   style={{ backgroundColor: colors.background }}
                   applicationNameForUserAgent={`${Constants.manifest.name}/${Constants.nativeAppVersion}`}
                   source={{ uri: url }}
-                  originWhitelist={['http://*', 'https://*', 'data:*']}
+                  originWhitelist={[
+                    'http://*',
+                    'https://*',
+                    'data:*',
+                    'about:*',
+                  ]}
                   decelerationRate="normal"
                   allowsInlineMediaPlayback
                   contentInsetAdjustmentBehavior="automatic"
