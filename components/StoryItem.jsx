@@ -184,7 +184,7 @@ export default function StoryItem({ id, position }) {
               <Text
                 style={{ marginTop: 8 }}
                 type="insignificant"
-                size="footnote"
+                size={comments_count > 99 ? 'caption1' : 'footnote'}
               >
                 {shortenNumber(comments_count)}
               </Text>
