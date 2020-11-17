@@ -124,7 +124,11 @@ export default function StoryItem({ id, position }) {
         ]}
       >
         <View style={styles.storyPosition}>
-          <Text type="insignificant" style={styles.storyPositionNumber}>
+          <Text
+            type="insignificant"
+            style={styles.storyPositionNumber}
+            allowFontScaling={false}
+          >
             {position}
           </Text>
         </View>
