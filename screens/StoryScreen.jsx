@@ -583,15 +583,14 @@ export default function StoryScreen({ route, navigation }) {
           </Animated.View>
           <Separator opaque style={{ marginTop: -1 }} />
           <BlurView intensity={99} tint={isDark ? 'dark' : 'light'}>
-            <SafeAreaView
-              onLayout={(e) => {
-                const { height, width } = e.nativeEvent.layout;
-                // console.log({ height });
-                setToolbarWidth(width);
-                setToolbarHeight(height);
-              }}
-            >
+            <SafeAreaView>
               <View
+                onLayout={(e) => {
+                  const { height, width } = e.nativeEvent.layout;
+                  // console.log({ height });
+                  setToolbarWidth(width);
+                  setToolbarHeight(height);
+                }}
                 style={{
                   paddingVertical: 15,
                   flexShrink: 0,
