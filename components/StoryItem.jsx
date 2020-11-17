@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { StyleSheet, View, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import numbro from 'numbro';
 
 import Text from './Text';
 import PrettyURL from './PrettyURL';
@@ -10,6 +9,7 @@ import TimeAgo from './TimeAgo';
 import openBrowser from '../utils/openBrowser';
 import openShare from '../utils/openShare';
 import { isHTTPLink } from '../utils/url';
+import shortenNumber from '../utils/shortenNumber';
 
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
@@ -154,12 +154,7 @@ export default function StoryItem({ id, position }) {
           {!isJob && (
             <View style={styles.storyMetadataWrap}>
               <Text type="insignificant" size="footnote">
-                {numbro(points).format({
-                  average: true,
-                  totalLength: 2,
-                  trimMantissa: true,
-                })}{' '}
-                point{points != 1 && 's'}{' '}
+                {shortenNumber(points)} point{points != 1 && 's'}{' '}
               </Text>
               <Text type="insignificant" size="footnote">
                 by {user} &middot; <TimeAgo time={datetime} />
@@ -187,11 +182,7 @@ export default function StoryItem({ id, position }) {
                 type="insignificant"
                 size="footnote"
               >
-                {numbro(comments_count).format({
-                  average: true,
-                  totalLength: 2,
-                  trimMantissa: true,
-                })}
+                {shortenNumber(comments_count)}
               </Text>
             )}
           </Pressable>
