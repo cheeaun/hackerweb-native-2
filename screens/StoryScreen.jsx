@@ -263,7 +263,7 @@ export default function StoryScreen({ route, navigation }) {
             ) : (
               <Text>
                 <Text type="insignificant" size="subhead">
-                  {points} point{points != 1 && 's'}{' '}
+                  {points.toLocaleString('en-US')} point{points != 1 && 's'}{' '}
                 </Text>
                 <Text type="insignificant" size="subhead">
                   by{' '}
