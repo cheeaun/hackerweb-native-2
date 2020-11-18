@@ -9,6 +9,7 @@ function prefixify(kNum, unit) {
 }
 
 function shortenNumber(num) {
+  if (!num) return '';
   // TODO: handle more than a million
   // For reference: k, m, b, t
   if (num >= 1000000) {
@@ -17,7 +18,7 @@ function shortenNumber(num) {
   if (num >= 1000) {
     return prefixify(num / 1000, 'k');
   }
-  return num;
+  return num + '';
 }
 
 export default shortenNumber;
