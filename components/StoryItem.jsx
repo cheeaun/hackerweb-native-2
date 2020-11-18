@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
   storyComments: {
     padding: 16,
-    alignItems: 'center',
+    alignItems: 'flex-end',
   },
   // storyDisclosure: {
   //   paddingVertical: 15,
@@ -91,6 +91,8 @@ export default function StoryItem({ id, position }) {
     console.warn(`Story not found: ${id} (${position})`);
     return null;
   }
+
+  const shortCommentsCount = shortenNumber(comments_count);
 
   return (
     <Pressable
@@ -182,9 +184,13 @@ export default function StoryItem({ id, position }) {
             <CommentIcon width={18} height={18} color={colors.primary} />
             {comments_count > 0 && (
               <Text
-                style={{ marginTop: 8 }}
+                style={{
+                  alignSelf: 'stretch',
+                  marginTop: 8,
+                  textAlign: shortCommentsCount.length > 2 ? 'right' : 'center',
+                }}
                 type="insignificant"
-                size={comments_count > 99 ? 'caption1' : 'footnote'}
+                size={shortCommentsCount.length > 2 ? 'caption2' : 'footnote'}
               >
                 {shortenNumber(comments_count)}
               </Text>
