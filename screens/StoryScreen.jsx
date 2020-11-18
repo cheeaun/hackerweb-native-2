@@ -127,6 +127,13 @@ export default function StoryScreen({ route, navigation }) {
   const isJob = type === 'job';
   const hnURL = `https://news.ycombinator.com/item?id=${id}`;
 
+  useEffect(
+    useCallback(() => {
+      if (!httpLink) addLink(url);
+    }, [httpLink]),
+    [],
+  );
+
   const [navState, setNavState] = useState({});
   const [toolbarHeight, setToolbarHeight] = useState(0);
   const [toolbarWidth, setToolbarWidth] = useState(0);
