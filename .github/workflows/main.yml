@@ -1,7 +1,14 @@
 name: Expo Publish
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - prod
+    paths-ignore:
+      - 'README.md'
+      - 'channel.js'
+      - 'app.json'
+      - '.gitignore'
 
 jobs:
   publish:
@@ -19,5 +26,5 @@ jobs:
           expo-token: ${{ secrets.EXPO_TOKEN }}
           expo-packager: npm
           expo-cache: true
-      - run: npm i
-      - run: expo publish
+      - run: npm ci
+      - run: expo publish --release-channel `node channel.js`
