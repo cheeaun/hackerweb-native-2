@@ -7,6 +7,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
+    "build": "expo build:ios --release-channel `node channel.js`",
     "viz": "npx react-native-bundle-visualizer --expo managed"
   },
   "dependencies": {
