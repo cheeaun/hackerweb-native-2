@@ -58,6 +58,7 @@ const STORE_URL = StoreReview.storeUrl();
 
 export default function SettingsScreen({ navigation }) {
   const { isDark, colors } = useTheme();
+  const { releaseChannel, updateId, reloadAsync } = Updates;
 
   const [canRate, setCanRate] = useState(false);
   useEffect(() => {
@@ -108,7 +109,7 @@ export default function SettingsScreen({ navigation }) {
           <Separator
             style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
           />
-          {(canRate || !!STORE_URL) && (
+          {/production/i.test(releaseChannel) && (canRate || !!STORE_URL) && (
             <>
               <ListItem
                 onPress={() => {
@@ -140,14 +141,14 @@ export default function SettingsScreen({ navigation }) {
             {Constants.manifest.name} {Constants.nativeAppVersion} (
             {Constants.nativeBuildVersion})
           </Text>
-          {Updates.updateId && (
+          {updateId && (
             <Text size="footnote" type="insignificant">
-              Update: {Updates.updateId}
+              Update: {updateId}
             </Text>
           )}
-          {Updates.releaseChannel && (
+          {releaseChannel && (
             <Text size="footnote" type="insignificant">
-              Channel: {Updates.releaseChannel}
+              Channel: {releaseChannel}
             </Text>
           )}
           <Text size="footnote" type="insignificant">
@@ -163,7 +164,7 @@ export default function SettingsScreen({ navigation }) {
                   {
                     text: 'OK',
                     onPress: () => {
-                      Updates.reloadAsync();
+                      reloadAsync();
                     },
                   },
                   { text: 'Cancel', style: 'cancel' },
