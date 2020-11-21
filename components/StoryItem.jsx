@@ -15,6 +15,7 @@ import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
 
 import CommentIcon from '../assets/bubble.left.svg';
+import DisclosureIcon from '../assets/chevron.right.svg';
 
 const styles = StyleSheet.create({
   flex: {
@@ -38,31 +39,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   storyComments: {
-    padding: 16,
+    padding: 15,
     alignItems: 'flex-end',
   },
-  // storyDisclosure: {
-  //   paddingVertical: 15,
-  //   paddingRight: 15,
-  //   paddingLeft: 5,
-  // },
+  storyDisclosure: {
+    padding: 15,
+    paddingLeft: 8,
+  },
   storyMetadataWrap: {
     flexWrap: 'wrap',
     flexDirection: 'row',
     marginTop: 4,
-  },
-  commentIcon: {
-    width: 20,
-    height: 19,
-    marginHorizontal: 2,
-    marginTop: 3,
-    marginBottom: 2,
-  },
-  disclosureIcon: {
-    width: 8,
-    height: 13,
-    marginLeft: 2,
-    marginTop: 1,
   },
 });
 
@@ -196,6 +183,15 @@ export default function StoryItem({ id, position }) {
               </Text>
             )}
           </Pressable>
+        )}
+        {!isJob && !httpLink && (
+          <View style={styles.storyDisclosure}>
+            <DisclosureIcon
+              width={16}
+              height={16}
+              color={colors.secondaryText}
+            />
+          </View>
         )}
       </View>
     </Pressable>
