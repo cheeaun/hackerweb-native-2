@@ -284,7 +284,7 @@ export default function StoryScreen({ route, navigation }) {
                   >
                     {user}
                   </Text>{' '}
-                  &middot; <TimeAgo time={datetime} />
+                  &bull; <TimeAgo time={datetime} />
                 </Text>
               </Text>
             )}

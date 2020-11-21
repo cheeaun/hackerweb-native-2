@@ -133,7 +133,7 @@ export default function Comment(item) {
             )}
             <Text size="subhead" type="insignificant">
               {' '}
-              &middot; <TimeAgo time={datetime} />
+              &bull; <TimeAgo time={datetime} />
             </Text>
           </View>
         )}

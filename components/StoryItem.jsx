@@ -143,7 +143,7 @@ export default function StoryItem({ id, position }) {
                 {isJob && (
                   <Text type="insignificant" size="footnote">
                     {' '}
-                    &middot; <TimeAgo time={datetime} />
+                    &bull; <TimeAgo time={datetime} />
                   </Text>
                 )}
               </Text>
@@ -163,7 +163,7 @@ export default function StoryItem({ id, position }) {
                 {shortenNumber(points)} point{points != 1 && 's'}{' '}
               </Text>
               <Text type="insignificant" size="footnote">
-                by {user} &middot; <TimeAgo time={datetime} />
+                by {user} &bull; <TimeAgo time={datetime} />
               </Text>
             </View>
           )}

@@ -104,7 +104,7 @@ export default function CommentsScreen({ route, navigation }) {
                 style={{ textTransform: 'uppercase' }}
               >
                 {' '}
-                &middot; {totalComments.toLocaleString('en-US')}{' '}
+                &bull; {totalComments.toLocaleString('en-US')}{' '}
                 {totalComments !== 1 ? 'comments' : 'comment'}
               </Text>
             )}
@@ -208,7 +208,7 @@ export default function CommentsScreen({ route, navigation }) {
       </Text>
       <Text type="insignificant">
         {' '}
-        &middot; <TimeAgo time={new Date(item.time * 1000)} />
+        &bull; <TimeAgo time={new Date(item.time * 1000)} />
       </Text>
     </Text>
   );

@@ -46,7 +46,7 @@ function RepliesCommentsButton({ replies, comments, ...props }) {
         {countDiffer && (
           <Text size="footnote" type="insignificant">
             {' '}
-            &middot; {comments.toLocaleString('en-US')}{' '}
+            &bull; {comments.toLocaleString('en-US')}{' '}
             {comments !== 1 ? 'comments' : 'comment'}
           </Text>
         )}
