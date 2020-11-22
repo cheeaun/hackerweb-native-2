@@ -1,14 +1,14 @@
 name: Expo Publish
 on:
   push:
-    branches:
-      - main
-      - prod
+    branches: [main]
     paths-ignore:
       - 'README.md'
       - 'channel.js'
       - 'app.json'
       - '.gitignore'
+      - 'package.json'
+      - 'screenshots/**'
 
 jobs:
   publish:
