@@ -155,8 +155,9 @@ export default function StoryItem({ id, position }) {
             </View>
           )}
         </View>
-        {!isJob && httpLink && (
+        {!isJob && (
           <Pressable
+            disabled={!httpLink}
             onPressIn={() => {
               setPressed2(true);
             }}
@@ -183,15 +184,6 @@ export default function StoryItem({ id, position }) {
               </Text>
             )}
           </Pressable>
-        )}
-        {!isJob && !httpLink && (
-          <View style={styles.storyDisclosure}>
-            <DisclosureIcon
-              width={16}
-              height={16}
-              color={colors.secondaryText}
-            />
-          </View>
         )}
       </View>
     </Pressable>
