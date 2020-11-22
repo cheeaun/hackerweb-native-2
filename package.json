@@ -12,6 +12,7 @@
     "build-prod": "expo build:ios --release-channel production-`npm run current-version --silent`",
     "latest-staging": "expo publish:history -p ios --count 1 -r -c staging-`npm run current-version --silent`",
     "latest-publish-id": "node -e \"console.log($(npm run latest-staging --silent).queryResult[0].publicationId)\"",
+    "publish": "expo publish --release-channel staging-`npm run current-version --silent`",
     "promote-prod": "expo publish:set --publish-id `npm run latest-publish-id --silent` --release-channel production-`npm run current-version --silent`",
     "viz": "npx react-native-bundle-visualizer --expo managed"
   },

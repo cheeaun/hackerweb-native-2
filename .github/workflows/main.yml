@@ -27,4 +27,4 @@ jobs:
           expo-packager: npm
           expo-cache: true
       - run: npm ci
-      - run: expo publish --release-channel `node channel.js`
+      - run: npm run publish
