@@ -34,7 +34,7 @@ const nodeStyles = StyleSheet.create({
     marginBottom: 12,
   },
   preInner: {
-    paddingVertical: 10,
+    padding: 10,
   },
   code: {
     fontFamily: 'Menlo',
@@ -70,7 +70,7 @@ function dom2elements(nodes, parentName) {
         return (
           <ScrollView
             key={key}
-            horizontal={true}
+            // horizontal={true}
             automaticallyAdjustContentInsets={false}
             scrollsToTop={false}
             style={style}
