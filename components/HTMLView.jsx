@@ -30,7 +30,7 @@ const nodeStyles = StyleSheet.create({
       dark: 'rgba(255,255,255,.05)',
       light: 'rgba(0,0,0,.025)',
     }),
-    borderRadius: 8,
+    borderRadius: 4,
     marginBottom: 12,
   },
   preInner: {
