@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, PlatformColor } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import Svg, { Path } from 'react-native-svg';
 
 import Text from './Text';
 import Button from './Button';
@@ -15,47 +16,111 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   innerComment: {
-    paddingVertical: 8,
     flexDirection: 'row',
-  },
-  commentBar: {
-    width: 3,
-    marginRight: 15,
-    borderRadius: 4,
   },
 });
 
-function RepliesCommentsButton({ replies, comments, ...props }) {
+function RepliesCommentsButton({
+  replies,
+  comments,
+  level = 1,
+  style,
+  suffix,
+  ...props
+}) {
   const { colors } = useTheme();
   const countDiffer = replies !== comments;
   return (
-    <Button
-      style={{
-        backgroundColor: colors.opaqueBackground,
-      }}
-      pressedStyle={{
-        backgroundColor: colors.opaqueBackground2,
-      }}
-      {...props}
-    >
-      <Text style={{ textAlign: 'center' }}>
-        <Text size="subhead" type="link" bold>
-          {replies.toLocaleString('en-US')}{' '}
-          {replies !== 1 ? 'replies' : 'reply'}
-        </Text>
-        {countDiffer && (
-          <Text size="footnote" type="insignificant">
-            {' '}
-            &bull; {comments.toLocaleString('en-US')}{' '}
-            {comments !== 1 ? 'comments' : 'comment'}
+    <View style={styles.innerComment}>
+      <CommentBar level={level} last />
+      <Button
+        style={[
+          {
+            backgroundColor: colors.opaqueBackground,
+            flexGrow: 1,
+          },
+          style,
+        ]}
+        pressedStyle={{
+          backgroundColor: colors.opaqueBackground2,
+        }}
+        {...props}
+      >
+        <Text>
+          <Text size="subhead" type="link" bold>
+            {replies.toLocaleString('en-US')}{' '}
+            {replies !== 1 ? 'replies' : 'reply'}
           </Text>
-        )}
-      </Text>
-    </Button>
+          {countDiffer ? (
+            <Text size="footnote" type="insignificant">
+              {' '}
+              &bull; {comments.toLocaleString('en-US')}{' '}
+              {comments !== 1 ? 'comments' : 'comment'}
+            </Text>
+          ) : (
+            suffix && (
+              <Text size="footnote" type="insignificant">
+                {' '}
+                {suffix}
+              </Text>
+            )
+          )}
+        </Text>
+      </Button>
+    </View>
   );
 }
 
-function InnerCommentContainer({ item, accWeight, maxWeight, level = 1 }) {
+function CommentBar({ level, last = false }) {
+  const color = PlatformColor('systemGray2');
+  return (
+    <View
+      style={{
+        width: 18,
+        position: 'relative',
+      }}
+      pointerEvents="none"
+    >
+      <Svg
+        width="13"
+        height="16"
+        viewBox="0 0 13 16"
+        strokeLinecap="round"
+        color={color}
+        style={{ marginTop: -2 }}
+      >
+        <Path
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          d="M1 1V4C1 8 5 12 9 12H12L9 9M12 12L9 15"
+        />
+      </Svg>
+      {!last && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            bottom: 0,
+            width: 2,
+            backgroundColor: color,
+            borderTopLeftRadius: 3,
+            borderTopRightRadius: 3,
+          }}
+        />
+      )}
+    </View>
+  );
+}
+
+function InnerCommentContainer({
+  item,
+  accWeight,
+  maxWeight,
+  level = 1,
+  last = false,
+}) {
   if (item.deleted && !item.comments.length) return null;
 
   const navigation = useNavigation();
@@ -65,25 +130,18 @@ function InnerCommentContainer({ item, accWeight, maxWeight, level = 1 }) {
     calcCommentsWeight(item.comments) +
     accWeight;
   const nextLevel = level + 1;
+  const commentsLen = item.comments.length;
   return (
     <View style={styles.innerComment} key={item.id}>
-      <View
-        style={[
-          styles.commentBar,
-          {
-            backgroundColor: PlatformColor(
-              `systemGray${level === 1 ? '' : level}`,
-            ),
-          },
-        ]}
-      />
-      <View style={{ flex: 1 }}>
+      <CommentBar level={level} last={last} />
+      <View style={{ flex: 1, marginTop: 2 }}>
         <Comment {...item} />
-        {!!item.comments.length &&
+        {!!commentsLen &&
           (totalWeight < maxWeight && level < 3 ? (
-            item.comments.map((comment) => (
+            item.comments.map((comment, i) => (
               <InnerCommentContainer
                 key={comment.id}
+                last={i === commentsLen - 1}
                 item={comment}
                 accWeight={totalWeight}
                 maxWeight={maxWeight}
@@ -92,8 +150,15 @@ function InnerCommentContainer({ item, accWeight, maxWeight, level = 1 }) {
             ))
           ) : (
             <RepliesCommentsButton
+              level={nextLevel}
+              style={{ marginBottom: 16 }}
               replies={repliesCount}
               comments={totalComments}
+              suffix={
+                item.comments.length === 1 &&
+                item.comments[0].user &&
+                `by ${item.comments[0].user}`
+              }
               onPress={() => {
                 navigation.push('Comments', item);
               }}
@@ -123,13 +188,15 @@ export default function CommentContainer({ item, maxWeight = 5 }) {
   const totalWeight =
     calcCommentsWeight(item.comment) + calcCommentsWeight(item.comments);
 
+  const commentsLen = item.comments.length;
   return (
     <View key={item.id} style={styles.comment}>
       <Comment {...item} />
       {totalWeight < maxWeight ? (
-        item.comments.map((comment) => (
+        item.comments.map((comment, i) => (
           <InnerCommentContainer
             key={comment.id}
+            last={i === commentsLen - 1}
             item={comment}
             accWeight={totalWeight}
             maxWeight={maxWeight}
@@ -139,6 +206,11 @@ export default function CommentContainer({ item, maxWeight = 5 }) {
         <RepliesCommentsButton
           replies={repliesCount}
           comments={totalComments}
+          suffix={
+            item.comments.length === 1 &&
+            item.comments[0].user &&
+            `by ${item.comments[0].user}`
+          }
           onPress={() => {
             navigation.push('Comments', item);
           }}
