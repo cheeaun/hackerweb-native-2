@@ -32,7 +32,7 @@ function RepliesCommentsButton({
   const countDiffer = replies !== comments;
   return (
     <View style={styles.innerComment}>
-      <CommentBar level={level} last />
+      <CommentBar last />
       <Button
         style={[
           {
@@ -71,7 +71,7 @@ function RepliesCommentsButton({
   );
 }
 
-function CommentBar({ level, last = false }) {
+function CommentBar({ last = false }) {
   const color = PlatformColor('systemGray2');
   return (
     <View
@@ -133,7 +133,7 @@ function InnerCommentContainer({
   const commentsLen = item.comments.length;
   return (
     <View style={styles.innerComment} key={item.id}>
-      <CommentBar level={level} last={last} />
+      <CommentBar last={last} />
       <View style={{ flex: 1, marginTop: 2 }}>
         <Comment {...item} />
         {!!commentsLen &&
