@@ -131,7 +131,9 @@ export default function CommentsScreen({ route, navigation }) {
   const renderItem = useCallback(
     ({ item, index }) => (
       <>
-        {(index + 1) % 10 === 0 && <CommentPage page={(index + 1) / 10 + 1} />}
+        {repliesCount >= 15 && (index + 1) % 10 === 0 && (
+          <CommentPage page={(index + 1) / 10 + 1} />
+        )}
         <CommentContainer
           item={item}
           maxWeight={repliesCount2MaxWeight(repliesCount)}
