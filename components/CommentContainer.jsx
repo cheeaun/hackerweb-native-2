@@ -131,18 +131,17 @@ function InnerCommentContainer({
     calcCommentsWeight(item.comments) +
     accWeight;
   const nextLevel = level + 1;
-  const commentsLen = item.comments.length;
   return (
     <View style={styles.innerComment} key={item.id}>
       <CommentBar last={last} />
       <View style={{ flex: 1, marginTop: 2 }}>
         <Comment {...item} />
-        {!!commentsLen &&
+        {!!repliesCount &&
           (totalWeight < maxWeight && level < 3 ? (
             item.comments.map((comment, i) => (
               <InnerCommentContainer
                 key={comment.id}
-                last={i === commentsLen - 1}
+                last={i === repliesCount - 1}
                 item={comment}
                 accWeight={totalWeight}
                 maxWeight={maxWeight}
@@ -156,9 +155,10 @@ function InnerCommentContainer({
               replies={repliesCount}
               comments={totalComments}
               suffix={
-                item.comments.length === 1 &&
                 item.comments[0].user &&
-                `by ${item.comments[0].user}`
+                `by ${item.comments[0].user}${
+                  repliesCount > 1 ? ' & others' : ''
+                }`
               }
               onPress={() => {
                 navigation.push('Comments', item);
@@ -189,34 +189,35 @@ export default function CommentContainer({ item, maxWeight = 5 }) {
   const totalWeight =
     calcCommentsWeight(item.comment) + calcCommentsWeight(item.comments);
 
-  const commentsLen = item.comments.length;
   return (
     <View key={item.id} style={styles.comment}>
       <Comment {...item} />
-      {totalWeight < maxWeight ? (
-        item.comments.map((comment, i) => (
-          <InnerCommentContainer
-            key={comment.id}
-            last={i === commentsLen - 1}
-            item={comment}
-            accWeight={totalWeight}
-            maxWeight={maxWeight}
+      {!!repliesCount &&
+        (totalWeight < maxWeight ? (
+          item.comments.map((comment, i) => (
+            <InnerCommentContainer
+              key={comment.id}
+              last={i === repliesCount - 1}
+              item={comment}
+              accWeight={totalWeight}
+              maxWeight={maxWeight}
+            />
+          ))
+        ) : (
+          <RepliesCommentsButton
+            replies={repliesCount}
+            comments={totalComments}
+            suffix={
+              item.comments[0].user &&
+              `by ${item.comments[0].user}${
+                repliesCount > 1 ? ' & others' : ''
+              }`
+            }
+            onPress={() => {
+              navigation.push('Comments', item);
+            }}
           />
-        ))
-      ) : (
-        <RepliesCommentsButton
-          replies={repliesCount}
-          comments={totalComments}
-          suffix={
-            item.comments.length === 1 &&
-            item.comments[0].user &&
-            `by ${item.comments[0].user}`
-          }
-          onPress={() => {
-            navigation.push('Comments', item);
-          }}
-        />
-      )}
+        ))}
     </View>
   );
 }
