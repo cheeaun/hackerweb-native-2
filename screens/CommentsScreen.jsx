@@ -30,6 +30,7 @@ import Separator from '../components/Separator';
 import TouchableOpacity from '../components/TouchableOpacity';
 import TimeAgo from '../components/TimeAgo';
 import OuterSpacer from '../components/OuterSpacer';
+import CommentPage from '../components/CommentPage';
 
 import useTheme from '../hooks/useTheme';
 
@@ -128,11 +129,14 @@ export default function CommentsScreen({ route, navigation }) {
   );
 
   const renderItem = useCallback(
-    ({ item }) => (
-      <CommentContainer
-        item={item}
-        maxWeight={repliesCount2MaxWeight(repliesCount)}
-      />
+    ({ item, index }) => (
+      <>
+        {(index + 1) % 10 === 0 && <CommentPage page={(index + 1) / 10 + 1} />}
+        <CommentContainer
+          item={item}
+          maxWeight={repliesCount2MaxWeight(repliesCount)}
+        />
+      </>
     ),
     [repliesCount],
   );

@@ -36,6 +36,7 @@ import CommentContainer from '../components/CommentContainer';
 import TimeAgo from '../components/TimeAgo';
 import ListEmpty from '../components/ListEmpty';
 import OuterSpacer from '../components/OuterSpacer';
+import CommentPage from '../components/CommentPage';
 
 import openBrowser from '../utils/openBrowser';
 import openShare from '../utils/openShare';
@@ -362,11 +363,14 @@ export default function StoryScreen({ route, navigation }) {
   );
 
   const renderItem = useCallback(
-    ({ item }) => (
-      <CommentContainer
-        item={item}
-        maxWeight={repliesCount2MaxWeight(repliesCount)}
-      />
+    ({ item, index }) => (
+      <>
+        {(index + 1) % 10 === 0 && <CommentPage page={(index + 1) / 10 + 1} />}
+        <CommentContainer
+          item={item}
+          maxWeight={repliesCount2MaxWeight(repliesCount)}
+        />
+      </>
     ),
     [repliesCount],
   );
