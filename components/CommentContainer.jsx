@@ -38,6 +38,7 @@ function RepliesCommentsButton({
           {
             backgroundColor: colors.opaqueBackground,
             flexGrow: 1,
+            marginRight: 15,
           },
           style,
         ]}
@@ -46,7 +47,7 @@ function RepliesCommentsButton({
         }}
         {...props}
       >
-        <Text>
+        <Text numberOfLines={1}>
           <Text size="subhead" type="link" bold>
             {replies.toLocaleString('en-US')}{' '}
             {replies !== 1 ? 'replies' : 'reply'}
@@ -151,7 +152,7 @@ function InnerCommentContainer({
           ) : (
             <RepliesCommentsButton
               level={nextLevel}
-              style={{ marginBottom: 16 }}
+              style={{ marginBottom: 15 }}
               replies={repliesCount}
               comments={totalComments}
               suffix={
