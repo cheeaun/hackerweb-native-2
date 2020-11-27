@@ -1,15 +1,24 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from 'react';
 import {
   View,
   FlatList,
   SafeAreaView,
   useWindowDimensions,
+  Animated,
 } from 'react-native';
 import MaskedView from '@react-native-community/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import { StatusBar } from 'expo-status-bar';
 import { BlurView } from 'expo-blur';
+
+const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
 
 import { createStackNavigator } from '@react-navigation/stack';
 const Stack = createStackNavigator();
@@ -26,6 +35,8 @@ import useTheme from '../hooks/useTheme';
 
 import getCommentsMetadata from '../utils/getCommentsMetadata';
 import repliesCount2MaxWeight from '../utils/repliesCount2MaxWeight';
+
+import CloseIcon from '../assets/xmark.svg';
 
 const HEADER_HEIGHT = 56;
 
@@ -134,6 +145,14 @@ export default function CommentsScreen({ route, navigation }) {
       () => <View style={{ height: footerHeight }} />,
       [footerHeight],
     );
+    const appearAnim = useRef(new Animated.Value(0)).current;
+    useEffect(() => {
+      Animated.spring(appearAnim, {
+        toValue: 1,
+        delay: 300,
+        useNativeDriver: true,
+      }).start();
+    }, []);
 
     return (
       <>
@@ -159,10 +178,21 @@ export default function CommentsScreen({ route, navigation }) {
             style={{ alignItems: 'center' }}
             pointerEvents="box-none"
           >
-            <BlurView
+            <AnimatedBlurView
               intensity={99}
               tint={isDark ? 'dark' : 'light'}
-              style={{ borderRadius: 25, marginBottom: 15 }}
+              style={{
+                borderRadius: 25,
+                marginVertical: 15,
+                transform: [
+                  {
+                    translateY: appearAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [200, 0],
+                    }),
+                  },
+                ],
+              }}
               onLayout={({ nativeEvent }) =>
                 setFooterHeight(nativeEvent.layout.height)
               }
@@ -173,8 +203,10 @@ export default function CommentsScreen({ route, navigation }) {
                 }}
                 style={{
                   paddingVertical: 15,
-                  paddingHorizontal: 30,
+                  paddingHorizontal: 20,
                   backgroundColor: colors.opaqueBackground,
+                  flexDirection: 'row',
+                  alignItems: 'center',
                 }}
                 hitSlop={{
                   top: 44,
@@ -183,11 +215,17 @@ export default function CommentsScreen({ route, navigation }) {
                   left: 44,
                 }}
               >
+                <CloseIcon
+                  width={11}
+                  height={11}
+                  color={colors.link}
+                  style={{ marginRight: 8 }}
+                />
                 <Text type="link" bold>
                   Close thread
                 </Text>
               </TouchableOpacity>
-            </BlurView>
+            </AnimatedBlurView>
           </SafeAreaView>
         </View>
       </>
