@@ -11,6 +11,7 @@ import {
   SafeAreaView,
   useWindowDimensions,
   Animated,
+  StyleSheet,
 } from 'react-native';
 import MaskedView from '@react-native-community/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -40,6 +41,10 @@ import repliesCount2MaxWeight from '../utils/repliesCount2MaxWeight';
 import CloseIcon from '../assets/xmark.svg';
 
 const HEADER_HEIGHT = 56;
+const HEADER_STYLE = {
+  backgroundColor: 'transparent',
+  height: HEADER_HEIGHT,
+};
 
 export default function CommentsScreen({ route, navigation }) {
   const { isDark, colors } = useTheme();
@@ -64,6 +69,7 @@ export default function CommentsScreen({ route, navigation }) {
   }, []);
 
   const windowHeight = useWindowDimensions().height;
+  const listHeaderHeight = useRef(0);
   const ListHeaderComponent = useMemo(
     () => (
       <View pointerEvents="none">
@@ -89,6 +95,9 @@ export default function CommentsScreen({ route, navigation }) {
               }}
             />
           }
+          onLayout={(e) => {
+            listHeaderHeight.current = e.nativeEvent.layout.height;
+          }}
         >
           <HTMLView html={content} />
         </MaskedView>
@@ -145,7 +154,7 @@ export default function CommentsScreen({ route, navigation }) {
 
   const keyExtractor = useCallback((item) => '' + item.id, []);
 
-  function Comments() {
+  function Comments({ navigation }) {
     const [footerHeight, setFooterHeight] = useState(0);
     const ListFooterComponent = useMemo(
       () => <View style={{ height: footerHeight }} />,
@@ -160,6 +169,20 @@ export default function CommentsScreen({ route, navigation }) {
       }).start();
     }, []);
 
+    const scrolledDown = useRef(false);
+    const onScroll = useCallback((e) => {
+      const { y } = e.nativeEvent.contentOffset;
+      const scrolled = y > listHeaderHeight.current;
+      if (scrolled && scrolled === scrolledDown.current) return;
+      scrolledDown.current = scrolled;
+      navigation.setOptions({
+        headerStyle: {
+          ...HEADER_STYLE,
+          borderBottomWidth: scrolled ? StyleSheet.hairlineWidth : 0,
+        },
+      });
+    }, []);
+
     return (
       <>
         <FlatList
@@ -171,6 +194,7 @@ export default function CommentsScreen({ route, navigation }) {
           contentInsetAdjustmentBehavior="automatic"
           ListFooterComponent={ListFooterComponent}
           removeClippedSubviews
+          onScroll={onScroll}
         />
         <View
           style={{
@@ -286,11 +310,7 @@ export default function CommentsScreen({ route, navigation }) {
           headerTitle,
           headerTitleAlign: 'left',
           headerRight,
-          headerStyle: {
-            backgroundColor: 'transparent',
-            shadowOpacity: 0,
-            height: HEADER_HEIGHT,
-          },
+          headerStyle: HEADER_STYLE,
         }}
       >
         <Stack.Screen name={title} component={Comments} />
