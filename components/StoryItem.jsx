@@ -15,7 +15,6 @@ import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
 
 import CommentIcon from '../assets/bubble.left.svg';
-import DisclosureIcon from '../assets/chevron.right.svg';
 
 const styles = StyleSheet.create({
   flex: {
