@@ -5,6 +5,7 @@ import {
   ScrollView,
   PlatformColor,
   DynamicColorIOS,
+  useWindowDimensions,
 } from 'react-native';
 import { Parser } from 'htmlparser2';
 import { DomHandler } from 'domhandler';
@@ -57,6 +58,23 @@ const onLinkLongPress = (url) => {
   openShare({ url });
 };
 
+function PreView({ children, ...props }) {
+  const windowHeight = useWindowDimensions().height;
+  return (
+    <ScrollView
+      automaticallyAdjustContentInsets={false}
+      scrollsToTop={false}
+      style={[nodeStyles.pre, { maxHeight: windowHeight * 0.5 }]}
+      decelerationRate={0} // Easier to read the code
+      {...props}
+    >
+      <View style={nodeStyles.preInner} onStartShouldSetResponder={() => true}>
+        {children}
+      </View>
+    </ScrollView>
+  );
+}
+
 function dom2elements(nodes, parentName) {
   if (!nodes || !nodes.length) return;
   return nodes.map((node) => {
@@ -67,23 +85,7 @@ function dom2elements(nodes, parentName) {
       var elements = dom2elements(children, name);
       if (!elements) return null;
       if (name == 'pre') {
-        return (
-          <ScrollView
-            key={key}
-            // horizontal={true}
-            automaticallyAdjustContentInsets={false}
-            scrollsToTop={false}
-            style={style}
-            decelerationRate={0} // Easier to read the code
-          >
-            <View
-              style={nodeStyles.preInner}
-              onStartShouldSetResponder={() => true}
-            >
-              {elements}
-            </View>
-          </ScrollView>
-        );
+        return <PreView key={key}>{elements}</PreView>;
       }
       if (name == 'a') {
         const { href } = node.attribs;
