@@ -138,9 +138,11 @@ function processDOM(html, callback) {
     decodeEntities: true,
   });
   // Clean up HTML first
-  if (!/^<p>/i.test(html)) html = '<p>' + html;
-  // Stop <pre> from being wrapped by <p>
-  html = html.replace(/<p>\s*<pre>/gi, '</p><pre>');
+  if (!/^\s*<p>/i.test(html)) html = '<p>' + html;
+  html = html
+    .replace(/^\s*<p>\s*<pre>/i, '<pre>') // Stop <pre> from being wrapped by <p>
+    .replace(/<p>\s*<pre>/gi, '</p><pre>') // Stop <pre> from being wrapped by <p>, part 2
+    .replace(/<pre>\s*<code>/gi, '<pre><code>'); // Spaces between <pre> and <code> makes parser puke
   if (!/<\/pre>\s*<p>/i.test(html)) {
     html = html.replace(/<\/pre>([^<])/gi, '</pre><p>$1');
   }
