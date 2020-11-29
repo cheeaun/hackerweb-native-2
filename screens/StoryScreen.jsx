@@ -631,12 +631,6 @@ export default function StoryScreen({ route, navigation }) {
                 <SegmentedControl
                   style={{ flexGrow: 1 }}
                   appearance={isDark ? 'dark' : 'light'}
-                  tintColor={colors.primary}
-                  fontStyle={{ fontSize: 16 }}
-                  activeFontStyle={{
-                    fontSize: 16,
-                    color: colors.primaryInvert,
-                  }}
                   values={tabValues}
                   selectedIndex={tabValues.findIndex(
                     (v) => v.toLowerCase() === tabView,
