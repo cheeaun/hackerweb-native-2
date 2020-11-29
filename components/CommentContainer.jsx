@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { StyleSheet, View, PlatformColor } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Svg, { Path } from 'react-native-svg';
+import { useFocusEffect } from '@react-navigation/native';
 
 import Text from './Text';
 import Button from './Button';
@@ -26,10 +27,20 @@ function RepliesCommentsButton({
   level = 1,
   style,
   suffix,
+  onPress = () => {},
   ...props
 }) {
   const { colors } = useTheme();
   const countDiffer = replies !== comments;
+  const [pressed, setPressed] = useState(false);
+  useFocusEffect(
+    useCallback(() => {
+      let timer = setTimeout(() => {
+        setPressed(false);
+      }, 300);
+      return () => clearTimeout(timer);
+    }, []),
+  );
   return (
     <View style={styles.innerComment}>
       <CommentBar last />
@@ -40,10 +51,15 @@ function RepliesCommentsButton({
             flexGrow: 1,
             marginRight: 15,
           },
+          pressed && { backgroundColor: colors.opaqueBackground2 },
           style,
         ]}
         pressedStyle={{
           backgroundColor: colors.opaqueBackground2,
+        }}
+        onPress={() => {
+          setPressed(true);
+          onPress();
         }}
         {...props}
       >
