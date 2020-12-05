@@ -6,8 +6,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import TouchableOpacity from '../components/TouchableOpacity';
 import StoryItem from '../components/StoryItem';
 import Separator from '../components/Separator';
 import ListEmpty from '../components/ListEmpty';

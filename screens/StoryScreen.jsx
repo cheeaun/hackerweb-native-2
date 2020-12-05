@@ -25,12 +25,12 @@ import { URL } from 'react-native-url-polyfill';
 import { BlurView } from 'expo-blur';
 import Constants from 'expo-constants';
 import { setStatusBarStyle } from 'expo-status-bar';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import Text from '../components/Text';
 import Separator from '../components/Separator';
 import PrettyURL from '../components/PrettyURL';
 import HTMLView from '../components/HTMLView';
-import TouchableOpacity from '../components/TouchableOpacity';
 import TouchableHighlight from '../components/TouchableHighlight';
 import CommentContainer from '../components/CommentContainer';
 import TimeAgo from '../components/TimeAgo';

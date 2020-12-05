@@ -4,12 +4,12 @@ import Constants from 'expo-constants';
 import * as StoreReview from 'expo-store-review';
 import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { createStackNavigator } from '@react-navigation/stack';
 const Stack = createStackNavigator();
 
 import Text from '../components/Text';
-import TouchableOpacity from '../components/TouchableOpacity';
 import Separator from '../components/Separator';
 import OuterSpacer from '../components/OuterSpacer';
 

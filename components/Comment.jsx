@@ -9,10 +9,10 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import Text from './Text';
 import HTMLView from './HTMLView';
-import TouchableOpacity from './TouchableOpacity';
 import TimeAgo from './TimeAgo';
 
 import useStore from '../hooks/useStore';

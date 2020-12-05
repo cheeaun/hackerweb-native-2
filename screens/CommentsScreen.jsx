@@ -18,6 +18,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import { StatusBar } from 'expo-status-bar';
 import { BlurView } from 'expo-blur';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
 
@@ -28,7 +29,6 @@ import Text from '../components/Text';
 import HTMLView from '../components/HTMLView';
 import CommentContainer from '../components/CommentContainer';
 import Separator from '../components/Separator';
-import TouchableOpacity from '../components/TouchableOpacity';
 import TimeAgo from '../components/TimeAgo';
 import OuterSpacer from '../components/OuterSpacer';
 import CommentPage from '../components/CommentPage';
