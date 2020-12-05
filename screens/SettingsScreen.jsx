@@ -30,6 +30,14 @@ function ListMenu(props) {
 function ListItem({ style = {}, ...props }) {
   const { colors } = useTheme();
   const [pressed, setPressed] = useState(false);
+  const styles = {
+    padding: 15,
+    backgroundColor: colors.background,
+  };
+
+  if (!props.onPress) {
+    return <View style={styles} {...props} />;
+  }
 
   return (
     <Pressable
@@ -40,10 +48,7 @@ function ListItem({ style = {}, ...props }) {
         setPressed(false);
       }}
       style={[
-        {
-          padding: 15,
-          backgroundColor: colors.background,
-        },
+        styles,
         pressed && {
           backgroundColor: colors.secondaryBackground,
         },
