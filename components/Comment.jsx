@@ -116,7 +116,7 @@ export default function Comment(item) {
                 style={[styles.opBox, { backgroundColor: colors.red }]}
                 onPress={() => {
                   Alert.alert(
-                    'What is OP',
+                    'What does OP mean?',
                     'OP is short for Original Poster — the person who posted this story.',
                   );
                 }}
