@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   metadata: {
     flexDirection: 'row',
     marginBottom: 8,
-    flexWrap: 'wrap',
+    alignItems: 'center',
   },
   opBox: {
     paddingVertical: 1,
@@ -103,7 +103,7 @@ export default function Comment(item) {
             <Text
               size="subhead"
               bold
-              style={{ color: colors.red }}
+              style={{ color: colors.red, flexShrink: 1 }}
               numberOfLines={1}
               onPress={() => {
                 navigation.push('User', user);
