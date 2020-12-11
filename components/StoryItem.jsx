@@ -82,6 +82,7 @@ export default function StoryItem({ id, position }) {
 
   return (
     <Pressable
+      unstable_pressDelay={130}
       onPressIn={() => {
         setPressed(true);
       }}
@@ -156,6 +157,7 @@ export default function StoryItem({ id, position }) {
         </View>
         {!isJob && (
           <Pressable
+            unstable_pressDelay={130}
             disabled={!httpLink}
             onPressIn={() => {
               setPressed2(true);

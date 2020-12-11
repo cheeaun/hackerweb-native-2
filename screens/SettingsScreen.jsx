@@ -34,12 +34,10 @@ function ListItem({ style = {}, ...props }) {
     backgroundColor: colors.background,
   };
 
-  if (!props.onPress) {
-    return <View style={styles} {...props} />;
-  }
-
   return (
     <Pressable
+      disabled={!props.onPress || props.disabled}
+      unstable_pressDelay={130}
       onPressIn={() => {
         setPressed(true);
       }}
