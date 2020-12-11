@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Pressable, StyleSheet, Alert, View, ScrollView } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Alert,
+  View,
+  ScrollView,
+  Linking,
+} from 'react-native';
 import Constants from 'expo-constants';
 import * as StoreReview from 'expo-store-review';
 import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import * as MailComposer from 'expo-mail-composer';
+import * as Device from 'expo-device';
 
 import Text from '../components/Text';
 import Separator from '../components/Separator';
@@ -16,6 +25,7 @@ import useStore from '../hooks/useStore';
 import openBrowser from '../utils/openBrowser';
 
 const HEADER_HEIGHT = 56;
+const EMAIL = 'cheeaun+hackerweb@gmail.com';
 
 function ListMenu(props) {
   return (
@@ -73,6 +83,11 @@ export default function SettingsScreen({ navigation }) {
   }, []);
 
   const updateIsAvailable = useStore((state) => state.updateIsAvailable);
+
+  const [canComposeMail, setCanComposeMail] = useState(false);
+  MailComposer.isAvailableAsync().then((isAvailable) => {
+    setCanComposeMail(isAvailable);
+  });
 
   return (
     <>
@@ -168,6 +183,46 @@ export default function SettingsScreen({ navigation }) {
               />
             </>
           )}
+          <ListItem
+            onPress={() => {
+              const subject = `${Constants.manifest.name} feedback`;
+              const body = `
+
+              ---
+              Additional Info (don't remove):
+              ${Constants.manifest.name} ${Constants.nativeAppVersion} (${
+                Constants.nativeBuildVersion
+              })
+              Update: ${updateId || '—'}
+              Channel: ${releaseChannel || '—'}
+              Expo ${Constants.expoVersion}
+              ${Device.modelName} (${Device.osName} ${Device.osVersion})
+              `;
+
+              if (canComposeMail) {
+                MailComposer.composeAsync({
+                  recipients: [EMAIL],
+                  subject,
+                  body: body.replace(/\n/g, '<br>'),
+                  isHtml: true,
+                });
+                // By right, should be isHTML: false, but somehow MailComposer munches all the spaces
+                // and new lines automagically. Thus, this faux HTML hack.
+              } else {
+                // Actually Gmail collapse all new lines and spaces too 😅
+                Linking.openURL(
+                  `mailto:${EMAIL}?subject=${encodeURIComponent(
+                    subject,
+                  )}&body=${encodeURIComponent(body)}`,
+                );
+              }
+            }}
+          >
+            <Text type="link">Share Feedback</Text>
+          </ListItem>
+          <Separator
+            style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
+          />
           <ListItem
             onPress={() => openBrowser('https://hackerwebapp.com/privacy.md')}
           >
