@@ -603,7 +603,7 @@ export default function StoryScreen({ route, navigation }) {
                 const { height, width } = e.nativeEvent.layout;
                 // console.log({ height });
                 setToolbarWidth(width);
-                setToolbarHeight(height);
+                setToolbarHeight(height - insets.bottom);
               }}
               style={{
                 paddingTop: 15,
