@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
-  View,
   FlatList,
   LayoutAnimation,
   StyleSheet,
@@ -97,37 +96,32 @@ export default function StoriesScreen({ navigation }) {
   }, [noStories, storiesLoading]);
 
   return (
-    <>
-      {/* Fix large title stays small on first load */}
-      <View />
-      {/* https://github.com/software-mansion/react-native-screens/issues/649#issuecomment-727290499 */}
-      <FlatList
-        pointerEvents={storiesLoading ? 'none' : 'auto'}
-        contentInsetAdjustmentBehavior="automatic"
-        data={stories}
-        renderItem={({ item, index }) => {
-          return <StoryItem id={item.id} position={index + 1} />;
-        }}
-        keyExtractor={(item) => '' + item.id}
-        ItemSeparatorComponent={ItemSeparatorComponent}
-        ListEmptyComponent={() => (
-          <ListEmpty
-            state={storiesLoading ? 'loading' : noStories ? 'error' : null}
-            errorComponent={() => (
-              <Text
-                onPress={() => {
-                  onFetchStories();
-                }}
-                style={{ textAlign: 'center' }}
-              >
-                Unable to get stories.
-                {'\n'}
-                <Text type="link">Try again?</Text>
-              </Text>
-            )}
-          />
-        )}
-      />
-    </>
+    <FlatList
+      pointerEvents={storiesLoading ? 'none' : 'auto'}
+      contentInsetAdjustmentBehavior="automatic"
+      data={stories}
+      renderItem={({ item, index }) => {
+        return <StoryItem id={item.id} position={index + 1} />;
+      }}
+      keyExtractor={(item) => '' + item.id}
+      ItemSeparatorComponent={ItemSeparatorComponent}
+      ListEmptyComponent={() => (
+        <ListEmpty
+          state={storiesLoading ? 'loading' : noStories ? 'error' : null}
+          errorComponent={() => (
+            <Text
+              onPress={() => {
+                onFetchStories();
+              }}
+              style={{ textAlign: 'center' }}
+            >
+              Unable to get stories.
+              {'\n'}
+              <Text type="link">Try again?</Text>
+            </Text>
+          )}
+        />
+      )}
+    />
   );
 }
