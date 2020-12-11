@@ -5,25 +5,14 @@ import React, {
   useCallback,
   useRef,
 } from 'react';
-import {
-  View,
-  FlatList,
-  SafeAreaView,
-  useWindowDimensions,
-  Animated,
-  StyleSheet,
-} from 'react-native';
+import { View, useWindowDimensions, Animated, StyleSheet } from 'react-native';
 import MaskedView from '@react-native-community/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import { StatusBar } from 'expo-status-bar';
 import { BlurView } from 'expo-blur';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-
-const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
-
-import { createStackNavigator } from '@react-navigation/stack';
-const Stack = createStackNavigator();
+import { TouchableOpacity, FlatList } from 'react-native-gesture-handler';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Text from '../components/Text';
 import HTMLView from '../components/HTMLView';
@@ -41,10 +30,6 @@ import repliesCount2MaxWeight from '../utils/repliesCount2MaxWeight';
 import CloseIcon from '../assets/xmark.svg';
 
 const HEADER_HEIGHT = 56;
-const HEADER_STYLE = {
-  backgroundColor: 'transparent',
-  height: HEADER_HEIGHT,
-};
 
 export default function CommentsScreen({ route, navigation }) {
   const { isDark, colors } = useTheme();
@@ -154,167 +139,157 @@ export default function CommentsScreen({ route, navigation }) {
 
   const keyExtractor = useCallback((item) => '' + item.id, []);
 
-  function Comments({ navigation }) {
-    const [footerHeight, setFooterHeight] = useState(0);
-    const ListFooterComponent = useMemo(
-      () => <View style={{ height: footerHeight }} />,
-      [footerHeight],
-    );
-    const appearAnim = useRef(new Animated.Value(0)).current;
-    useEffect(() => {
-      Animated.spring(appearAnim, {
-        toValue: 1,
-        delay: 300,
-        useNativeDriver: true,
-      }).start();
-    }, []);
+  const footerRef = useRef(null);
+  const ListFooterComponent = useMemo(() => <View ref={footerRef} />, []);
+  const appearAnim = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.spring(appearAnim, {
+      toValue: 1,
+      delay: 300,
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
-    const scrolledDown = useRef(false);
-    const onScroll = useCallback((e) => {
-      const { y } = e.nativeEvent.contentOffset;
-      const scrolled = y > listHeaderHeight.current;
-      if (scrolled && scrolled === scrolledDown.current) return;
-      scrolledDown.current = scrolled;
-      navigation.setOptions({
-        headerStyle: {
-          ...HEADER_STYLE,
-          borderBottomWidth: scrolled ? StyleSheet.hairlineWidth : 0,
-        },
-      });
-    }, []);
-
-    return (
-      <>
-        <FlatList
-          ListHeaderComponent={ListHeaderComponent}
-          data={comments}
-          renderItem={renderItem}
-          keyExtractor={keyExtractor}
-          ItemSeparatorComponent={Separator}
-          contentInsetAdjustmentBehavior="automatic"
-          ListFooterComponent={ListFooterComponent}
-          removeClippedSubviews
-          onScroll={onScroll}
-        />
-        <View
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            width: '100%',
-          }}
-          pointerEvents="box-none"
-        >
-          <SafeAreaView
-            style={{ alignItems: 'center' }}
-            pointerEvents="box-none"
-          >
-            <AnimatedBlurView
-              intensity={99}
-              tint={isDark ? 'dark' : 'light'}
-              style={{
-                borderRadius: 25,
-                marginVertical: 15,
-                transform: [
-                  {
-                    translateY: appearAnim.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [200, 0],
-                    }),
-                  },
-                ],
-              }}
-              onLayout={({ nativeEvent }) =>
-                setFooterHeight(nativeEvent.layout.height)
-              }
-            >
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.pop();
-                }}
-                style={{
-                  paddingVertical: 15,
-                  paddingHorizontal: 20,
-                  backgroundColor: colors.opaqueBackground,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-                hitSlop={{
-                  top: 44,
-                  right: 44,
-                  bottom: 44,
-                  left: 44,
-                }}
-              >
-                <CloseIcon
-                  width={11}
-                  height={11}
-                  color={colors.link}
-                  style={{ marginRight: 8 }}
-                />
-                <Text type="link" bold>
-                  Close thread
-                </Text>
-              </TouchableOpacity>
-            </AnimatedBlurView>
-          </SafeAreaView>
-        </View>
-      </>
-    );
-  }
-
-  const title = `${item.user}`;
-  const headerTitle = () => (
-    <Text numberOfLines={1}>
-      <Text
-        bold
-        style={{ color: colors.red }}
-        onPress={() => {
-          navigation.push('User', item.user);
-        }}
-      >
-        {item.user}
-      </Text>
-      <Text type="insignificant">
-        {' '}
-        &bull; <TimeAgo time={new Date(item.time * 1000)} />
-      </Text>
-    </Text>
+  const headerRef = useRef(null);
+  const headerStyles = useMemo(
+    () => ({
+      height: HEADER_HEIGHT,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      borderBottomColor: 'transparent',
+      borderBottomWidth: StyleSheet.hairlineWidth,
+    }),
+    [],
   );
-  const headerRight = () => (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.pop();
-      }}
-      style={{ paddingHorizontal: 15 }}
-      hitSlop={{
-        top: 44,
-        right: 44,
-        bottom: 44,
-        left: 44,
-      }}
-    >
-      <Text type="link" bold>
-        Done
-      </Text>
-    </TouchableOpacity>
-  );
+  const insets = useSafeAreaInsets();
+  const scrolledDown = useRef(false);
+  const onScroll = useCallback((e) => {
+    const { y } = e.nativeEvent.contentOffset;
+    const scrolled = y >= listHeaderHeight.current;
+    if (scrolled && scrolled === scrolledDown.current) return;
+    scrolledDown.current = scrolled;
+    headerRef.current?.setNativeProps({
+      style: {
+        ...headerStyles,
+        borderBottomColor: scrolled ? colors.separator : 'transparent',
+      },
+    });
+  }, []);
 
   return (
     <>
       {!isDark && <StatusBar style="inverted" animated />}
-      <Stack.Navigator
-        screenOptions={{
-          cardStyle: {
-            backgroundColor: 'transparent',
-          },
-          headerTitle,
-          headerTitleAlign: 'left',
-          headerRight,
-          headerStyle: HEADER_STYLE,
+      <View ref={headerRef} style={headerStyles}>
+        <View style={{ paddingLeft: 15 }}>
+          <Text numberOfLines={1}>
+            <Text
+              bold
+              style={{ color: colors.red }}
+              onPress={() => {
+                navigation.push('User', item.user);
+              }}
+            >
+              {item.user}
+            </Text>
+            <Text type="insignificant">
+              {' '}
+              &bull; <TimeAgo time={new Date(item.time * 1000)} />
+            </Text>
+          </Text>
+        </View>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.pop();
+          }}
+          style={{ paddingHorizontal: 15 }}
+          hitSlop={{
+            top: 44,
+            right: 44,
+            bottom: 44,
+            left: 44,
+          }}
+        >
+          <Text type="link" bold>
+            Done
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <FlatList
+        ListHeaderComponent={ListHeaderComponent}
+        data={comments}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        ItemSeparatorComponent={Separator}
+        contentInsetAdjustmentBehavior="automatic"
+        ListFooterComponent={ListFooterComponent}
+        removeClippedSubviews
+        onScroll={onScroll}
+      />
+      <Animated.View
+        pointerEvents="box-none"
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          width: '100%',
+          alignItems: 'center',
+          marginBottom: insets.bottom + 15,
+          transform: [
+            {
+              translateY: appearAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [200, 0],
+              }),
+            },
+          ],
+          shadowRadius: 5,
+          shadowOpacity: 0.1,
+          shadowOffset: { width: 0, height: 3 },
         }}
       >
-        <Stack.Screen name={title} component={Comments} />
-      </Stack.Navigator>
+        <BlurView
+          intensity={99}
+          tint={isDark ? 'dark' : 'light'}
+          style={{ borderRadius: 25, overflow: 'hidden' }}
+          onLayout={({ nativeEvent }) => {
+            footerRef.current?.setNativeProps({
+              style: {
+                height: nativeEvent.layout.height + 30,
+              },
+            });
+          }}
+        >
+          <TouchableOpacity
+            disallowInterruption
+            onPress={() => {
+              navigation.pop();
+            }}
+            style={{
+              paddingVertical: 15,
+              paddingHorizontal: 20,
+              flexDirection: 'row',
+              alignItems: 'center',
+              backgroundColor: isDark ? colors.opaqueBackground : 'transparent',
+            }}
+            hitSlop={{
+              top: 44,
+              right: 44,
+              bottom: 44,
+              left: 44,
+            }}
+          >
+            <CloseIcon
+              width={11}
+              height={11}
+              color={colors.link}
+              style={{ marginRight: 8 }}
+            />
+            <Text type="link" bold>
+              Close thread
+            </Text>
+          </TouchableOpacity>
+        </BlurView>
+      </Animated.View>
     </>
   );
 }

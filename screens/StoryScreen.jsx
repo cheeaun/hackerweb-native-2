@@ -14,7 +14,6 @@ import {
   LayoutAnimation,
   ActionSheetIOS,
   Animated,
-  SafeAreaView,
   ScrollView,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
@@ -26,6 +25,7 @@ import { BlurView } from 'expo-blur';
 import Constants from 'expo-constants';
 import { setStatusBarStyle } from 'expo-status-bar';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Text from '../components/Text';
 import Separator from '../components/Separator';
@@ -480,6 +480,8 @@ export default function StoryScreen({ route, navigation }) {
     [tabView],
   );
 
+  const insets = useSafeAreaInsets();
+
   return (
     <>
       <FlatList
@@ -596,55 +598,54 @@ export default function StoryScreen({ route, navigation }) {
           </Animated.View>
           <Separator opaque style={{ marginTop: -1 }} />
           <BlurView intensity={99} tint={isDark ? 'dark' : 'light'}>
-            <SafeAreaView>
-              <View
-                onLayout={(e) => {
-                  const { height, width } = e.nativeEvent.layout;
-                  // console.log({ height });
-                  setToolbarWidth(width);
-                  setToolbarHeight(height);
-                }}
-                style={{
-                  paddingVertical: 15,
-                  flexShrink: 0,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-              >
-                <View style={{ width: 60, alignItems: 'center' }}>
-                  {navState.canGoBack && tabView === 'web' && (
-                    <TouchableOpacity
-                      onPress={() => {
-                        webViewRef.current?.goBack();
-                      }}
-                      hitSlop={{
-                        top: 22,
-                        right: 22,
-                        bottom: 22,
-                        left: 22,
-                      }}
-                    >
-                      <BackIcon width={18} height={18} color={colors.primary} />
-                    </TouchableOpacity>
-                  )}
-                </View>
-                <SegmentedControl
-                  style={{ flexGrow: 1 }}
-                  appearance={isDark ? 'dark' : 'light'}
-                  values={tabValues}
-                  selectedIndex={tabValues.findIndex(
-                    (v) => v.toLowerCase() === tabView,
-                  )}
-                  onChange={(e) => {
-                    Haptics.selectionAsync();
-                    const index = e.nativeEvent.selectedSegmentIndex;
-                    const tab = tabValues[index].toLowerCase();
-                    setTabView(tab);
-                  }}
-                />
-                <View style={{ width: 60 }}></View>
+            <View
+              onLayout={(e) => {
+                const { height, width } = e.nativeEvent.layout;
+                // console.log({ height });
+                setToolbarWidth(width);
+                setToolbarHeight(height);
+              }}
+              style={{
+                paddingTop: 15,
+                paddingBottom: Math.max(15, insets.bottom + 4),
+                flexShrink: 0,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
+              <View style={{ width: 60, alignItems: 'center' }}>
+                {navState.canGoBack && tabView === 'web' && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      webViewRef.current?.goBack();
+                    }}
+                    hitSlop={{
+                      top: 22,
+                      right: 22,
+                      bottom: 22,
+                      left: 22,
+                    }}
+                  >
+                    <BackIcon width={18} height={18} color={colors.primary} />
+                  </TouchableOpacity>
+                )}
               </View>
-            </SafeAreaView>
+              <SegmentedControl
+                style={{ flexGrow: 1 }}
+                appearance={isDark ? 'dark' : 'light'}
+                values={tabValues}
+                selectedIndex={tabValues.findIndex(
+                  (v) => v.toLowerCase() === tabView,
+                )}
+                onChange={(e) => {
+                  Haptics.selectionAsync();
+                  const index = e.nativeEvent.selectedSegmentIndex;
+                  const tab = tabValues[index].toLowerCase();
+                  setTabView(tab);
+                }}
+              />
+              <View style={{ width: 60 }}></View>
+            </View>
           </BlurView>
           <ScrollView
             pointerEvents="none"

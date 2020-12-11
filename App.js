@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 import Constants from 'expo-constants';
 import { useAppState } from '@react-native-community/hooks';
 import * as Updates from 'expo-updates';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import StoriesScreen from './screens/StoriesScreen';
 import StoryScreen from './screens/StoryScreen';
@@ -100,71 +101,73 @@ export default function App() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
       <StatusBar style="auto" animated />
-      <NavigationContainer theme={theme} key={reloadKey} ref={navigationRef}>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Home"
-            component={StoriesScreen}
-            options={{
-              title: Constants.manifest.name,
-              headerLargeTitleHideShadow: true,
-              headerLargeTitle: true,
-              headerLargeStyle: {
-                backgroundColor: colors.background,
-              },
-              headerStyle: {
-                backgroundColor: colors.opaqueHeader,
-                blurEffect: 'prominent',
-              },
-              headerTranslucent: true,
-            }}
-          />
-          <Stack.Screen
-            name="Story"
-            component={StoryScreen}
-            options={{
-              headerBackTitle: 'News',
-              title: '',
-              headerHideShadow: true,
-              headerStyle: {
-                backgroundColor: colors.background,
-              },
-              headerTranslucent: true,
-            }}
-          />
-          <Stack.Screen
-            name="Comments"
-            component={CommentsScreen}
-            options={{
-              stackPresentation: 'modal',
-              contentStyle: {
-                backgroundColor: colors.modalBackground,
-              },
-            }}
-          />
-          <Stack.Screen
-            name="User"
-            component={UserScreen}
-            options={{
-              stackPresentation: 'transparentModal',
-              stackAnimation: 'none',
-              contentStyle: {
-                flexGrow: 1,
-              },
-            }}
-          />
-          <Stack.Screen
-            name="Settings"
-            component={SettingsScreen}
-            options={{
-              stackPresentation: 'modal',
-              contentStyle: {
-                backgroundColor: colors.background2,
-              },
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <SafeAreaProvider>
+        <NavigationContainer theme={theme} key={reloadKey} ref={navigationRef}>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Home"
+              component={StoriesScreen}
+              options={{
+                title: Constants.manifest.name,
+                headerLargeTitleHideShadow: true,
+                headerLargeTitle: true,
+                headerLargeStyle: {
+                  backgroundColor: colors.background,
+                },
+                headerStyle: {
+                  backgroundColor: colors.opaqueHeader,
+                  blurEffect: 'prominent',
+                },
+                headerTranslucent: true,
+              }}
+            />
+            <Stack.Screen
+              name="Story"
+              component={StoryScreen}
+              options={{
+                headerBackTitle: 'News',
+                title: '',
+                headerHideShadow: true,
+                headerStyle: {
+                  backgroundColor: colors.background,
+                },
+                headerTranslucent: true,
+              }}
+            />
+            <Stack.Screen
+              name="Comments"
+              component={CommentsScreen}
+              options={{
+                stackPresentation: 'modal',
+                contentStyle: {
+                  backgroundColor: colors.modalBackground,
+                },
+              }}
+            />
+            <Stack.Screen
+              name="User"
+              component={UserScreen}
+              options={{
+                stackPresentation: 'transparentModal',
+                stackAnimation: 'none',
+                contentStyle: {
+                  flexGrow: 1,
+                },
+              }}
+            />
+            <Stack.Screen
+              name="Settings"
+              component={SettingsScreen}
+              options={{
+                stackPresentation: 'modal',
+                contentStyle: {
+                  backgroundColor: colors.background2,
+                },
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SafeAreaProvider>
     </View>
   );
 }

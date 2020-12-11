@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Pressable, StyleSheet, Alert, View } from 'react-native';
+import { Pressable, StyleSheet, Alert, View, ScrollView } from 'react-native';
 import Constants from 'expo-constants';
 import * as StoreReview from 'expo-store-review';
 import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-
-import { createStackNavigator } from '@react-navigation/stack';
-const Stack = createStackNavigator();
 
 import Text from '../components/Text';
 import Separator from '../components/Separator';
@@ -17,6 +14,8 @@ import useTheme from '../hooks/useTheme';
 import useStore from '../hooks/useStore';
 
 import openBrowser from '../utils/openBrowser';
+
+const HEADER_HEIGHT = 56;
 
 function ListMenu(props) {
   return (
@@ -77,9 +76,48 @@ export default function SettingsScreen({ navigation }) {
 
   const updateIsAvailable = useStore((state) => state.updateIsAvailable);
 
-  function Settings() {
-    return (
-      <>
+  return (
+    <>
+      {!isDark && <StatusBar style="inverted" animated />}
+      <View
+        style={{
+          backgroundColor: colors.background,
+          height: HEADER_HEIGHT,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          borderBottomColor: colors.separator,
+          borderBottomWidth: StyleSheet.hairlineWidth,
+        }}
+      >
+        {/* Start Faux Spacer */}
+        <Text style={{ paddingHorizontal: 15, color: 'transparent' }}>
+          Done
+        </Text>
+        {/* End Faux Spacer */}
+        <View style={{ padding: 15 }}>
+          <Text bold style={{ textAlign: 'center' }}>
+            Settings
+          </Text>
+        </View>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.pop();
+          }}
+          style={{ paddingHorizontal: 15 }}
+          hitSlop={{
+            top: 44,
+            right: 44,
+            bottom: 44,
+            left: 44,
+          }}
+        >
+          <Text type="link" bold>
+            Done
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <ScrollView>
         <OuterSpacer />
         <ListMenu>
           <ListItem>
@@ -180,46 +218,7 @@ export default function SettingsScreen({ navigation }) {
             </Text>
           )}
         </OuterSpacer>
-      </>
-    );
-  }
-
-  const headerRight = () => (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.pop();
-      }}
-      style={{ paddingHorizontal: 15 }}
-      hitSlop={{
-        top: 44,
-        right: 44,
-        bottom: 44,
-        left: 44,
-      }}
-    >
-      <Text type="link" bold>
-        Done
-      </Text>
-    </TouchableOpacity>
-  );
-
-  return (
-    <>
-      {!isDark && <StatusBar style="inverted" animated />}
-      <Stack.Navigator
-        screenOptions={{
-          cardStyle: {
-            backgroundColor: 'transparent',
-          },
-          headerRight,
-          headerStyle: {
-            height: 56,
-            backgroundColor: colors.background,
-          },
-        }}
-      >
-        <Stack.Screen name="Settings" component={Settings} />
-      </Stack.Navigator>
+      </ScrollView>
     </>
   );
 }
