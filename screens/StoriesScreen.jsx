@@ -95,33 +95,41 @@ export default function StoriesScreen({ navigation }) {
     });
   }, [noStories, storiesLoading]);
 
+  const [showList, setShowList] = useState(null);
+  useEffect(() => {
+    let timer = setTimeout(() => setShowList(true), 0);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <FlatList
-      pointerEvents={storiesLoading ? 'none' : 'auto'}
-      contentInsetAdjustmentBehavior="automatic"
-      data={stories}
-      renderItem={({ item, index }) => {
-        return <StoryItem id={item.id} position={index + 1} />;
-      }}
-      keyExtractor={(item) => '' + item.id}
-      ItemSeparatorComponent={ItemSeparatorComponent}
-      ListEmptyComponent={() => (
-        <ListEmpty
-          state={storiesLoading ? 'loading' : noStories ? 'error' : null}
-          errorComponent={() => (
-            <Text
-              onPress={() => {
-                onFetchStories();
-              }}
-              style={{ textAlign: 'center' }}
-            >
-              Unable to get stories.
-              {'\n'}
-              <Text type="link">Try again?</Text>
-            </Text>
-          )}
-        />
-      )}
-    />
+    showList && (
+      <FlatList
+        pointerEvents={storiesLoading ? 'none' : 'auto'}
+        contentInsetAdjustmentBehavior="automatic"
+        data={stories}
+        renderItem={({ item, index }) => {
+          return <StoryItem id={item.id} position={index + 1} />;
+        }}
+        keyExtractor={(item) => '' + item.id}
+        ItemSeparatorComponent={ItemSeparatorComponent}
+        ListEmptyComponent={() => (
+          <ListEmpty
+            state={storiesLoading ? 'loading' : noStories ? 'error' : null}
+            errorComponent={() => (
+              <Text
+                onPress={() => {
+                  onFetchStories();
+                }}
+                style={{ textAlign: 'center' }}
+              >
+                Unable to get stories.
+                {'\n'}
+                <Text type="link">Try again?</Text>
+              </Text>
+            )}
+          />
+        )}
+      />
+    )
   );
 }
