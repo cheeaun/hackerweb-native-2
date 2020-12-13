@@ -20,7 +20,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "cheeaun.hackerweb",
-      "buildNumber": "8"
+      "buildNumber": "9"
     },
     "platforms": [
       "ios"
