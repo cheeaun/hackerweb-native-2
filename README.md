@@ -2,6 +2,10 @@
 
 > A read-only Hacker News client.
 
+- Only 30 front-page stories. No more no less.
+- Revolutionary comments thread UI. Smart collapse and easy navigation.
+- Easy-switch between web view and comments view.
+
 This is a complete rewrite of the first version launched in 2016.
 
 - V1: https://github.com/cheeaun/hackerweb-native
@@ -19,7 +23,7 @@ This is a complete rewrite of the first version launched in 2016.
 
 ## Development
 
-This is built with [Expo](https://expo.io/) under the **Managed Workflow**. Currently using **SDK 39** and **targeted only for iOS** (for now).
+This is built with [Expo](https://expo.io/) under the **Managed Workflow**. Currently using **SDK 40** and **targeted only for iOS** (for now).
 
 ```
 npm install -g expo-cli
@@ -35,7 +39,7 @@ npm start
 
 ## Resources
 
-- API from [node-hnapi](https://github.com/cheeaun/node-hnapi)
+- API from [node-hnapi](https://github.com/cheeaun/node-hnapi) and [the official API](https://github.com/HackerNews/API)
 - Icons from [SF Symbols](https://developer.apple.com/sf-symbols/)
 - [Awesome Hacker News](https://github.com/cheeaun/awesome-hacker-news)
 
