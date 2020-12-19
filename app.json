@@ -18,6 +18,7 @@
       "assets/*"
     ],
     "ios": {
+      "appStoreUrl": "https://apps.apple.com/app/id1084209377",
       "supportsTablet": false,
       "bundleIdentifier": "cheeaun.hackerweb",
       "buildNumber": "9"

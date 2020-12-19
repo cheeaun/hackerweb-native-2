@@ -74,12 +74,10 @@ export default function SettingsScreen({ navigation }) {
 
   const [canRate, setCanRate] = useState(false);
   useEffect(() => {
-    if (Constants.appOwnership === 'expo' || !Constants.isDevice) return;
-    Promise.all([StoreReview.hasAction(), StoreReview.isAvailableAsync()]).then(
-      ([hasAction, isAvailable]) => {
-        setCanRate(hasAction && isAvailable);
-      },
-    );
+    if (Constants.appOwnership === 'expo') return;
+    StoreReview.isAvailableAsync().then((isAvailable) => {
+      setCanRate(isAvailable);
+    });
   }, []);
 
   const updateIsAvailable = useStore((state) => state.updateIsAvailable);
@@ -165,14 +163,14 @@ export default function SettingsScreen({ navigation }) {
           <Separator
             style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
           />
-          {/production/i.test(releaseChannel) && (canRate || !!STORE_URL) && (
+          {(canRate || !!STORE_URL) && (
             <>
               <ListItem
                 onPress={() => {
                   if (canRate) {
                     StoreReview.requestReview();
                   } else if (STORE_URL) {
-                    openBrowser(STORE_URL);
+                    Linking.openURL(STORE_URL);
                   }
                 }}
               >
