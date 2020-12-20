@@ -22,7 +22,7 @@ jobs:
       - uses: expo/expo-github-action@5.3.1
         with:
           expo-username: cheeaun
-          expo-version: 3.x
+          expo-version: 4.x
           expo-token: ${{ secrets.EXPO_TOKEN }}
           expo-packager: npm
           expo-cache: true
