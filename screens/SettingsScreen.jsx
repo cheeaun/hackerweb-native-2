@@ -66,8 +66,6 @@ function ListItem({ style = {}, ...props }) {
   );
 }
 
-const STORE_URL = StoreReview.storeUrl();
-
 export default function SettingsScreen({ navigation }) {
   const { isDark, colors } = useTheme();
   const { releaseChannel, updateId, reloadAsync } = Updates;
@@ -75,8 +73,8 @@ export default function SettingsScreen({ navigation }) {
   const [canRate, setCanRate] = useState(false);
   useEffect(() => {
     if (Constants.appOwnership === 'expo') return;
-    StoreReview.isAvailableAsync().then((isAvailable) => {
-      setCanRate(isAvailable);
+    StoreReview.hasAction().then((hasAction) => {
+      setCanRate(hasAction);
     });
   }, []);
 
@@ -163,24 +161,22 @@ export default function SettingsScreen({ navigation }) {
           <Separator
             style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
           />
-          {(canRate || !!STORE_URL) && (
-            <>
-              <ListItem
-                onPress={() => {
-                  if (canRate) {
-                    StoreReview.requestReview();
-                  } else if (STORE_URL) {
-                    Linking.openURL(STORE_URL);
-                  }
-                }}
-              >
-                <Text type="link">Rate {Constants.manifest.name}</Text>
-              </ListItem>
-              <Separator
-                style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
-              />
-            </>
-          )}
+          <ListItem
+            onPress={() => {
+              if (canRate) {
+                StoreReview.requestReview();
+              } else {
+                // Temporary solution
+                // TODO: Remove this when create new prod build
+                Linking.openURL('https://apps.apple.com/app/id1084209377');
+              }
+            }}
+          >
+            <Text type="link">Rate {Constants.manifest.name}</Text>
+          </ListItem>
+          <Separator
+            style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
+          />
           <ListItem
             onPress={() => {
               const subject = `${Constants.manifest.name} feedback`;
