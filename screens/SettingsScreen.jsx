@@ -161,22 +161,23 @@ export default function SettingsScreen({ navigation }) {
           <Separator
             style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
           />
-          <ListItem
-            onPress={() => {
-              if (canRate) {
-                StoreReview.requestReview();
-              } else {
-                // Temporary solution
-                // TODO: Remove this when create new prod build
-                Linking.openURL('https://apps.apple.com/app/id1084209377');
-              }
-            }}
-          >
-            <Text type="link">Rate {Constants.manifest.name}</Text>
-          </ListItem>
-          <Separator
-            style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
-          />
+          {canRate && (
+            <>
+              <ListItem
+                onPress={() => {
+                  // Temporary solution
+                  // TODO: Remove this when create new prod build
+                  Linking.openURL('https://apps.apple.com/app/id1084209377');
+                  // StoreReview.requestReview();
+                }}
+              >
+                <Text type="link">Rate {Constants.manifest.name}</Text>
+              </ListItem>
+              <Separator
+                style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
+              />
+            </>
+          )}
           <ListItem
             onPress={() => {
               const subject = `${Constants.manifest.name} feedback`;
