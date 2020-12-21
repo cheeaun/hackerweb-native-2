@@ -167,7 +167,9 @@ export default function SettingsScreen({ navigation }) {
                 onPress={() => {
                   // Temporary solution
                   // TODO: Remove this when create new prod build
-                  Linking.openURL('https://apps.apple.com/app/id1084209377');
+                  Linking.openURL(
+                    'https://apps.apple.com/app/id1084209377?action=write-review',
+                  );
                   // StoreReview.requestReview();
                 }}
               >
