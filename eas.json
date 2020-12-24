@@ -1,0 +1,9 @@
+{
+  "builds": {
+    "ios": {
+      "release": {
+        "workflow": "managed"
+      }
+    }
+  }
+}
