@@ -15,7 +15,7 @@ export default function ({
     <View
       style={[
         {
-          height: heights[size],
+          minHeight: heights[size],
           paddingVertical: 8,
           paddingHorizontal: 15,
           justifyContent: align === 'bottom' ? 'flex-end' : 'flex-start',

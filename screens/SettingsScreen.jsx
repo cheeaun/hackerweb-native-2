@@ -7,6 +7,7 @@ import {
   ScrollView,
   Linking,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import Constants from 'expo-constants';
 import * as StoreReview from 'expo-store-review';
 import { StatusBar } from 'expo-status-bar';
@@ -226,11 +227,36 @@ export default function SettingsScreen({ navigation }) {
             <Text type="link">Privacy Policy</Text>
           </ListItem>
         </ListMenu>
-        <OuterSpacer size="large" align="top">
+        <OuterSpacer align="top">
           <Text size="footnote" type="insignificant">
             Not affiliated with Hacker News or YCombinator.
           </Text>
-          <Text size="footnote" type="insignificant" style={{ marginTop: 16 }}>
+        </OuterSpacer>
+        <OuterSpacer>
+          <Text
+            size="footnote"
+            type="insignificant"
+            style={{
+              textTransform: 'uppercase',
+            }}
+          >
+            Debugging
+          </Text>
+        </OuterSpacer>
+        <ListMenu>
+          <ListItem
+            onPress={async () => {
+              try {
+                await AsyncStorage.clear();
+              } catch (e) {}
+              Alert.alert('Cache cleared.');
+            }}
+          >
+            <Text type="link">Clear Cache</Text>
+          </ListItem>
+        </ListMenu>
+        <OuterSpacer align="top">
+          <Text size="footnote" type="insignificant">
             {Constants.manifest.name} {Constants.nativeAppVersion} (
             {Constants.nativeBuildVersion})
           </Text>
