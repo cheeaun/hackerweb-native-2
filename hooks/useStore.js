@@ -33,7 +33,7 @@ function setItem(key, val, ttl) {
   );
 }
 
-async function updateItem(key, val) {
+async function updateItem(key, val, ttl) {
   if (!key || !val) return;
   console.log(`💾 UPDATE ${key}`);
   const json = await AsyncStorage.getItem(key);
@@ -47,7 +47,7 @@ async function updateItem(key, val) {
       }),
     );
   } else {
-    return setItem(key, val);
+    setItem(key, val, ttl);
   }
 }
 
@@ -118,7 +118,7 @@ const useStore = create((set, get) => ({
       story = await api(`item/${id}`).json();
       stories[index] = story;
       set({ stories });
-      updateItem('stories', stories);
+      updateItem('stories', stories, STORIES_TTL);
     }
   },
   currentOP: null,
