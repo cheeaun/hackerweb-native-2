@@ -131,7 +131,7 @@ export default function SettingsScreen({ navigation }) {
           </Text>
         </TouchableOpacity>
       </View>
-      <ScrollView>
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
         <OuterSpacer />
         <ListMenu>
           <ListItem>
