@@ -81,6 +81,7 @@ export default function CommentsScreen({ route, navigation }) {
             />
           }
           onLayout={(e) => {
+            console.log('📐 MaskedView onLayout', e.nativeEvent.layout);
             listHeaderHeight.current = e.nativeEvent.layout.height;
           }}
         >
@@ -252,6 +253,7 @@ export default function CommentsScreen({ route, navigation }) {
           tint={isDark ? 'dark' : 'light'}
           style={{ borderRadius: 25, overflow: 'hidden' }}
           onLayout={({ nativeEvent }) => {
+            console.log('📐 BlurView onLayout', nativeEvent.layout);
             footerRef.current?.setNativeProps({
               style: {
                 height: nativeEvent.layout.height + 30,

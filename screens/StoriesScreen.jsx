@@ -51,7 +51,7 @@ export default function StoriesScreen({ navigation }) {
 
   const [storiesLoading, setStoriesLoading] = useState(false);
   const onFetchStories = useCallback(() => {
-    console.log('onFetchStories');
+    console.log('🤙 onFetchStories');
     let ignore = false;
     setStoriesLoading(true);
     fetchStories().finally(() => {

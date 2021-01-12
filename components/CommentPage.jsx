@@ -17,6 +17,7 @@ export default function CommentPage({ page }) {
         marginTop: topMargin,
       }}
       onLayout={(e) => {
+        console.log('📐 CommentPage onLayout', e.nativeEvent.layout);
         const { height } = e.nativeEvent.layout;
         setTopMargin(-height / 2);
       }}

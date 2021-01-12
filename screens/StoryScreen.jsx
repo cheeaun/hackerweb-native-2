@@ -400,7 +400,7 @@ export default function StoryScreen({ route, navigation }) {
   const [webMounted, setWebMounted] = useState(false);
   useFocusEffect(
     useCallback(() => {
-      console.log('focus effect');
+      console.log('🧘‍♀️ StoryScreen focus effect');
       if (tabView === 'web') setWebMounted(true);
       return () => setWebMounted(false);
     }, []),
@@ -600,6 +600,10 @@ export default function StoryScreen({ route, navigation }) {
           <BlurView intensity={99} tint={isDark ? 'dark' : 'light'}>
             <View
               onLayout={(e) => {
+                console.log(
+                  '📐 StoryScreen tab bar onLayout',
+                  e.nativeEvent.layout,
+                );
                 const { height, width } = e.nativeEvent.layout;
                 // console.log({ height });
                 setToolbarWidth(width);
