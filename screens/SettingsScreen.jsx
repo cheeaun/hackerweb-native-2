@@ -262,6 +262,18 @@ export default function SettingsScreen({ navigation }) {
           >
             <Text type="link">Clear Cache</Text>
           </ListItem>
+          {!__PRODUCTION__ && (
+            <>
+              <ListItemSeparator />
+              <ListItem
+                onPress={() => {
+                  navigation.push('Logs');
+                }}
+              >
+                <Text type="link">Logs</Text>
+              </ListItem>
+            </>
+          )}
         </ListMenu>
         <OuterSpacer align="top">
           <Text size="footnote" type="insignificant">

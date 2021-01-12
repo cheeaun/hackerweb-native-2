@@ -14,6 +14,7 @@ import StoryScreen from './screens/StoryScreen';
 import CommentsScreen from './screens/CommentsScreen';
 import UserScreen from './screens/UserScreen';
 import SettingsScreen from './screens/SettingsScreen';
+import LogsScreen from './screens/LogsScreen';
 
 import useStore from './hooks/useStore';
 import useTheme from './hooks/useTheme';
@@ -24,6 +25,14 @@ enableScreens();
 const Stack = createNativeStackNavigator();
 
 global.__PRODUCTION__ = /production/i.test(Constants.manifest.releaseChannel);
+if (!__PRODUCTION__) {
+  global.DEBUG_LOGS = [];
+  global._consolelog = console.log;
+  console.log = (...args) => {
+    if (__DEV__) _consolelog.apply(console, args);
+    DEBUG_LOGS.push({ log: args, ts: new Date() });
+  };
+}
 
 export default function App() {
   const initLinks = useStore((state) => state.initLinks);
@@ -165,6 +174,13 @@ export default function App() {
                 contentStyle: {
                   backgroundColor: colors.background2,
                 },
+              }}
+            />
+            <Stack.Screen
+              name="Logs"
+              component={LogsScreen}
+              options={{
+                stackPresentation: 'modal',
               }}
             />
           </Stack.Navigator>
