@@ -67,6 +67,10 @@ function ListItem({ style = {}, ...props }) {
   );
 }
 
+const ListItemSeparator = () => (
+  <Separator style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }} />
+);
+
 export default function SettingsScreen({ navigation }) {
   const { isDark, colors } = useTheme();
   const { releaseChannel, updateId, reloadAsync } = Updates;
@@ -149,9 +153,7 @@ export default function SettingsScreen({ navigation }) {
           <ListItem onPress={() => openBrowser('https://twitter.com/cheeaun')}>
             <Text type="link">Made by @cheeaun</Text>
           </ListItem>
-          <Separator
-            style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
-          />
+          <ListItemSeparator />
           <ListItem
             onPress={() =>
               openBrowser('http://github.com/cheeaun/hackerweb-native-2')
@@ -159,9 +161,7 @@ export default function SettingsScreen({ navigation }) {
           >
             <Text type="link">Open-sourced on GitHub</Text>
           </ListItem>
-          <Separator
-            style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
-          />
+          <ListItemSeparator />
           {canRate && (
             <>
               <ListItem
@@ -218,9 +218,7 @@ export default function SettingsScreen({ navigation }) {
           >
             <Text type="link">Share Feedback</Text>
           </ListItem>
-          <Separator
-            style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
-          />
+          <ListItemSeparator />
           <ListItem
             onPress={() => openBrowser('https://hackerwebapp.com/privacy.md')}
           >
