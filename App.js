@@ -31,6 +31,7 @@ if (!__PRODUCTION__) {
   console.log = (...args) => {
     if (__DEV__) _consolelog.apply(console, args);
     DEBUG_LOGS.push({ log: args, ts: new Date() });
+    DEBUG_LOGS = DEBUG_LOGS.slice(-100); // Only log last 100
   };
 }
 
