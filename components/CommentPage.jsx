@@ -19,7 +19,7 @@ export default function CommentPage({ page }) {
       onLayout={(e) => {
         console.log('📐 CommentPage onLayout', e.nativeEvent.layout);
         const { height } = e.nativeEvent.layout;
-        setTopMargin(-height / 2);
+        setTopMargin(Math.round(-height / 2));
       }}
       pointerEvents="none"
     >
