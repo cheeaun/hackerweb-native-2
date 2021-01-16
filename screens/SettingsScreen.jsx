@@ -162,6 +162,18 @@ export default function SettingsScreen({ navigation }) {
             <Text type="link">Open-sourced on GitHub</Text>
           </ListItem>
           <ListItemSeparator />
+          {!__PRODUCTION__ && (
+            <>
+              <ListItem
+                onPress={() =>
+                  openBrowser('https://www.buymeacoffee.com/cheeaun')
+                }
+              >
+                <Text type="link">Buy me a coffee</Text>
+              </ListItem>
+              <ListItemSeparator />
+            </>
+          )}
           {canRate && (
             <>
               <ListItem
@@ -175,18 +187,6 @@ export default function SettingsScreen({ navigation }) {
                 }}
               >
                 <Text type="link">Rate {Constants.manifest.name}</Text>
-              </ListItem>
-              <ListItemSeparator />
-            </>
-          )}
-          {!__PRODUCTION__ && (
-            <>
-              <ListItem
-                onPress={() =>
-                  openBrowser('https://www.buymeacoffee.com/cheeaun')
-                }
-              >
-                <Text type="link">Buy me a coffee</Text>
               </ListItem>
               <ListItemSeparator />
             </>
