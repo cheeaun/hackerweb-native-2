@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import create from 'zustand';
 import ky from 'ky';
 import arrayMove from 'array-move';
+import pMemoize from 'p-memoize';
 
 const API_ROOT = 'https://api.hackerwebapp.com';
 const api = ky.create({
@@ -108,19 +109,22 @@ const useStore = create((set, get) => ({
     }
   },
   isStoriesExpired: async () => await isExpired('stories'),
-  fetchStory: async (id) => {
-    console.log(`🥞 fetchStory ${id}`);
-    const { stories } = get();
-    const index = stories.findIndex((s) => s.id === id);
-    let story = stories[index];
-    const storyFetched = !!story?.comments?.length;
-    if (!storyFetched) {
-      story = await api(`item/${id}`).json();
-      stories[index] = story;
-      set({ stories });
-      updateItem('stories', stories, STORIES_TTL);
-    }
-  },
+  fetchStory: pMemoize(
+    async (id) => {
+      console.log(`🥞 fetchStory ${id}`);
+      const { stories } = get();
+      const index = stories.findIndex((s) => s.id === id);
+      let story = stories[index];
+      const storyFetched = !!story?.comments?.length;
+      if (!storyFetched) {
+        story = await api(`item/${id}`).json();
+        stories[index] = story;
+        set({ stories });
+        updateItem('stories', stories, STORIES_TTL);
+      }
+    },
+    { maxAge: 60 * 1000 },
+  ),
   currentOP: null,
   setCurrentOP: (currentOP) => {
     console.log(`🥞 setCurrentOP ${currentOP}`);

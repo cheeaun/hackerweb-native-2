@@ -62,6 +62,7 @@ export default function StoryItem({ id, position }) {
   const story = useStore(
     useCallback((state) => state.stories.find((s) => s.id === id) || {}, [id]),
   );
+  const fetchStory = useStore((state) => state.fetchStory);
 
   const { title, points, user, time, comments_count, type, url } = story;
   const datetime = new Date(time * 1000);
@@ -161,6 +162,7 @@ export default function StoryItem({ id, position }) {
             disabled={!httpLink}
             onPressIn={() => {
               setPressed2(true);
+              fetchStory(id);
             }}
             onPressOut={() => {
               setPressed2(false);
