@@ -293,7 +293,7 @@ export default function StoryScreen({ route, navigation }) {
         </View>
         {(!!content || !!poll) && (
           <View style={styles.content}>
-            {!!content && <HTMLView html={content} linkify />}
+            {!!content && <HTMLView html={content} />}
             {!!poll &&
               poll.map((p, i) => (
                 <View key={i}>
