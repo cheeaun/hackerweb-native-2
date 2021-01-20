@@ -163,12 +163,14 @@ export default function HTMLView({ html, linkify }) {
   useEffect(() => {
     if (linkify) {
       const containsLink = /<\/a>/i.test(html);
-      if (containsLink)
+      if (containsLink) {
         console.warn('HTML contains anchors and linkify=true', html);
-      html = entities
-        .decode(html)
-        .replace(/(<\w)/gi, '\n$1') // Some tags are too "sticky"
-        .replace(urlRegex, (url) => `<a href="${url}">${url}</a>`);
+      } else {
+        html = entities
+          .decode(html)
+          .replace(/(<\w)/gi, '\n$1') // Some tags are too "sticky"
+          .replace(urlRegex, (url) => `<a href="${url}">${url}</a>`);
+      }
     }
     processDOM(html, setElements);
   }, []);
