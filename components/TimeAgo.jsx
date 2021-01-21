@@ -5,6 +5,7 @@ import isValid from 'date-fns/isValid';
 
 const SECONDS_IN_MINUTE = 60;
 const MINUTES_IN_DAY = 1440;
+const HOURS_IN_DAY = 24;
 const DAYS_IN_WEEK = 7;
 const MINUTES_IN_WEEK = MINUTES_IN_DAY * DAYS_IN_WEEK;
 
@@ -21,7 +22,7 @@ export default function ({ time }) {
   } else if (minutes < MINUTES_IN_DAY) {
     text = Math.round(minutes / SECONDS_IN_MINUTE) + 'h';
   } else if (minutes < MINUTES_IN_WEEK) {
-    text = Math.round(minutes / SECONDS_IN_MINUTE / DAYS_IN_WEEK) + 'd';
+    text = Math.round(minutes / SECONDS_IN_MINUTE / HOURS_IN_DAY) + 'd';
   } else if (isSameYear(time, now)) {
     text = format(time, 'd LLL');
   } else {
