@@ -101,6 +101,9 @@ const useStore = create((set, get) => ({
     } else {
       stories = await api('news').json();
       if (stories.length) {
+        if (stories[0]?.title) {
+          console.log(`🥇 First story: ${stories[0].title}`);
+        }
         set({ stories });
         setItem('stories', stories, STORIES_TTL);
       } else {
