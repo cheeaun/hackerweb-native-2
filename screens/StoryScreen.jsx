@@ -42,6 +42,7 @@ import openBrowser from '../utils/openBrowser';
 import openShare from '../utils/openShare';
 import { isHTTPLink } from '../utils/url';
 import repliesCount2MaxWeight from '../utils/repliesCount2MaxWeight';
+import shortenNumber from '../utils/shortenNumber';
 
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
@@ -391,7 +392,11 @@ export default function StoryScreen({ route, navigation }) {
 
   const keyExtractor = useCallback((item) => '' + item.id, []);
 
-  const tabValues = ['Web', 'Comments'];
+  const tabValues = [
+    'Web',
+    `${comments_count > 1 ? shortenNumber(comments_count) + ' ' : ''}Comments`,
+  ];
+  const tabViews = ['web', 'comments'];
   const [tabView, setTabView] = useState(tab);
   useEffect(() => {
     setTabView(tab);
@@ -638,13 +643,11 @@ export default function StoryScreen({ route, navigation }) {
                 style={{ flexGrow: 1 }}
                 appearance={isDark ? 'dark' : 'light'}
                 values={tabValues}
-                selectedIndex={tabValues.findIndex(
-                  (v) => v.toLowerCase() === tabView,
-                )}
+                selectedIndex={tabViews.findIndex((v) => v === tabView)}
                 onChange={(e) => {
                   Haptics.selectionAsync();
                   const index = e.nativeEvent.selectedSegmentIndex;
-                  const tab = tabValues[index].toLowerCase();
+                  const tab = tabViews[index].toLowerCase();
                   setTabView(tab);
                 }}
               />
