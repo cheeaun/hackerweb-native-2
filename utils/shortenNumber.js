@@ -1,5 +1,5 @@
 function prefixify(kNum, unit) {
-  const [_, start] = (kNum + '').match(/(\d+)\./);
+  const [_, start] = (kNum + '').match(/(\d+)\.?/);
   if (start.length > 1) {
     kNum = start;
   } else {
