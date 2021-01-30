@@ -110,7 +110,7 @@ export default function SettingsScreen({ navigation }) {
         </Text>
         {/* End Faux Spacer */}
         <View style={{ padding: 15 }}>
-          <Text bold style={{ textAlign: 'center' }}>
+          <Text bolder style={{ textAlign: 'center' }}>
             Settings
           </Text>
         </View>
@@ -126,7 +126,7 @@ export default function SettingsScreen({ navigation }) {
             left: 44,
           }}
         >
-          <Text type="link" bold>
+          <Text type="link" bolder>
             Done
           </Text>
         </TouchableOpacity>

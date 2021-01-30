@@ -159,7 +159,7 @@ export default function UserScreen({ route, navigation }) {
               left: 44,
             }}
           >
-            <Text type="link" bold>
+            <Text type="link" bolder>
               Close
             </Text>
           </TouchableOpacity>

@@ -211,7 +211,7 @@ export default function CommentsScreen({ route, navigation }) {
             left: 44,
           }}
         >
-          <Text type="link" bold>
+          <Text type="link" bolder>
             Done
           </Text>
         </TouchableOpacity>
@@ -286,7 +286,7 @@ export default function CommentsScreen({ route, navigation }) {
               color={colors.link}
               style={{ marginRight: 8 }}
             />
-            <Text type="link" bold>
+            <Text type="link" bolder>
               Close thread
             </Text>
           </TouchableOpacity>
