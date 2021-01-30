@@ -24,6 +24,7 @@ import CommentPage from '../components/CommentPage';
 
 import useTheme from '../hooks/useTheme';
 
+import getHTMLText from '../utils/getHTMLText';
 import getCommentsMetadata from '../utils/getCommentsMetadata';
 import repliesCount2MaxWeight from '../utils/repliesCount2MaxWeight';
 
@@ -164,25 +165,29 @@ export default function CommentsScreen({ route, navigation }) {
     [],
   );
   const insets = useSafeAreaInsets();
-  const scrolledDown = useRef(false);
+  const [scrolledDown, setScrolledDown] = useState(false);
+  const scrolledRef = useRef(false);
   const onScroll = useCallback((e) => {
     const { y } = e.nativeEvent.contentOffset;
     const scrolled = y >= listHeaderHeight.current;
-    if (scrolled && scrolled === scrolledDown.current) return;
-    scrolledDown.current = scrolled;
+    if (scrolled && scrolled === scrolledRef.current) return;
+    scrolledRef.current = scrolled;
+
     headerRef.current?.setNativeProps({
       style: {
         ...headerStyles,
         borderBottomColor: scrolled ? colors.separator : 'transparent',
       },
     });
+
+    setScrolledDown(scrolled);
   }, []);
 
   return (
     <>
       {!isDark && <StatusBar style="inverted" animated />}
       <View ref={headerRef} style={headerStyles}>
-        <View style={{ paddingLeft: 15 }}>
+        <View style={{ paddingLeft: 15, flexShrink: 1 }}>
           <Text numberOfLines={1}>
             <Text
               bold
@@ -193,10 +198,16 @@ export default function CommentsScreen({ route, navigation }) {
             >
               {item.user}
             </Text>
-            <Text type="insignificant">
-              {' '}
-              &bull; <TimeAgo time={new Date(item.time * 1000)} />
-            </Text>
+            <Text type="insignificant"> &bull; </Text>
+            {scrolledDown ? (
+              <Text size="subhead" type="insignificant">
+                {getHTMLText(content)}
+              </Text>
+            ) : (
+              <Text type="insignificant">
+                <TimeAgo time={new Date(item.time * 1000)} />
+              </Text>
+            )}
           </Text>
         </View>
         <TouchableOpacity
@@ -217,6 +228,7 @@ export default function CommentsScreen({ route, navigation }) {
         </TouchableOpacity>
       </View>
       <FlatList
+        key={`comments-${item.id}`}
         ListHeaderComponent={ListHeaderComponent}
         data={comments}
         renderItem={renderItem}
@@ -228,6 +240,7 @@ export default function CommentsScreen({ route, navigation }) {
         onScroll={onScroll}
       />
       <Animated.View
+        key={`bottombar-${item.id}`}
         pointerEvents="box-none"
         style={{
           position: 'absolute',
