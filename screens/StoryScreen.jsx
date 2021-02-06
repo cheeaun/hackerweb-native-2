@@ -447,7 +447,7 @@ export default function StoryScreen({ route, navigation }) {
   useLayoutEffect(() => {
     if (tabView === 'web') {
       navigation.setOptions({
-        title: parseURL(url || navState.url).domain || '',
+        title: parseURL(navState.url || url).domain || '',
         headerRight: webHeaderRight,
       });
     }
@@ -458,7 +458,7 @@ export default function StoryScreen({ route, navigation }) {
       navigation.setOptions(
         tabView === 'web'
           ? {
-              title: parseURL(navState.url).domain || '',
+              title: parseURL(navState.url || url).domain || '',
               headerHideShadow: false,
               headerStyle: {
                 backgroundColor: colors.opaqueHeader,
