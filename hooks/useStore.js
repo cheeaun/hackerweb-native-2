@@ -14,7 +14,7 @@ const api = ky.create({
       },
     ],
     beforeRetry: [
-      (request) => {
+      ({ request }) => {
         console.log(`♻️ ${request.method} ${request.url}`);
       },
     ],
@@ -99,16 +99,16 @@ const useStore = create((set, get) => ({
       if (get().stories.length) return;
       set({ stories });
     } else {
-      stories = await api('news').json();
-      if (stories.length) {
-        if (stories[0]?.title) {
-          console.log(`🥇 First story: ${stories[0].title}`);
-        }
-        set({ stories });
-        setItem('stories', stories, STORIES_TTL);
-      } else {
-        throw new Error('Zero stories');
+    stories = await api('news').json();
+    if (stories.length) {
+      if (stories[0]?.title) {
+        console.log(`🥇 First story: ${stories[0].title}`);
       }
+      set({ stories });
+      setItem('stories', stories, STORIES_TTL);
+    } else {
+      throw new Error('Zero stories');
+    }
     }
   },
   isStoriesExpired: async () => await isExpired('stories'),
