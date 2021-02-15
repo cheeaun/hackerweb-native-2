@@ -99,16 +99,30 @@ const useStore = create((set, get) => ({
       if (get().stories.length) return;
       set({ stories });
     } else {
-    stories = await api('news').json();
-    if (stories.length) {
-      if (stories[0]?.title) {
-        console.log(`🥇 First story: ${stories[0].title}`);
+      const news = await api('news').json();
+      stories = news;
+      if (stories.length) {
+        if (stories[0]?.title) {
+          console.log(`🥇 First story: ${stories[0].title}`);
+        }
+        set({ stories });
+        setItem('stories', stories, STORIES_TTL);
+
+        // Delay-load news2
+        api('news2')
+          .json()
+          .then((news2) => {
+            stories = [...news, ...news2].filter(
+              // https://stackoverflow.com/a/56757215
+              (v, i, a) => a.findIndex((t) => t.id === v.id) === i,
+            );
+            set({ stories });
+            setItem('stories', stories, STORIES_TTL);
+          })
+          .catch(() => {});
+      } else {
+        throw new Error('Zero stories');
       }
-      set({ stories });
-      setItem('stories', stories, STORIES_TTL);
-    } else {
-      throw new Error('Zero stories');
-    }
     }
   },
   isStoriesExpired: async () => await isExpired('stories'),

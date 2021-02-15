@@ -4,6 +4,7 @@ import {
   LayoutAnimation,
   StyleSheet,
   ActivityIndicator,
+  View,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -67,7 +68,11 @@ export default function StoriesScreen({ navigation }) {
   const fetchIfExpired = useCallback(() => {
     console.log('🥏 fetchIfExpired');
     isStoriesExpired()
-      .then((expired) => expired && onFetchStories())
+      .then((expired) => {
+        console.log(`🥏 Stories expired: ${expired}`);
+        expired && onFetchStories();
+        setShowMore(!expired);
+      })
       .catch(() => {});
   }, []);
 
@@ -101,17 +106,41 @@ export default function StoriesScreen({ navigation }) {
     return () => clearTimeout(timer);
   }, []);
 
+  const [showMore, setShowMore] = useState(false);
+  const [showMoreStories, setShowMoreStories] = useState(false);
+
   return (
     showList && (
       <FlatList
         pointerEvents={storiesLoading ? 'none' : 'auto'}
         contentInsetAdjustmentBehavior="automatic"
-        data={stories}
+        data={showMoreStories ? stories : stories.slice(0, 30)}
         renderItem={({ item, index }) => {
           return <StoryItem id={item.id} position={index + 1} />;
         }}
         keyExtractor={(item) => '' + item.id}
         ItemSeparatorComponent={ItemSeparatorComponent}
+        ListFooterComponent={
+          !!showMore &&
+          !showMoreStories &&
+          !storiesLoading &&
+          stories.length > 30 && (
+            <>
+              <ItemSeparatorComponent />
+              <TouchableOpacity
+                onPress={() => {
+                  setShowMoreStories(true);
+                }}
+              >
+                <View style={{ padding: 15, marginBottom: 30 }}>
+                  <Text type="link" center>
+                    More&hellip;
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </>
+          )
+        }
         ListEmptyComponent={() => (
           <ListEmpty
             state={storiesLoading ? 'loading' : noStories ? 'error' : null}
