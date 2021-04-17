@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { LayoutAnimation, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { enableScreens } from 'react-native-screens';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 import Constants from 'expo-constants';
@@ -21,7 +20,6 @@ import useTheme from './hooks/useTheme';
 
 const BACKGROUND_BUFFER = 15 * 60 * 1000; // 15min
 
-enableScreens();
 const Stack = createNativeStackNavigator();
 
 global.__PRODUCTION__ = /production/i.test(Updates.releaseChannel);
