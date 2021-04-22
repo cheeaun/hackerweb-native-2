@@ -15,6 +15,7 @@ import {
   ActionSheetIOS,
   Animated,
   ScrollView,
+  findNodeHandle,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
@@ -37,6 +38,7 @@ import TimeAgo from '../components/TimeAgo';
 import ListEmpty from '../components/ListEmpty';
 import OuterSpacer from '../components/OuterSpacer';
 import CommentPage from '../components/CommentPage';
+import ReadableWidthContainer from '../components/ReadableWidthContainer';
 
 import openBrowser from '../utils/openBrowser';
 import openShare from '../utils/openShare';
@@ -144,9 +146,11 @@ export default function StoryScreen({ route, navigation }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const webViewRef = useRef(null);
 
-  const webHeaderRight = useCallback(
-    () => (
+  const webButtonRef = useRef(null);
+  const webHeaderRight = useCallback(() => {
+    return (
       <TouchableOpacity
+        ref={webButtonRef}
         onPress={() => {
           const pageTitle = navState.title || title;
           const pageURL = navState.url || url;
@@ -155,6 +159,7 @@ export default function StoryScreen({ route, navigation }) {
               title: pageTitle + '\n' + pageURL,
               options: ['Reload page', 'Open in browser…', 'Share…', 'Cancel'],
               cancelButtonIndex: 3,
+              anchor: findNodeHandle(webButtonRef.current),
             },
             (index) => {
               if (index === 0) {
@@ -176,19 +181,21 @@ export default function StoryScreen({ route, navigation }) {
       >
         <MoreIcon width={20} height={20} color={colors.primary} />
       </TouchableOpacity>
-    ),
-    [title, navState.title, url, navState.url, webViewRef.current],
-  );
+    );
+  }, [title, navState.title, url, navState.url, webViewRef.current]);
 
-  const commentsHeaderRight = useCallback(
-    () => (
+  const commentsButtonRef = useRef(null);
+  const commentsHeaderRight = useCallback(() => {
+    return (
       <TouchableOpacity
+        ref={commentsButtonRef}
         onPress={() => {
           ActionSheetIOS.showActionSheetWithOptions(
             {
               title: title + '\n' + hnURL,
               options: ['View on HN web site', 'Share…', 'Cancel'],
               cancelButtonIndex: 2,
+              anchor: findNodeHandle(commentsButtonRef.current),
             },
             (index) => {
               if (index === 0) {
@@ -211,9 +218,8 @@ export default function StoryScreen({ route, navigation }) {
       >
         <ShareIcon width={20} height={20} color={colors.primary} />
       </TouchableOpacity>
-    ),
-    [url, hnURL],
-  );
+    );
+  }, [url, hnURL]);
 
   const titleLength = (title || '').length;
   const titleSize =
@@ -238,104 +244,106 @@ export default function StoryScreen({ route, navigation }) {
   const ListHeaderComponent = useMemo(
     () => (
       <>
-        <View style={[styles.storyInfo]}>
-          {httpLink ? (
-            <TouchableHighlight
-              onPress={() => {
-                // openBrowser(url);
-                Haptics.selectionAsync();
-                setTabView('web');
-              }}
-              onLongPress={() => {
-                openShare({ url });
-              }}
-            >
-              {TitleComponent}
-              <View style={{ marginTop: 4 }}>
-                <PrettyURL
-                  url={url}
-                  size="subhead"
-                  prominent
-                  numberOfLines={2}
-                  ellipsizeMode="middle"
-                />
-              </View>
-            </TouchableHighlight>
-          ) : (
-            TitleComponent
-          )}
-          <View style={styles.storyMetadata}>
-            {isJob ? (
-              <Text type="insignificant" size="subhead">
-                <TimeAgo time={datetime} />
-              </Text>
-            ) : (
-              <Text>
-                <Text type="insignificant" size="subhead">
-                  {points.toLocaleString('en-US')} point{points != 1 && 's'}{' '}
-                </Text>
-                <Text type="insignificant" size="subhead">
-                  by{' '}
-                  <Text
+        <ReadableWidthContainer>
+          <View style={[styles.storyInfo]}>
+            {httpLink ? (
+              <TouchableHighlight
+                onPress={() => {
+                  // openBrowser(url);
+                  Haptics.selectionAsync();
+                  setTabView('web');
+                }}
+                onLongPress={() => {
+                  openShare({ url });
+                }}
+              >
+                {TitleComponent}
+                <View style={{ marginTop: 4 }}>
+                  <PrettyURL
+                    url={url}
                     size="subhead"
-                    bold
-                    style={{ color: colors.red }}
-                    onPress={() => {
-                      navigation.push('User', user);
-                    }}
-                  >
-                    {user}
-                  </Text>{' '}
-                  &bull; <TimeAgo time={datetime} />
-                </Text>
-              </Text>
+                    prominent
+                    numberOfLines={2}
+                    ellipsizeMode="middle"
+                  />
+                </View>
+              </TouchableHighlight>
+            ) : (
+              TitleComponent
             )}
+            <View style={styles.storyMetadata}>
+              {isJob ? (
+                <Text type="insignificant" size="subhead">
+                  <TimeAgo time={datetime} />
+                </Text>
+              ) : (
+                <Text>
+                  <Text type="insignificant" size="subhead">
+                    {points.toLocaleString('en-US')} point{points != 1 && 's'}{' '}
+                  </Text>
+                  <Text type="insignificant" size="subhead">
+                    by{' '}
+                    <Text
+                      size="subhead"
+                      bold
+                      style={{ color: colors.red }}
+                      onPress={() => {
+                        navigation.push('User', user);
+                      }}
+                    >
+                      {user}
+                    </Text>{' '}
+                    &bull; <TimeAgo time={datetime} />
+                  </Text>
+                </Text>
+              )}
+            </View>
           </View>
-        </View>
-        {(!!content || !!poll) && (
-          <View style={styles.content}>
-            {!!content && <HTMLView html={content} />}
-            {!!poll &&
-              poll.map((p, i) => (
-                <View key={i}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'flex-end',
-                    }}
-                  >
-                    <Text bold size="subhead" style={{ flexShrink: 1 }}>
-                      {p.item}
-                    </Text>
-                    <Text size="subhead" style={{ marginLeft: 15 }}>
-                      {p.points.toLocaleString('en-US')} point
-                      {p.points === 0 ? '' : 's'}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      backgroundColor: colors.fill,
-                      height: 3,
-                      marginTop: 3,
-                      marginBottom: 8,
-                      borderRadius: 3,
-                      overflow: 'hidden',
-                    }}
-                  >
+          {(!!content || !!poll) && (
+            <View style={styles.content}>
+              {!!content && <HTMLView html={content} />}
+              {!!poll &&
+                poll.map((p, i) => (
+                  <View key={i}>
                     <View
                       style={{
-                        backgroundColor: colors.primary,
-                        height: 3,
-                        borderRadius: 3,
-                        width: (p.points / maxPollPoints) * 100 + '%',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'flex-end',
                       }}
-                    />
+                    >
+                      <Text bold size="subhead" style={{ flexShrink: 1 }}>
+                        {p.item}
+                      </Text>
+                      <Text size="subhead" style={{ marginLeft: 15 }}>
+                        {p.points.toLocaleString('en-US')} point
+                        {p.points === 0 ? '' : 's'}
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        backgroundColor: colors.fill,
+                        height: 3,
+                        marginTop: 3,
+                        marginBottom: 8,
+                        borderRadius: 3,
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <View
+                        style={{
+                          backgroundColor: colors.primary,
+                          height: 3,
+                          borderRadius: 3,
+                          width: (p.points / maxPollPoints) * 100 + '%',
+                        }}
+                      />
+                    </View>
                   </View>
-                </View>
-              ))}
-          </View>
-        )}
+                ))}
+            </View>
+          )}
+        </ReadableWidthContainer>
         {repliesCount > 0 && (
           <>
             <Separator />
@@ -620,6 +628,7 @@ export default function StoryScreen({ route, navigation }) {
                 flexShrink: 0,
                 flexDirection: 'row',
                 alignItems: 'center',
+                justifyContent: 'space-between',
               }}
             >
               <View style={{ width: 60, alignItems: 'center' }}>
@@ -640,7 +649,7 @@ export default function StoryScreen({ route, navigation }) {
                 )}
               </View>
               <SegmentedControl
-                style={{ flexGrow: 1 }}
+                style={{ flexGrow: 1, maxWidth: 480 }}
                 appearance={isDark ? 'dark' : 'light'}
                 values={tabValues}
                 selectedIndex={tabViews.findIndex((v) => v === tabView)}
@@ -651,7 +660,7 @@ export default function StoryScreen({ route, navigation }) {
                   setTabView(tab);
                 }}
               />
-              <View style={{ width: 60 }}></View>
+              <View style={{ width: 60 }} />
             </View>
           </BlurView>
           <ScrollView

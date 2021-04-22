@@ -6,6 +6,7 @@ import {
   Pressable,
   ActionSheetIOS,
   Animated,
+  findNodeHandle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
@@ -65,8 +66,11 @@ export default function Comment(item) {
     ]).start();
   }, [scaleAnim]);
 
+  const commentRef = useRef();
+
   return (
     <Pressable
+      ref={commentRef}
       onLongPress={() => {
         bobble();
         Haptics.selectionAsync();
@@ -80,6 +84,7 @@ export default function Comment(item) {
               'Cancel',
             ],
             cancelButtonIndex: 3,
+            anchor: findNodeHandle(commentRef.current),
           },
           (index) => {
             switch (index) {

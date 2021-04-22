@@ -19,6 +19,7 @@ import * as Device from 'expo-device';
 import Text from '../components/Text';
 import Separator from '../components/Separator';
 import OuterSpacer from '../components/OuterSpacer';
+import ReadableWidthContainer from '../components/ReadableWidthContainer';
 
 import useTheme from '../hooks/useTheme';
 import useStore from '../hooks/useStore';
@@ -30,10 +31,12 @@ const EMAIL = 'cheeaun+hackerweb@gmail.com';
 
 function ListMenu(props) {
   return (
-    <View
-      {...props}
-      style={{ marginHorizontal: 15, borderRadius: 8, overflow: 'hidden' }}
-    />
+    <ReadableWidthContainer>
+      <View
+        {...props}
+        style={{ marginHorizontal: 15, borderRadius: 8, overflow: 'hidden' }}
+      />
+    </ReadableWidthContainer>
   );
 }
 

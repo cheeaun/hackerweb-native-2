@@ -1,5 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
+import ReadableWidthContainer from './ReadableWidthContainer';
 
 export default function ({
   size = 'default',
@@ -16,13 +17,20 @@ export default function ({
       style={[
         {
           minHeight: heights[size],
-          paddingVertical: 8,
-          paddingHorizontal: 15,
           justifyContent: align === 'bottom' ? 'flex-end' : 'flex-start',
         },
         style,
       ]}
-      {...props}
-    />
+    >
+      <ReadableWidthContainer>
+        <View
+          style={{
+            paddingVertical: 8,
+            paddingHorizontal: 15,
+          }}
+          {...props}
+        />
+      </ReadableWidthContainer>
+    </View>
   );
 }

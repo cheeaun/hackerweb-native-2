@@ -4,7 +4,6 @@
     "slug": "hackerweb-native-2",
     "version": "2.0.1",
     "description": "A read-only Hacker News client.",
-    "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
@@ -19,9 +18,10 @@
     ],
     "ios": {
       "appStoreUrl": "https://apps.apple.com/app/id1084209377",
-      "supportsTablet": false,
       "bundleIdentifier": "cheeaun.hackerweb",
-      "buildNumber": "11"
+      "buildNumber": "12",
+      "supportsTablet": true,
+      "requireFullScreen": false
     },
     "platforms": [
       "ios"

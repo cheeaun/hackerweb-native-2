@@ -17,6 +17,7 @@ import LogsScreen from './screens/LogsScreen';
 
 import useStore from './hooks/useStore';
 import useTheme from './hooks/useTheme';
+import useViewportStore from './hooks/useViewportStore';
 
 const BACKGROUND_BUFFER = 15 * 60 * 1000; // 15min
 
@@ -108,8 +109,16 @@ export default function App() {
     },
   };
 
+  const setViewport = useViewportStore((state) => state.setViewport);
+
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <View
+      style={{ flex: 1, backgroundColor: colors.background }}
+      onLayout={(e) => {
+        const { width, height } = e.nativeEvent.layout;
+        setViewport({ width, height });
+      }}
+    >
       <StatusBar style="auto" animated />
       <SafeAreaProvider>
         <NavigationContainer theme={theme} key={reloadKey} ref={navigationRef}>

@@ -21,6 +21,7 @@ import Separator from '../components/Separator';
 import TimeAgo from '../components/TimeAgo';
 import OuterSpacer from '../components/OuterSpacer';
 import CommentPage from '../components/CommentPage';
+import ReadableWidthContainer from '../components/ReadableWidthContainer';
 
 import useTheme from '../hooks/useTheme';
 
@@ -59,35 +60,37 @@ export default function CommentsScreen({ route, navigation }) {
   const ListHeaderComponent = useMemo(
     () => (
       <View pointerEvents="none">
-        <MaskedView
-          style={{
-            padding: 15,
-            paddingTop: 1,
-            maxHeight: windowHeight / 6,
-            overflow: 'hidden',
-            position: 'relative',
-          }}
-          maskElement={
-            <LinearGradient
-              colors={['rgba(0,0,0,.7)', 'transparent']}
-              start={[0, 0]}
-              end={[0, 0.95]}
-              style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-              }}
-            />
-          }
-          onLayout={(e) => {
-            console.log('📐 MaskedView onLayout', e.nativeEvent.layout);
-            listHeaderHeight.current = e.nativeEvent.layout.height;
-          }}
-        >
-          <HTMLView html={content} />
-        </MaskedView>
+        <ReadableWidthContainer>
+          <MaskedView
+            style={{
+              padding: 15,
+              paddingTop: 1,
+              maxHeight: windowHeight / 6,
+              overflow: 'hidden',
+              position: 'relative',
+            }}
+            maskElement={
+              <LinearGradient
+                colors={['rgba(0,0,0,.7)', 'transparent']}
+                start={[0, 0]}
+                end={[0, 0.95]}
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                }}
+              />
+            }
+            onLayout={(e) => {
+              console.log('📐 MaskedView onLayout', e.nativeEvent.layout);
+              listHeaderHeight.current = e.nativeEvent.layout.height;
+            }}
+          >
+            <HTMLView html={content} />
+          </MaskedView>
+        </ReadableWidthContainer>
         <Separator />
         <OuterSpacer
           style={{

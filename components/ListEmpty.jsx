@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
-import { View, useWindowDimensions } from 'react-native';
+import { View } from 'react-native';
+
+import useViewportStore from '../hooks/useViewportStore';
 
 import Text from './Text';
 import ActivityIndicator from './ActivityIndicator';
@@ -10,8 +12,8 @@ export default function ({
   errorComponent = () => null,
 }) {
   if (!state) return null;
-  const { width, height } = useWindowDimensions();
-  const padding = useMemo(() => Math.min(width, height) / 2, [width, height]);
+  const height = useViewportStore((state) => state.height);
+  const paddingVertical = useMemo(() => height / 3, [height]);
 
   return (
     <View
@@ -19,7 +21,7 @@ export default function ({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingVertical: padding,
+        paddingVertical,
         paddingHorizontal: 15,
       }}
     >

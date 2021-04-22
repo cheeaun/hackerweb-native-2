@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { StyleSheet, View, LayoutAnimation } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  LayoutAnimation,
+  Modal,
+  ScrollView,
+  Pressable,
+} from 'react-native';
 import ky from 'ky';
 import format from 'date-fns/format';
 import { Modalize } from 'react-native-modalize';
@@ -13,6 +20,7 @@ import ActivityIndicator from '../components/ActivityIndicator';
 
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
+import useViewport from '../hooks/useViewport';
 
 import openBrowser from '../utils/openBrowser';
 
@@ -79,6 +87,35 @@ export default function UserScreen({ route, navigation }) {
   const [info, setInfo] = useState(userInfo);
   const modalRef = useRef(null);
 
+  // For tablet
+  const [visible, setVisible] = useState(true);
+  const { exceedsReadableWidth } = useViewport();
+
+  useEffect(() => {
+    modalRef.current?.open();
+    Haptics.selectionAsync();
+  }, []);
+
+  const onClose = () => {
+    modalRef.current?.close();
+    setVisible(false);
+  };
+
+  const onClosed = () => {
+    // Run this later because Modalize needs to run some cleanup code first
+    // *before* navigation.pop() unmounts this screen
+    setImmediate(() => navigation.pop());
+  };
+
+  useEffect(
+    useCallback(() => {
+      if (!visible && exceedsReadableWidth) onClosed();
+    }, [exceedsReadableWidth]),
+    [visible],
+  );
+
+  const { created, karma, submitted, about } = info || {};
+
   useEffect(
     useCallback(() => {
       if (!user || info) return;
@@ -112,60 +149,32 @@ export default function UserScreen({ route, navigation }) {
     [user],
   );
 
-  useEffect(() => {
-    modalRef.current?.open();
-    Haptics.selectionAsync();
-  }, []);
-
-  const onClose = () => {
-    modalRef.current?.close();
-  };
-
-  const onClosed = () => {
-    // Run this later because Modalize needs to run some cleanup code first
-    // *before* navigation.pop() unmounts this screen
-    setImmediate(() => navigation.pop());
-  };
-
-  const { created, karma, submitted, about } = info || {};
-
-  return (
-    <Modalize
-      ref={modalRef}
-      snapPoint={300}
-      modalHeight={500}
-      onClosed={onClosed}
-      handlePosition="inside"
-      handleStyle={{
-        backgroundColor: colors.fill,
-      }}
-      modalStyle={{
-        backgroundColor: colors.background,
-      }}
-      overlayStyle={{
-        backgroundColor: colors.overlay,
-      }}
-      HeaderComponent={() => (
-        <View style={[styles.container, styles.header]}>
-          <Text size="title2" bold numberOfLines={1} style={{ flex: 1 }}>
-            {user}
+  const HeaderComponent = useCallback(
+    () => (
+      <View style={[styles.container, styles.header]}>
+        <Text size="title2" bold numberOfLines={1} style={{ flex: 1 }}>
+          {user}
+        </Text>
+        <TouchableOpacity
+          onPress={onClose}
+          hitSlop={{
+            top: 44,
+            right: 44,
+            bottom: 44,
+            left: 44,
+          }}
+        >
+          <Text type="link" bolder>
+            Close
           </Text>
-          <TouchableOpacity
-            onPress={onClose}
-            hitSlop={{
-              top: 44,
-              right: 44,
-              bottom: 44,
-              left: 44,
-            }}
-          >
-            <Text type="link" bolder>
-              Close
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    >
+        </TouchableOpacity>
+      </View>
+    ),
+    [user],
+  );
+
+  const ContentComponent = useCallback(
+    () => (
       <View style={[styles.container, { paddingTop: 0 }]}>
         <Separator />
         {fetchState === 'error' ? (
@@ -235,6 +244,75 @@ export default function UserScreen({ route, navigation }) {
           </>
         )}
       </View>
+    ),
+    [fetchState, created, karma, submitted, about],
+  );
+
+  if (exceedsReadableWidth) {
+    return (
+      <Modal
+        animationType="fade"
+        visible={visible}
+        transparent
+        onRequestClose={onClose}
+      >
+        <Pressable
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: colors.opaqueBackground,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 5,
+            },
+            shadowOpacity: 0.1,
+            shadowRadius: 10,
+            elevation: 3,
+          }}
+          onPress={onClose}
+        >
+          <View
+            style={{
+              backgroundColor: colors.background,
+              borderRadius: 16,
+              width: 480,
+              maxWidth: '98%',
+              maxHeight: '80%',
+            }}
+          >
+            <HeaderComponent />
+            <ScrollView style={{ flexGrow: 0 }}>
+              <View onStartShouldSetResponder={() => true}>
+                <ContentComponent />
+              </View>
+            </ScrollView>
+          </View>
+        </Pressable>
+      </Modal>
+    );
+  }
+
+  return (
+    <Modalize
+      ref={modalRef}
+      snapPoint={300}
+      modalHeight={500}
+      onClosed={onClosed}
+      handlePosition="inside"
+      handleStyle={{
+        backgroundColor: colors.fill,
+      }}
+      modalStyle={{
+        backgroundColor: colors.background,
+      }}
+      overlayStyle={{
+        backgroundColor: colors.overlay,
+      }}
+      HeaderComponent={HeaderComponent}
+    >
+      <ContentComponent />
     </Modalize>
   );
 }

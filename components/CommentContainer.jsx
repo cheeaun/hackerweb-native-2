@@ -7,6 +7,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import Text from './Text';
 import Button from './Button';
 import Comment from './Comment';
+import ReadableWidthContainer from './ReadableWidthContainer';
 
 import useTheme from '../hooks/useTheme';
 
@@ -206,34 +207,36 @@ export default function CommentContainer({ item, maxWeight = 5 }) {
     calcCommentsWeight(item.comment) + calcCommentsWeight(item.comments);
 
   return (
-    <View key={item.id} style={styles.comment}>
-      <Comment {...item} />
-      {!!repliesCount &&
-        (totalWeight < maxWeight ? (
-          item.comments.map((comment, i) => (
-            <InnerCommentContainer
-              key={comment.id}
-              last={i === repliesCount - 1}
-              item={comment}
-              accWeight={totalWeight}
-              maxWeight={maxWeight}
+    <ReadableWidthContainer>
+      <View key={item.id} style={styles.comment}>
+        <Comment {...item} />
+        {!!repliesCount &&
+          (totalWeight < maxWeight ? (
+            item.comments.map((comment, i) => (
+              <InnerCommentContainer
+                key={comment.id}
+                last={i === repliesCount - 1}
+                item={comment}
+                accWeight={totalWeight}
+                maxWeight={maxWeight}
+              />
+            ))
+          ) : (
+            <RepliesCommentsButton
+              replies={repliesCount}
+              comments={totalComments}
+              suffix={
+                item.comments[0].user &&
+                `by ${item.comments[0].user}${
+                  repliesCount > 1 ? ' & others' : ''
+                }`
+              }
+              onPress={() => {
+                navigation.push('Comments', item);
+              }}
             />
-          ))
-        ) : (
-          <RepliesCommentsButton
-            replies={repliesCount}
-            comments={totalComments}
-            suffix={
-              item.comments[0].user &&
-              `by ${item.comments[0].user}${
-                repliesCount > 1 ? ' & others' : ''
-              }`
-            }
-            onPress={() => {
-              navigation.push('Comments', item);
-            }}
-          />
-        ))}
-    </View>
+          ))}
+      </View>
+    </ReadableWidthContainer>
   );
 }

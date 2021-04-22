@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useLayoutEffect,
+} from 'react';
 import {
   FlatList,
   LayoutAnimation,
@@ -13,14 +19,20 @@ import StoryItem from '../components/StoryItem';
 import Separator from '../components/Separator';
 import ListEmpty from '../components/ListEmpty';
 import Text from '../components/Text';
+import ReadableWidthContainer from '../components/ReadableWidthContainer';
 
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
+import useViewport from '../hooks/useViewport';
 
 import GearIcon from '../assets/gearshape.svg';
 
 const ItemSeparatorComponent = () => (
-  <Separator style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }} />
+  <ReadableWidthContainer>
+    <Separator
+      style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
+    />
+  </ReadableWidthContainer>
 );
 
 export default function StoriesScreen({ navigation }) {
@@ -109,6 +121,13 @@ export default function StoriesScreen({ navigation }) {
   const [showMore, setShowMore] = useState(false);
   const [showMoreStories, setShowMoreStories] = useState(false);
 
+  const { exceedsReadableWidth } = useViewport();
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLargeTitle: !exceedsReadableWidth,
+    });
+  }, [exceedsReadableWidth]);
+
   return (
     showList && (
       <FlatList
@@ -116,7 +135,11 @@ export default function StoriesScreen({ navigation }) {
         contentInsetAdjustmentBehavior="automatic"
         data={showMoreStories ? stories : stories.slice(0, 30)}
         renderItem={({ item, index }) => {
-          return <StoryItem id={item.id} position={index + 1} />;
+          return (
+            <ReadableWidthContainer>
+              <StoryItem id={item.id} position={index + 1} />
+            </ReadableWidthContainer>
+          );
         }}
         keyExtractor={(item) => '' + item.id}
         ItemSeparatorComponent={ItemSeparatorComponent}
