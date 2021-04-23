@@ -11,6 +11,11 @@ This is a complete rewrite of the first version launched in 2016.
 - V1: https://github.com/cheeaun/hackerweb-native
 - Story: http://cheeaun.com/blog/2016/03/building-hackerweb-ios/
 
+## Download
+
+- App Store: https://apps.apple.com/us/app/id1084209377
+- TestFlight: https://testflight.apple.com/join/PHcLooxC
+
 ## Preview
 
 ### Light
