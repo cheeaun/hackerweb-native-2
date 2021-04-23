@@ -5,7 +5,13 @@ import React, {
   useCallback,
   useRef,
 } from 'react';
-import { View, useWindowDimensions, Animated, StyleSheet } from 'react-native';
+import {
+  View,
+  useWindowDimensions,
+  Animated,
+  StyleSheet,
+  SafeAreaView,
+} from 'react-native';
 import MaskedView from '@react-native-community/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
@@ -24,14 +30,14 @@ import CommentPage from '../components/CommentPage';
 import ReadableWidthContainer from '../components/ReadableWidthContainer';
 
 import useTheme from '../hooks/useTheme';
+import useViewport from '../hooks/useViewport';
+import useBottomSheetHeaderHeight from '../hooks/useBottomSheetHeaderHeight';
 
 import getHTMLText from '../utils/getHTMLText';
 import getCommentsMetadata from '../utils/getCommentsMetadata';
 import repliesCount2MaxWeight from '../utils/repliesCount2MaxWeight';
 
 import CloseIcon from '../assets/xmark.svg';
-
-const HEADER_HEIGHT = 56;
 
 export default function CommentsScreen({ route, navigation }) {
   const { isDark, colors } = useTheme();
@@ -147,26 +153,29 @@ export default function CommentsScreen({ route, navigation }) {
   const footerRef = useRef(null);
   const ListFooterComponent = useMemo(() => <View ref={footerRef} />, []);
   const appearAnim = useRef(new Animated.Value(0)).current;
+  const { underViewableHeight } = useViewport();
   useEffect(() => {
-    Animated.spring(appearAnim, {
-      toValue: 1,
-      delay: 300,
-      useNativeDriver: true,
-    }).start();
-  }, []);
+    if (underViewableHeight) {
+      Animated.spring(appearAnim, {
+        toValue: 0,
+        delay: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.spring(appearAnim, {
+        toValue: 1,
+        delay: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [underViewableHeight]);
 
   const headerRef = useRef(null);
-  const headerStyles = useMemo(
-    () => ({
-      height: HEADER_HEIGHT,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      borderBottomColor: 'transparent',
-      borderBottomWidth: StyleSheet.hairlineWidth,
-    }),
-    [],
-  );
+  const headerHeight = useBottomSheetHeaderHeight();
+  const headerStyles = {
+    borderBottomColor: 'transparent',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  };
   const insets = useSafeAreaInsets();
   const [scrolledDown, setScrolledDown] = useState(false);
   const scrolledRef = useRef(false);
@@ -190,45 +199,56 @@ export default function CommentsScreen({ route, navigation }) {
     <>
       {!isDark && <StatusBar style="inverted" animated />}
       <View ref={headerRef} style={headerStyles}>
-        <View style={{ paddingLeft: 15, flexShrink: 1 }}>
-          <Text numberOfLines={1}>
-            <Text
-              bold
-              style={{ color: colors.red }}
+        <SafeAreaView>
+          <View
+            style={{
+              height: headerHeight,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <View style={{ paddingLeft: 15, flexShrink: 1 }}>
+              <Text numberOfLines={1}>
+                <Text
+                  bold
+                  style={{ color: colors.red }}
+                  onPress={() => {
+                    navigation.push('User', item.user);
+                  }}
+                >
+                  {item.user}
+                </Text>
+                <Text type="insignificant"> &bull; </Text>
+                {scrolledDown ? (
+                  <Text size="subhead" type="insignificant">
+                    {getHTMLText(content)}
+                  </Text>
+                ) : (
+                  <Text type="insignificant">
+                    <TimeAgo time={new Date(item.time * 1000)} />
+                  </Text>
+                )}
+              </Text>
+            </View>
+            <TouchableOpacity
               onPress={() => {
-                navigation.push('User', item.user);
+                navigation.pop();
+              }}
+              style={{ paddingHorizontal: 15 }}
+              hitSlop={{
+                top: 44,
+                right: 44,
+                bottom: 44,
+                left: 44,
               }}
             >
-              {item.user}
-            </Text>
-            <Text type="insignificant"> &bull; </Text>
-            {scrolledDown ? (
-              <Text size="subhead" type="insignificant">
-                {getHTMLText(content)}
+              <Text type="link" bolder>
+                Done
               </Text>
-            ) : (
-              <Text type="insignificant">
-                <TimeAgo time={new Date(item.time * 1000)} />
-              </Text>
-            )}
-          </Text>
-        </View>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.pop();
-          }}
-          style={{ paddingHorizontal: 15 }}
-          hitSlop={{
-            top: 44,
-            right: 44,
-            bottom: 44,
-            left: 44,
-          }}
-        >
-          <Text type="link" bolder>
-            Done
-          </Text>
-        </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
       </View>
       <FlatList
         key={`comments-${item.id}`}

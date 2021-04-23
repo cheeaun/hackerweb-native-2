@@ -6,6 +6,7 @@ import {
   View,
   ScrollView,
   Linking,
+  SafeAreaView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
@@ -23,10 +24,10 @@ import ReadableWidthContainer from '../components/ReadableWidthContainer';
 
 import useTheme from '../hooks/useTheme';
 import useStore from '../hooks/useStore';
+import useBottomSheetHeaderHeight from '../hooks/useBottomSheetHeaderHeight';
 
 import openBrowser from '../utils/openBrowser';
 
-const HEADER_HEIGHT = 56;
 const EMAIL = 'cheeaun+hackerweb@gmail.com';
 
 function ListMenu(props) {
@@ -93,46 +94,55 @@ export default function SettingsScreen({ navigation }) {
     setCanComposeMail(isAvailable);
   });
 
+  const headerHeight = useBottomSheetHeaderHeight();
+
   return (
     <>
       {!isDark && <StatusBar style="inverted" animated />}
       <View
         style={{
           backgroundColor: colors.background,
-          height: HEADER_HEIGHT,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
           borderBottomColor: colors.separator,
           borderBottomWidth: StyleSheet.hairlineWidth,
         }}
       >
-        {/* Start Faux Spacer */}
-        <Text style={{ paddingHorizontal: 15, color: 'transparent' }}>
-          Done
-        </Text>
-        {/* End Faux Spacer */}
-        <View style={{ padding: 15 }}>
-          <Text bolder style={{ textAlign: 'center' }}>
-            Settings
-          </Text>
-        </View>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.pop();
-          }}
-          style={{ paddingHorizontal: 15 }}
-          hitSlop={{
-            top: 44,
-            right: 44,
-            bottom: 44,
-            left: 44,
-          }}
-        >
-          <Text type="link" bolder>
-            Done
-          </Text>
-        </TouchableOpacity>
+        <SafeAreaView>
+          <View
+            style={{
+              height: headerHeight,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            {/* Start Faux Spacer */}
+            <Text style={{ paddingHorizontal: 15, color: 'transparent' }}>
+              Done
+            </Text>
+            {/* End Faux Spacer */}
+            <View style={{ paddingHorizontal: 15 }}>
+              <Text bolder style={{ textAlign: 'center' }}>
+                Settings
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.pop();
+              }}
+              style={{ paddingHorizontal: 15 }}
+              hitSlop={{
+                top: 44,
+                right: 44,
+                bottom: 44,
+                left: 44,
+              }}
+            >
+              <Text type="link" bolder>
+                Done
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
       </View>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <OuterSpacer />

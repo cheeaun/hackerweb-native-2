@@ -1,12 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet, FlatList, SafeAreaView } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import Text from '../components/Text';
 
 import useTheme from '../hooks/useTheme';
-
-const HEADER_HEIGHT = 56;
 
 const renderItem = ({ item }) => {
   const { ts, log } = item;
@@ -54,39 +52,43 @@ export default function LogsScreen({ navigation }) {
     <>
       <View
         style={{
-          height: HEADER_HEIGHT,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
           borderBottomColor: colors.separator,
           borderBottomWidth: StyleSheet.hairlineWidth,
         }}
       >
-        <View style={{ padding: 15 }}>
-          <Text bold>Logs</Text>
-          <Text size="caption2" type="insignificant">
-            In-memory, not stored anywhere. Don't worry.
-          </Text>
-        </View>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.pop();
-          }}
-          style={{ paddingHorizontal: 15 }}
-          hitSlop={{
-            top: 44,
-            right: 44,
-            bottom: 44,
-            left: 44,
+        <SafeAreaView
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
           }}
         >
-          <Text type="link" bold>
-            Close
-          </Text>
-        </TouchableOpacity>
+          <View style={{ paddingHorizontal: 15, paddingVertical: 8 }}>
+            <Text bold>Logs</Text>
+            <Text size="caption2" type="insignificant">
+              In-memory, not stored anywhere. Don't worry.
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.pop();
+            }}
+            style={{ paddingHorizontal: 15 }}
+            hitSlop={{
+              top: 44,
+              right: 44,
+              bottom: 44,
+              left: 44,
+            }}
+          >
+            <Text type="link" bold>
+              Close
+            </Text>
+          </TouchableOpacity>
+        </SafeAreaView>
       </View>
       <FlatList
-        contentInsetAdjustmentBehavior="automatic"
+        contentInsetAdjustmentBehavior="always"
         data={DEBUG_LOGS}
         keyExtractor={(item) => '' + item.ts.getTime() + Math.random()}
         renderItem={renderItem}

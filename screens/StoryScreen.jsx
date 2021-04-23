@@ -48,6 +48,7 @@ import shortenNumber from '../utils/shortenNumber';
 
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
+import useViewport from '../hooks/useViewport';
 
 import ShareIcon from '../assets/square.and.arrow.up.svg';
 import BackIcon from '../assets/chevron.backward.svg';
@@ -138,6 +139,7 @@ export default function StoryScreen({ route, navigation }) {
     [],
   );
 
+  const { underViewableHeight } = useViewport();
   const [navState, setNavState] = useState({});
   const [toolbarHeight, setToolbarHeight] = useState(0);
   const [toolbarWidth, setToolbarWidth] = useState(0);
@@ -222,8 +224,13 @@ export default function StoryScreen({ route, navigation }) {
   }, [url, hnURL]);
 
   const titleLength = (title || '').length;
-  const titleSize =
-    titleLength < 50 ? 'title1' : titleLength < 100 ? 'title2' : 'title3';
+  const titleSize = underViewableHeight
+    ? 'title3'
+    : titleLength < 50
+    ? 'title1'
+    : titleLength < 100
+    ? 'title2'
+    : 'title3';
 
   const TitleComponent = useMemo(
     () => (
@@ -495,6 +502,8 @@ export default function StoryScreen({ route, navigation }) {
 
   const insets = useSafeAreaInsets();
 
+  const toolbarPadding = underViewableHeight ? 8 : 15;
+
   return (
     <>
       <FlatList
@@ -558,7 +567,7 @@ export default function StoryScreen({ route, navigation }) {
                 originWhitelist={['http://*', 'https://*', 'data:*', 'about:*']}
                 decelerationRate="normal"
                 allowsInlineMediaPlayback
-                contentInsetAdjustmentBehavior="automatic"
+                contentInsetAdjustmentBehavior="always"
                 allowsBackForwardNavigationGestures
                 renderLoading={() => null}
                 onNavigationStateChange={(navState) => {
@@ -623,8 +632,8 @@ export default function StoryScreen({ route, navigation }) {
                 setToolbarHeight(height - insets.bottom);
               }}
               style={{
-                paddingTop: 15,
-                paddingBottom: Math.max(15, insets.bottom + 4),
+                paddingTop: toolbarPadding,
+                paddingBottom: Math.max(toolbarPadding, insets.bottom + 4),
                 flexShrink: 0,
                 flexDirection: 'row',
                 alignItems: 'center',

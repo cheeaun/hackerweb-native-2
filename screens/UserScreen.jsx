@@ -89,7 +89,7 @@ export default function UserScreen({ route, navigation }) {
 
   // For tablet
   const [visible, setVisible] = useState(true);
-  const { exceedsReadableWidth } = useViewport();
+  const { exceedsReadableWidth, underViewableHeight } = useViewport();
 
   useEffect(() => {
     modalRef.current?.open();
@@ -153,8 +153,19 @@ export default function UserScreen({ route, navigation }) {
 
   const HeaderComponent = useCallback(
     () => (
-      <View style={[styles.container, styles.header]}>
-        <Text size="title2" bold numberOfLines={1} style={{ flex: 1 }}>
+      <View
+        style={[
+          styles.container,
+          styles.header,
+          underViewableHeight && { paddingBottom: 8 },
+        ]}
+      >
+        <Text
+          size={underViewableHeight ? 'title3' : 'title2'}
+          bold
+          numberOfLines={1}
+          style={{ flex: 1 }}
+        >
           {user}
         </Text>
         <TouchableOpacity
