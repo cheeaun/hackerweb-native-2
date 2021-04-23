@@ -109,8 +109,10 @@ export default function UserScreen({ route, navigation }) {
 
   useEffect(
     useCallback(() => {
-      if (!visible && exceedsReadableWidth) onClosed();
-    }, [exceedsReadableWidth]),
+      if (!visible && exceedsReadableWidth) {
+        onClosed();
+      }
+    }, [visible, exceedsReadableWidth]),
     [visible],
   );
 
