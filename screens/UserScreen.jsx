@@ -253,6 +253,7 @@ export default function UserScreen({ route, navigation }) {
   if (exceedsReadableWidth) {
     return (
       <Modal
+        supportedOrientations={['portrait', 'landscape']}
         animationType="fade"
         visible={visible}
         transparent
