@@ -9,6 +9,10 @@
         "workflow": "managed",
         "distribution": "internal",
         "releaseChannel": "staging-2.0.1"
+      },
+      "simulator": {
+        "workflow": "managed",
+        "distribution": "simulator"
       }
     }
   }
