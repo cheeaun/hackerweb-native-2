@@ -148,7 +148,7 @@ export default function SettingsScreen({ navigation }) {
         <OuterSpacer />
         <ListMenu>
           <ListItem>
-            <Text type="insignificant">No settings available yet.</Text>
+            <Text type="insignificant">No settings available yet</Text>
           </ListItem>
         </ListMenu>
         <OuterSpacer size="large">
