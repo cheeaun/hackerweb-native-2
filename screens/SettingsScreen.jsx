@@ -303,9 +303,11 @@ export default function SettingsScreen({ navigation }) {
               Channel: {releaseChannel}
             </Text>
           )}
-          <Text size="footnote" type="insignificant">
-            Expo {Constants.expoVersion}
-          </Text>
+          {Constants.expoVersion && (
+            <Text size="footnote" type="insignificant">
+              Expo {Constants.expoVersion}
+            </Text>
+          )}
           {updateIsAvailable && (
             <Text
               size="footnote"
