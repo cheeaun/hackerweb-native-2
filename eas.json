@@ -2,7 +2,13 @@
   "builds": {
     "ios": {
       "release": {
-        "workflow": "managed"
+        "workflow": "managed",
+        "releaseChannel": "production-2.0.0"
+      },
+      "preview": {
+        "workflow": "managed",
+        "distribution": "internal",
+        "releaseChannel": "staging-2.0.1"
       }
     }
   }
