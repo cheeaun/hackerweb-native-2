@@ -167,7 +167,7 @@ export default function HTMLView({ html, linkify }) {
         console.warn('HTML contains anchors and linkify=true', html);
       } else {
         html = entities
-          .decode(html)
+          .decodeHTML(html)
           .replace(/(<\w)/gi, '\n$1') // Some tags are too "sticky"
           .replace(urlRegex, (url) => `<a href="${url}">${url}</a>`);
       }
