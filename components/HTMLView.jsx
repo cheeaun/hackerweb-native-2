@@ -174,5 +174,5 @@ export default function HTMLView({ html, linkify }) {
     }
     processDOM(html, setElements);
   }, []);
-  return elements;
+  return <View>{elements}</View>;
 }
