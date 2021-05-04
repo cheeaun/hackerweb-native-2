@@ -191,12 +191,7 @@ export default function SettingsScreen({ navigation }) {
             <>
               <ListItem
                 onPress={() => {
-                  // Temporary solution
-                  // TODO: Remove this when create new prod build
-                  Linking.openURL(
-                    'https://apps.apple.com/app/id1084209377?action=write-review',
-                  );
-                  // StoreReview.requestReview();
+                  StoreReview.requestReview();
                 }}
               >
                 <Text type="link">Rate {Constants.manifest.name}</Text>
