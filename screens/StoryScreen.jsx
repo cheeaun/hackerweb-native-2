@@ -567,7 +567,9 @@ export default function StoryScreen({ route, navigation }) {
                 originWhitelist={['http://*', 'https://*', 'data:*', 'about:*']}
                 decelerationRate="normal"
                 allowsInlineMediaPlayback
-                contentInsetAdjustmentBehavior="always"
+                contentInsetAdjustmentBehavior="automatic"
+                automaticallyAdjustContentInsets
+                automaticallyAdjustsScrollIndicatorInsets
                 allowsBackForwardNavigationGestures
                 renderLoading={() => null}
                 onNavigationStateChange={(navState) => {
