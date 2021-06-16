@@ -3,7 +3,7 @@
     "ios": {
       "release": {
         "workflow": "managed",
-        "releaseChannel": "production-2.0.0"
+        "releaseChannel": "production-2.0.1"
       },
       "preview": {
         "workflow": "managed",
