@@ -1,17 +1,18 @@
 {
-  "builds": {
-    "ios": {
-      "release": {
-        "workflow": "managed",
+  "build": {
+    "release": {
+      "ios": {
         "releaseChannel": "production-2.0.1"
-      },
-      "preview": {
-        "workflow": "managed",
+      }
+    },
+    "preview": {
+      "ios": {
         "releaseChannel": "staging-2.0.1"
-      },
-      "simulator": {
-        "workflow": "managed",
-        "distribution": "simulator"
+      }
+    },
+    "simulator": {
+      "ios": {
+        "simulator": true
       }
     }
   }
