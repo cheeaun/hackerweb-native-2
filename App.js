@@ -157,6 +157,7 @@ export default function App() {
               name="Comments"
               component={CommentsScreen}
               options={{
+                headerShown: false,
                 stackPresentation: 'modal',
                 contentStyle: {
                   backgroundColor: colors.modalBackground,
@@ -167,6 +168,7 @@ export default function App() {
               name="User"
               component={UserScreen}
               options={{
+                headerShown: false,
                 stackPresentation: 'transparentModal',
                 stackAnimation: 'none',
                 contentStyle: {
@@ -178,6 +180,7 @@ export default function App() {
               name="Settings"
               component={SettingsScreen}
               options={{
+                headerShown: false,
                 stackPresentation: 'modal',
                 contentStyle: {
                   backgroundColor: colors.background2,
