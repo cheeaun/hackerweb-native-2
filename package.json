@@ -26,10 +26,10 @@
     "@react-native-segmented-control/segmented-control": "2.3.0",
     "@react-navigation/native": "^5.9.8",
     "@react-navigation/stack": "^5.14.9",
-    "array-move": "~3.0.1",
+    "array-move": "~4.0.0",
     "buffer": "~6.0.3",
-    "date-fns": "~2.21.0",
-    "entities": "~2.2.0",
+    "date-fns": "~2.23.0",
+    "entities": "~3.0.1",
     "expo": "^42.0.0",
     "expo-blur": "~9.0.3",
     "expo-constants": "~11.0.1",
@@ -42,8 +42,8 @@
     "expo-store-review": "~4.1.0",
     "expo-updates": "~0.8.2",
     "expo-web-browser": "~9.2.0",
-    "htmlparser2": "~6.1.0",
-    "ky": "~0.27.0",
+    "htmlparser2": "~7.1.1",
+    "ky": "~0.28.5",
     "p-memoize": "~4.0.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
@@ -59,7 +59,7 @@
     "react-native-webview": "11.6.2",
     "stream": "0.0.2",
     "url-regex-safe": "~2.0.2",
-    "zustand": "~3.4.1"
+    "zustand": "~3.5.10"
   },
   "devDependencies": {
     "@babel/core": "~7.13.0",
