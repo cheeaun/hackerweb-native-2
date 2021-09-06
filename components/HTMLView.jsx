@@ -11,6 +11,7 @@ import { Parser } from 'htmlparser2';
 import { DomHandler } from 'domhandler';
 import urlRegexSafe from 'url-regex-safe';
 import * as entities from 'entities';
+import stripIndent from 'strip-indent';
 
 import Text from './Text';
 
@@ -114,7 +115,7 @@ function dom2elements(nodes, parentName) {
       let text;
       if (parentName == 'code') {
         // Trim EOL newline
-        text = data.replace(/\n$/, '');
+        text = stripIndent(data.replace(/\n$/, ''));
       } else {
         // Trim ALL newlines, because HTML
         text = data.replace(/[\n\s\t]+/g, ' ');

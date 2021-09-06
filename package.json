@@ -58,6 +58,7 @@
     "react-native-web": "~0.13.12",
     "react-native-webview": "11.6.2",
     "stream": "0.0.2",
+    "strip-indent": "~4.0.0",
     "url-regex-safe": "~2.0.2",
     "zustand": "~3.5.10"
   },
