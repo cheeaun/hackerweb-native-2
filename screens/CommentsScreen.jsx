@@ -12,7 +12,7 @@ import {
   StyleSheet,
   SafeAreaView,
 } from 'react-native';
-import MaskedView from '@react-native-community/masked-view';
+import MaskedView from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import { StatusBar } from 'expo-status-bar';
