@@ -7,7 +7,7 @@
     },
     "preview": {
       "ios": {
-        "releaseChannel": "staging-2.0.1"
+        "releaseChannel": "staging-2.0.2"
       }
     },
     "simulator": {
