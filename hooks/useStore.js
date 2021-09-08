@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import create from 'zustand';
 import ky from 'ky';
-import arrayMove from 'array-move';
+import { arrayMoveMutable } from 'array-move';
 import pMemoize from 'p-memoize';
 
 const API_ROOT = 'https://api.hackerwebapp.com';
@@ -167,7 +167,7 @@ const useStore = create((set, get) => ({
       links = links.slice(0, 100);
     } else {
       // Found
-      links = arrayMove(links, index, 0);
+      arrayMoveMutable(links, index, 0);
     }
     set({ links });
     setItem('links', links);
