@@ -15,16 +15,29 @@ jobs:
     name: Install and publish
     runs-on: ubuntu-latest
     steps:
+      - name: Cancel Previous Runs
+          uses: styfle/cancel-workflow-action@0.9.1
+          with:
+            all_but_latest: true
+            access_token: ${{ github.token }}
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: 12.x
-      - uses: expo/expo-github-action@v5
+          node-version: 14.x
+      - uses: expo/expo-github-action@v6
         with:
-          expo-username: cheeaun
           expo-version: 4.x
-          expo-token: ${{ secrets.EXPO_TOKEN }}
-          expo-packager: npm
           expo-cache: true
+          eas-cache: true
+          username: cheeaun
+          token: ${{ secrets.EXPO_TOKEN }}
+          packager: npm
       - run: npm ci
       - run: npm run publish
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build-artifact
+          path: |
+            package.json
+            app.json
+            eas.json
