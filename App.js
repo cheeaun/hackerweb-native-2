@@ -191,6 +191,7 @@ export default function App() {
               name="Logs"
               component={LogsScreen}
               options={{
+                headerShown: false,
                 stackPresentation: 'modal',
               }}
             />
