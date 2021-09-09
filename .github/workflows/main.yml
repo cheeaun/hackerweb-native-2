@@ -28,6 +28,7 @@ jobs:
         with:
           expo-version: 4.x
           expo-cache: true
+          eas-version: latest
           eas-cache: true
           username: cheeaun
           token: ${{ secrets.EXPO_TOKEN }}
