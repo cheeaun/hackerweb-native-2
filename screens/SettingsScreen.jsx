@@ -35,7 +35,7 @@ function ListMenu(props) {
     <ReadableWidthContainer>
       <View
         {...props}
-        style={{ marginHorizontal: 15, borderRadius: 8, overflow: 'hidden' }}
+        style={{ marginHorizontal: 15, borderRadius: 12, overflow: 'hidden' }}
       />
     </ReadableWidthContainer>
   );
@@ -45,7 +45,8 @@ function ListItem({ style = {}, ...props }) {
   const { colors } = useTheme();
   const [pressed, setPressed] = useState(false);
   const styles = {
-    padding: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 13,
     backgroundColor: colors.background,
   };
 
@@ -62,7 +63,7 @@ function ListItem({ style = {}, ...props }) {
       style={[
         styles,
         pressed && {
-          backgroundColor: colors.secondaryBackground,
+          backgroundColor: colors.fill,
         },
         style,
       ]}
@@ -151,7 +152,7 @@ export default function SettingsScreen({ navigation }) {
             <Text type="insignificant">No settings available yet</Text>
           </ListItem>
         </ListMenu>
-        <OuterSpacer size="large">
+        <OuterSpacer size="large" innerStyle={{ paddingHorizontal: 30 }}>
           <Text
             size="footnote"
             type="insignificant"
@@ -249,12 +250,12 @@ export default function SettingsScreen({ navigation }) {
             <Text type="link">Privacy Policy</Text>
           </ListItem>
         </ListMenu>
-        <OuterSpacer align="top">
+        <OuterSpacer align="top" innerStyle={{ paddingHorizontal: 30 }}>
           <Text size="footnote" type="insignificant">
             Not affiliated with Hacker News or YCombinator.
           </Text>
         </OuterSpacer>
-        <OuterSpacer>
+        <OuterSpacer innerStyle={{ paddingHorizontal: 30 }}>
           <Text
             size="footnote"
             type="insignificant"
@@ -274,7 +275,7 @@ export default function SettingsScreen({ navigation }) {
               Alert.alert('Cache cleared.');
             }}
           >
-            <Text type="link">Clear Cache</Text>
+            <Text>Clear Cache</Text>
           </ListItem>
           {!__PRODUCTION__ && (
             <>
@@ -284,12 +285,12 @@ export default function SettingsScreen({ navigation }) {
                   navigation.push('Logs');
                 }}
               >
-                <Text type="link">Logs</Text>
+                <Text>Logs</Text>
               </ListItem>
             </>
           )}
         </ListMenu>
-        <OuterSpacer align="top">
+        <OuterSpacer align="top" innerStyle={{ paddingHorizontal: 30 }}>
           <Text size="footnote" type="insignificant">
             {Constants.manifest.name} {Constants.nativeAppVersion} (
             {Constants.nativeBuildVersion})

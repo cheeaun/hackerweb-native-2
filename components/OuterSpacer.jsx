@@ -6,6 +6,7 @@ export default function ({
   size = 'default',
   align = 'bottom',
   style = {},
+  innerStyle = {},
   ...props
 }) {
   const heights = {
@@ -24,10 +25,13 @@ export default function ({
     >
       <ReadableWidthContainer>
         <View
-          style={{
-            paddingVertical: 8,
-            paddingHorizontal: 15,
-          }}
+          style={[
+            {
+              paddingVertical: 8,
+              paddingHorizontal: 15,
+            },
+            innerStyle,
+          ]}
           {...props}
         />
       </ReadableWidthContainer>
