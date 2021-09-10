@@ -218,7 +218,7 @@ export default function SettingsScreen({ navigation }) {
               })
               Update: ${updateId || '—'}
               Channel: ${releaseChannel || '—'}
-              Expo ${Constants.expoVersion}
+              Expo ${Constants.expoVersion || '-'}
               ${Device.modelName} (${Device.osName} ${Device.osVersion})
               `;
 
