@@ -14,3 +14,4 @@ web-build/
 
 # Custom
 .env
+__build-artifact__

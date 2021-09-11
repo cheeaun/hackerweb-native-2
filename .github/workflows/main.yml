@@ -4,10 +4,7 @@ on:
     branches: [main]
     paths-ignore:
       - 'README.md'
-      - 'channel.js'
-      - 'app.json'
       - '.gitignore'
-      - 'package.json'
       - 'screenshots/**'
 
 jobs:
@@ -33,8 +30,12 @@ jobs:
           username: cheeaun
           token: ${{ secrets.EXPO_TOKEN }}
           packager: npm
+      - uses: actions/download-artifact@v2
+        with:
+          name: build-artifact
+          path: __build-artifact__
       - run: npm ci
-      - run: npm run publish
+      - run: npm run is-new-build && npm run eas-build || npm run publish
       - uses: actions/upload-artifact@v2
         with:
           name: build-artifact
