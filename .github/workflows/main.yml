@@ -30,7 +30,7 @@ jobs:
           username: cheeaun
           token: ${{ secrets.EXPO_TOKEN }}
           packager: npm
-      - uses: actions/download-artifact@v2
+      - uses: dawidd6/action-download-artifact@v2
         with:
           name: build-artifact
           path: __build-artifact__
