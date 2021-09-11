@@ -32,6 +32,7 @@ jobs:
           packager: npm
       - uses: dawidd6/action-download-artifact@v2
         with:
+          workflow: main.yml
           name: build-artifact
           path: __build-artifact__
       - run: npm ci
