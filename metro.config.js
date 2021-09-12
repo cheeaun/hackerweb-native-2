@@ -9,7 +9,4 @@ config.resolver.assetExts = config.resolver.assetExts.filter(
 );
 config.resolver.sourceExts.push('svg');
 
-// Ignore the package.json file in __build-artifact__ folder
-config.resolver.blacklistRE = /build\-artifact/i;
-
 module.exports = config;
