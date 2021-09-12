@@ -31,4 +31,4 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
           packager: npm
       - run: npm ci
-      - run: if [[ $(npm run last-eas-build) = $(npm run current-eas-build) ]]; then npm run publish; else npm run eas-build-ci; fi
+      - run: npm run build-publish
