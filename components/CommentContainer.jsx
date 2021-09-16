@@ -7,9 +7,11 @@ import { useFocusEffect } from '@react-navigation/native';
 import Text from './Text';
 import Button from './Button';
 import Comment from './Comment';
+import Separator from './Separator';
 import ReadableWidthContainer from './ReadableWidthContainer';
 
 import useTheme from '../hooks/useTheme';
+import getHTMLText from '../utils/getHTMLText';
 
 import getCommentsMetadata from '../utils/getCommentsMetadata';
 
@@ -28,6 +30,7 @@ function RepliesCommentsButton({
   level = 1,
   style,
   suffix,
+  previews = [],
   onPress = () => {},
   ...props
 }) {
@@ -51,6 +54,8 @@ function RepliesCommentsButton({
             backgroundColor: colors.opaqueBackground,
             flexGrow: 1,
             marginRight: 15,
+            borderWidth: StyleSheet.hairlineWidth,
+            borderColor: colors.separator,
           },
           pressed && { backgroundColor: colors.opaqueBackground2 },
           style,
@@ -64,6 +69,30 @@ function RepliesCommentsButton({
         }}
         {...props}
       >
+        {!!previews && !!previews.length && (
+          <>
+            {previews.map((comment) => (
+              <View
+                key={comment.id}
+                style={{
+                  marginBottom: 8,
+                  opacity: 0.7,
+                }}
+              >
+                <Text numberOfLines={1}>
+                  <Text size="subhead" bold>
+                    {comment.user}
+                  </Text>
+                  {'  '}
+                  <Text size="subhead">{getHTMLText(comment.content)}</Text>
+                </Text>
+              </View>
+            ))}
+            <Separator
+              style={{ marginRight: -12, marginBottom: 12, marginTop: 8 }}
+            />
+          </>
+        )}
         <Text numberOfLines={1}>
           <Text size="subhead" type="link" bold>
             {replies.toLocaleString('en-US')}{' '}
@@ -171,12 +200,7 @@ function InnerCommentContainer({
               style={{ marginBottom: 15 }}
               replies={repliesCount}
               comments={totalComments}
-              suffix={
-                item.comments[0].user &&
-                `by ${item.comments[0].user}${
-                  repliesCount > 1 ? ' & others' : ''
-                }`
-              }
+              suffix={suffixText(item.comments, repliesCount)}
               onPress={() => {
                 navigation.push('Comments', item);
               }}
@@ -197,6 +221,18 @@ function calcCommentsWeight(comments = []) {
   return comments.reduce((acc, comment) => acc + calcCommentWeight(comment), 0);
 }
 
+function suffixText(comments, repliesCount) {
+  return comments[0].user
+    ? `by ${comments[0].user}${
+        repliesCount === 2
+          ? ` & ${comments[1].user}`
+          : repliesCount > 1
+          ? ' & others'
+          : ''
+      }`
+    : '';
+}
+
 export default function CommentContainer({ item, maxWeight = 5 }) {
   const navigation = useNavigation();
 
@@ -205,6 +241,7 @@ export default function CommentContainer({ item, maxWeight = 5 }) {
   const { repliesCount, totalComments } = getCommentsMetadata(item);
   const totalWeight =
     calcCommentsWeight(item.comment) + calcCommentsWeight(item.comments);
+  const hasPreviews = item.content.length <= 140 * 4;
 
   return (
     <ReadableWidthContainer>
@@ -225,12 +262,8 @@ export default function CommentContainer({ item, maxWeight = 5 }) {
             <RepliesCommentsButton
               replies={repliesCount}
               comments={totalComments}
-              suffix={
-                item.comments[0].user &&
-                `by ${item.comments[0].user}${
-                  repliesCount > 1 ? ' & others' : ''
-                }`
-              }
+              suffix={suffixText(item.comments, repliesCount)}
+              previews={hasPreviews ? item.comments.slice(0, 2) : []}
               onPress={() => {
                 navigation.push('Comments', item);
               }}
