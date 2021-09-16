@@ -25,7 +25,7 @@
     "eas-submit": "eas submit -p ios --profile=preview --latest",
     "posteas-submit": "git checkout eas.json",
     "eas-submit-ci": "eas submit -p ios --latest --non-interactive",
-    "build-publish": "if [[ $(npm run last-eas-build) = $(npm run current-eas-build) ]]; then npm run publish; else npm run eas-build-ci && npm run eas-submit-ci; fi"
+    "build-publish": "if [[ $(npm run last-eas-build --silent) = $(npm run current-eas-build --silent) ]]; then npm run publish; else npm run eas-build-ci && npm run eas-submit-ci; fi"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "~1.15.0",
