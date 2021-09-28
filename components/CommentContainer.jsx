@@ -71,23 +71,34 @@ function RepliesCommentsButton({
       >
         {!!previews && !!previews.length && (
           <>
-            {previews.map((comment) => (
-              <View
-                key={comment.id}
-                style={{
-                  marginBottom: 8,
-                  opacity: 0.7,
-                }}
-              >
-                <Text numberOfLines={1}>
-                  <Text size="subhead" bold>
-                    {comment.user}
+            {previews.map((comment) => {
+              const commentText = getHTMLText(comment.content);
+              const firstNonBlockQuoteLine = commentText
+                .split(/\n+/)
+                .find(
+                  (line) => line.trim() !== '' && !line.trim().startsWith('>'),
+                );
+
+              return (
+                <View
+                  key={comment.id}
+                  style={{
+                    marginBottom: 8,
+                    opacity: 0.7,
+                  }}
+                >
+                  <Text numberOfLines={1}>
+                    <Text size="subhead" bold>
+                      {comment.user}
+                    </Text>
+                    {'  '}
+                    <Text size="subhead">
+                      {firstNonBlockQuoteLine || commentText}
+                    </Text>
                   </Text>
-                  {'  '}
-                  <Text size="subhead">{getHTMLText(comment.content)}</Text>
-                </Text>
-              </View>
-            ))}
+                </View>
+              );
+            })}
             <Separator
               style={{ marginRight: -12, marginBottom: 12, marginTop: 8 }}
             />

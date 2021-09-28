@@ -27,10 +27,20 @@ const nodeStyles = StyleSheet.create({
     marginBottom: 12,
     fontSize: baseFontSize,
   },
+  blockquote: {
+    marginBottom: 12,
+    fontSize: baseFontSize,
+    backgroundColor: DynamicColorIOS({
+      dark: 'rgba(255,255,255,.05)',
+      light: 'rgba(0,0,0,.05)',
+    }),
+    padding: 8,
+    opacity: 0.8,
+  },
   pre: {
     backgroundColor: DynamicColorIOS({
       dark: 'rgba(255,255,255,.05)',
-      light: 'rgba(0,0,0,.025)',
+      light: 'rgba(0,0,0,.05)',
     }),
     borderRadius: 4,
     marginBottom: 12,
@@ -81,18 +91,18 @@ function dom2elements(nodes, parentName) {
   return nodes.map((node) => {
     const { name, type, children } = node;
     const key = (name || type) + '-' + Math.random();
-    if (type == 'tag') {
+    if (type === 'tag') {
       const style = nodeStyles[name || 'default'];
       var elements = dom2elements(children, name);
       if (!elements) return null;
-      if (name == 'pre') {
+      if (name === 'pre') {
         return <PreView key={key}>{elements}</PreView>;
       }
-      if (name == 'a') {
+      if (name === 'a') {
         const { href } = node.attribs;
         // Steps to make sure children inside is ACTUALLY text
-        const child = children && children.length == 1 && children[0];
-        const text = child && child.type == 'text' && child.data;
+        const child = children && children.length === 1 && children[0];
+        const text = child && child.type === 'text' && child.data;
         return (
           <Text
             key={key}
@@ -104,16 +114,35 @@ function dom2elements(nodes, parentName) {
           </Text>
         );
       }
+      if (name === 'p') {
+        let firstChild = children && children[0];
+        if (firstChild.type === 'tag') {
+          // Sometimes can be an <i> tag
+          firstChild = firstChild.children && firstChild.children[0];
+        }
+        const firstText =
+          firstChild && firstChild.type === 'text' && firstChild.data;
+        if (
+          (firstText && /^>{1,2}[^<>]+$/.test(firstText)) ||
+          firstText === '>'
+        ) {
+          return (
+            <Text key={key} style={nodeStyles.blockquote}>
+              {elements}
+            </Text>
+          );
+        }
+      }
       return (
         <Text key={key} style={style}>
           {elements}
         </Text>
       );
-    } else if (type == 'text') {
+    } else if (type === 'text') {
       const style = nodeStyles[parentName || 'default'];
       const { data } = node;
       let text;
-      if (parentName == 'code') {
+      if (parentName === 'code') {
         // Trim EOL newline
         text = stripIndent(data.replace(/\n$/, ''));
       } else {
@@ -174,6 +203,6 @@ export default function HTMLView({ html, linkify }) {
       }
     }
     processDOM(html, setElements);
-  }, []);
+  }, [html, linkify]);
   return <View>{elements}</View>;
 }
