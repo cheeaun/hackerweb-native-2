@@ -29,5 +29,7 @@ jobs:
           username: cheeaun
           token: ${{ secrets.EXPO_TOKEN }}
           packager: npm
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
       - run: npm ci
       - run: npm run build-publish
