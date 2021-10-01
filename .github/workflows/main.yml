@@ -31,3 +31,4 @@ jobs:
           packager: npm
       - run: npm ci
       - run: npm run build-publish
+        shell: zsh
