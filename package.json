@@ -8,9 +8,7 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "current-version": "jq '.expo.version' app.json -r",
-    "prelast-eas-build": "eas build:list --limit=1 --buildProfile=preview --json > last-build.json",
     "last-eas-build": "jq '.[0].appBuildVersion' last-build.json",
-    "postlast-eas-build": "rm last-build.json",
     "current-eas-build": "jq '.expo.ios.buildNumber' app.json",
     "eas-build": "eas build -p ios --profile=preview",
     "eas-build-ci": "eas build -p ios --profile=preview --non-interactive",
@@ -27,7 +25,9 @@
     "eas-submit": "eas submit -p ios --profile=preview --latest",
     "posteas-submit": "git checkout eas.json",
     "eas-submit-ci": "eas submit -p ios --latest --non-interactive",
-    "build-publish": "if [ $(npm run last-eas-build --silent) = $(npm run current-eas-build --silent) ]; then npm run publish; else npm run eas-build-ci && npm run eas-submit-ci; fi"
+    "prebuild-publish": "eas build:list --limit=1 --buildProfile=preview --json > last-build.json",
+    "build-publish": "if [ $(npm run last-eas-build --silent) = $(npm run current-eas-build --silent) ]; then npm run publish; else npm run eas-build-ci && npm run eas-submit-ci; fi",
+    "postbuild-publish": "rm last-build.json"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "~1.15.0",
