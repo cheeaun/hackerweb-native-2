@@ -68,6 +68,21 @@ export default function Comment(item) {
 
   const commentRef = useRef();
 
+  const commentActionOptions = __DEV__
+    ? [
+        'View profile',
+        'View comment on HN web site',
+        'Share comment…',
+        'DEV: View HTML',
+        'Cancel',
+      ]
+    : [
+        'View profile',
+        'View comment on HN web site',
+        'Share comment…',
+        'Cancel',
+      ];
+
   return (
     <Pressable
       ref={commentRef}
@@ -77,13 +92,10 @@ export default function Comment(item) {
         ActionSheetIOS.showActionSheetWithOptions(
           {
             title: `Comment by ${user}`,
-            options: [
-              'View profile',
-              'View comment on HN web site',
-              'Share comment…',
-              'Cancel',
-            ],
-            cancelButtonIndex: 3,
+            options: commentActionOptions,
+            cancelButtonIndex: commentActionOptions.findIndex(
+              (o) => o.toLowerCase() === 'cancel',
+            ),
             anchor: findNodeHandle(commentRef.current),
           },
           (index) => {
@@ -96,6 +108,9 @@ export default function Comment(item) {
                 break;
               case 2:
                 openShare({ url: hnURL });
+                break;
+              case 3:
+                Alert.alert('Comment HTML', content);
                 break;
             }
           },

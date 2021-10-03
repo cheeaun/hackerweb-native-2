@@ -45,6 +45,11 @@ export default function StoriesScreen({ navigation }) {
           onPress={() => {
             navigation.push('Settings');
           }}
+          onLongPress={() => {
+            if (__DEV__) {
+              navigation.push('DevTest');
+            }
+          }}
           hitSlop={{
             top: 44,
             right: 44,

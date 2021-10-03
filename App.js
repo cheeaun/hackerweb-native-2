@@ -14,6 +14,7 @@ import CommentsScreen from './screens/CommentsScreen';
 import UserScreen from './screens/UserScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import LogsScreen from './screens/LogsScreen';
+import DevTestScreen from './screens/DevTestScreen';
 
 import useStore from './hooks/useStore';
 import useTheme from './hooks/useTheme';
@@ -195,6 +196,7 @@ export default function App() {
                 stackPresentation: 'modal',
               }}
             />
+            <Stack.Screen name="DevTest" component={DevTestScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaProvider>
