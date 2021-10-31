@@ -36,7 +36,7 @@ export default ({
       {!domainOnly && (
         <Text
           type="link"
-          style={[{ opacity: prominent ? 0.8 : 0.4 }, style]}
+          style={[{ opacity: prominent ? 0.9 : 0.75 }, style]}
           {...props}
         >
           {restPathname.replace(/\/$/, '')}
