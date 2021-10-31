@@ -99,6 +99,9 @@ export default function Comment(item) {
             anchor: findNodeHandle(commentRef.current),
           },
           (index) => {
+            if (commentActionOptions[index].toLowerCase() === 'cancel') {
+              return;
+            }
             switch (index) {
               case 0:
                 navigation.push('User', user);
