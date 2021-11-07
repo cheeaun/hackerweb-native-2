@@ -23,6 +23,13 @@
         "appleTeamId": "${EXPO_APPLE_TEAM_ID}",
         "ascAppId": "${EXPO_ASC_APP_ID}"
       }
+    },
+    "preview": {
+      "ios": {
+        "appleId": "${EXPO_APPLE_ID}",
+        "appleTeamId": "${EXPO_APPLE_TEAM_ID}",
+        "ascAppId": "${EXPO_ASC_APP_ID}"
+      }
     }
   }
 }
