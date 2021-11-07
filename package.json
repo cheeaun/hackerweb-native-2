@@ -13,6 +13,7 @@
     "current-eas-build": "jq -r '.expo.ios.buildNumber' app.json",
     "eas-build": "eas build -p ios --profile=preview",
     "eas-build-ci": "eas build -p ios --profile=preview --non-interactive",
+    "preeas-build-submit-ci": "npm run preeas-submit",
     "eas-build-submit-ci": "eas build -p ios --profile=preview --non-interactive --auto-submit",
     "eas-build-sim": "eas build -p ios --profile=simulator",
     "build": "expo build:ios --release-channel staging-`npm run current-version --silent`",
