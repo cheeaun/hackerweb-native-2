@@ -48,7 +48,7 @@ export default function CommentsScreen({ route, navigation }) {
 
   useEffect(() => {
     const commentsScreenCount = navigation
-      .dangerouslyGetState()
+      .getState()
       .routes.filter((r) => r.name.toLowerCase() === 'comments').length;
     Haptics.impactAsync(
       Haptics.ImpactFeedbackStyle[

@@ -429,7 +429,7 @@ export default function StoryScreen({ route, navigation }) {
   const scrolledDown = useRef(false);
   const commentsNavOptions = useRef({
     title: '',
-    headerHideShadow: true,
+    headerShadowVisible: false,
     headerStyle: {
       backgroundColor: colors.background,
     },
@@ -443,11 +443,11 @@ export default function StoryScreen({ route, navigation }) {
       scrolledDown.current = scrolled;
       const options = {
         title: scrolled ? title : '',
-        headerHideShadow: !scrolled,
+        headerShadowVisible: scrolled,
+        headerBlurEffect: scrolled ? 'prominent' : '',
         headerStyle: scrolled
           ? {
               backgroundColor: colors.opaqueHeader,
-              blurEffect: 'prominent',
             }
           : {
               backgroundColor: colors.background,
@@ -474,10 +474,10 @@ export default function StoryScreen({ route, navigation }) {
         tabView === 'web'
           ? {
               title: parseURL(navState.url || url).domain || '',
-              headerHideShadow: false,
+              headerShadowVisible: true,
+              headerBlurEffect: 'prominent',
               headerStyle: {
                 backgroundColor: colors.opaqueHeader,
-                blurEffect: 'prominent',
               },
               headerRight: webHeaderRight,
             }

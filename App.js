@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { LayoutAnimation, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from 'react-native-screens/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Constants from 'expo-constants';
 import { useAppState } from '@react-native-community/hooks';
 import * as Updates from 'expo-updates';
@@ -129,16 +129,16 @@ export default function App() {
               component={StoriesScreen}
               options={{
                 title: Constants.manifest.name,
-                headerLargeTitleHideShadow: true,
+                headerLargeTitleShadowVisible: false,
                 headerLargeTitle: true,
                 headerLargeStyle: {
                   backgroundColor: colors.background,
                 },
                 headerStyle: {
                   backgroundColor: colors.opaqueHeader,
-                  blurEffect: 'prominent',
                 },
-                headerTranslucent: true,
+                headerBlurEffect: 'prominent',
+                headerTransparent: true,
               }}
             />
             <Stack.Screen
@@ -147,11 +147,11 @@ export default function App() {
               options={{
                 headerBackTitle: 'News',
                 title: '',
-                headerHideShadow: true,
+                headerShadowVisible: false,
                 headerStyle: {
                   backgroundColor: colors.background,
                 },
-                headerTranslucent: true,
+                headerTransparent: true,
               }}
             />
             <Stack.Screen
@@ -159,7 +159,7 @@ export default function App() {
               component={CommentsScreen}
               options={{
                 headerShown: false,
-                stackPresentation: 'modal',
+                presentation: 'modal',
                 contentStyle: {
                   backgroundColor: colors.modalBackground,
                 },
@@ -170,8 +170,8 @@ export default function App() {
               component={UserScreen}
               options={{
                 headerShown: false,
-                stackPresentation: 'transparentModal',
-                stackAnimation: 'none',
+                presentation: 'transparentModal',
+                animation: 'none',
                 contentStyle: {
                   flexGrow: 1,
                 },
@@ -182,7 +182,7 @@ export default function App() {
               component={SettingsScreen}
               options={{
                 headerShown: false,
-                stackPresentation: 'modal',
+                presentation: 'modal',
                 contentStyle: {
                   backgroundColor: colors.background2,
                 },
@@ -193,7 +193,7 @@ export default function App() {
               component={LogsScreen}
               options={{
                 headerShown: false,
-                stackPresentation: 'modal',
+                presentation: 'modal',
               }}
             />
             <Stack.Screen name="DevTest" component={DevTestScreen} />
