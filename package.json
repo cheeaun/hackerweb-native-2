@@ -9,7 +9,6 @@
     "eject": "expo eject",
     "current-version": "jq '.expo.version' app.json -r",
     "last-eas-build": "eas build:list --limit=1 --buildProfile=preview --json | jq -r .[0].appBuildVersion",
-    "last-eas-build-hack": "node -e 'console.log(require(\"child_process\").execSync(\"eas build:list --limit=1 --buildProfile=preview\").toString().match(/Build number\\s+(\\d+)/i)[1])'",
     "current-eas-build": "jq -r '.expo.ios.buildNumber' app.json",
     "eas-build": "eas build -p ios --profile=preview",
     "eas-build-ci": "eas build -p ios --profile=preview --non-interactive",
