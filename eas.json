@@ -1,4 +1,7 @@
 {
+  "cli": {
+    "requireCommit": false
+  },
   "build": {
     "release": {
       "ios": {
