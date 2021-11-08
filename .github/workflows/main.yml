@@ -31,9 +31,6 @@ jobs:
           packager: npm
       - run: npm ci
       - env:
-          EXPO_APPLE_TEAM_ID: ${{ secrets.EXPO_APPLE_TEAM_ID }}
-        uses: lhotari/action-upterm@v1
-      - env:
           EXPO_APPLE_ID: ${{ secrets.EXPO_APPLE_ID }}
           EXPO_APPLE_TEAM_ID: ${{ secrets.EXPO_APPLE_TEAM_ID }}
           EXPO_ASC_APP_ID: ${{ secrets.EXPO_ASC_APP_ID }}
