@@ -30,6 +30,7 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
           packager: npm
       - run: npm ci
+      - uses: lhotari/action-upterm@v1
       - env:
           EXPO_APPLE_ID: ${{ secrets.EXPO_APPLE_ID }}
           EXPO_APPLE_TEAM_ID: ${{ secrets.EXPO_APPLE_TEAM_ID }}
