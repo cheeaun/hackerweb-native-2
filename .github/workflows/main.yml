@@ -30,4 +30,8 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
           packager: npm
       - run: npm ci
-      - run: npm run build-publish
+      - env:
+          EXPO_APPLE_ID: ${{ secrets.EXPO_APPLE_ID }}
+          EXPO_APPLE_TEAM_ID: ${{ secrets.EXPO_APPLE_TEAM_ID }}
+          EXPO_ASC_APP_ID: ${{ secrets.EXPO_ASC_APP_ID }}
+        run: npm run build-publish
