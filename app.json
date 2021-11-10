@@ -19,7 +19,10 @@
       "bundleIdentifier": "cheeaun.hackerweb",
       "buildNumber": "21",
       "supportsTablet": true,
-      "requireFullScreen": false
+      "requireFullScreen": false,
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "platforms": ["ios"],
     "web": {
