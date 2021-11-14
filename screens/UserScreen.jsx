@@ -244,8 +244,10 @@ export default function UserScreen({ route, navigation }) {
             ) : (
               <TouchableOpacity
                 onPress={() => {
-                  openBrowser(`https://news.ycombinator.com/user?id=${user}`);
                   onClose();
+                  setTimeout(() => {
+                    openBrowser(`https://news.ycombinator.com/user?id=${user}`);
+                  }, 100);
                 }}
                 style={{ padding: 15 }}
               >
