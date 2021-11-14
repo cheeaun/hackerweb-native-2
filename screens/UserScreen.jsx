@@ -247,7 +247,7 @@ export default function UserScreen({ route, navigation }) {
                   onClose();
                   setTimeout(() => {
                     openBrowser(`https://news.ycombinator.com/user?id=${user}`);
-                  }, 100);
+                  }, 300);
                 }}
                 style={{ padding: 15 }}
               >
