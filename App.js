@@ -25,7 +25,7 @@ const BACKGROUND_BUFFER = 15 * 60 * 1000; // 15min
 const Stack = createNativeStackNavigator();
 
 global.__PRODUCTION__ = /production/i.test(Updates.releaseChannel);
-if (!__PRODUCTION__) {
+if (!__PRODUCTION__ && !global._consolelog) {
   global.DEBUG_LOGS = [];
   global._consolelog = console.log;
   console.log = (...args) => {
