@@ -152,8 +152,6 @@ export default function App() {
                   backgroundColor: colors.background,
                 },
                 headerTransparent: true,
-                fullScreenSwipeEnabled: true,
-                gestureEnabled: true,
               }}
             />
             <Stack.Screen
