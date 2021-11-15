@@ -24,7 +24,6 @@ import * as Haptics from 'expo-haptics';
 import { URL } from 'react-native-url-polyfill';
 import { BlurView } from 'expo-blur';
 import Constants from 'expo-constants';
-import { setStatusBarStyle } from 'expo-status-bar';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -574,8 +573,6 @@ export default function StoryScreen({ route, navigation }) {
                 renderLoading={() => null}
                 onNavigationStateChange={(navState) => {
                   setNavState(navState);
-                  // Quick fix: https://github.com/react-native-webview/react-native-webview/issues/735#issuecomment-629073261
-                  setStatusBarStyle(isDark ? 'light' : 'dark');
                 }}
                 onLoadStart={() => {
                   progressAnim.setValue(0);
