@@ -2,7 +2,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import create from 'zustand';
 import ky from 'ky';
 import { arrayMoveMutable } from 'array-move';
-import pMemoize from 'p-memoize';
+import pMemoize from 'p-memoize/dist/index';
+import ExpiryMap from 'expiry-map';
+
+const cache = new ExpiryMap(60 * 1000);
 
 const API_ROOT = 'https://api.hackerwebapp.com';
 const api = ky.create({
@@ -140,7 +143,7 @@ const useStore = create((set, get) => ({
         updateItem('stories', stories, STORIES_TTL);
       }
     },
-    { maxAge: 60 * 1000 },
+    { cache },
   ),
   currentOP: null,
   setCurrentOP: (currentOP) => {
