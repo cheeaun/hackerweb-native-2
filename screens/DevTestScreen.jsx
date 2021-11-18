@@ -10,6 +10,9 @@ export default function DevTestScreen() {
       <HTMLView
         html={`<p>&test <a href="https://google.com/">google.com</a> test</p><p>&gt; test <a href="https://google.com/">google.com</a> test</p><p>&gt; test <a href="https://google.com/">google.com</a> test</p>`}
       />
+      <HTMLView
+        html={`<p><i>&gt; <a href="https://google.com/">google.com</a> test<p>&gt; test <a href="https://google.com/">google.com</a> test<p>test <a href="https://google.com/">google.com</a> test</p>`}
+      />
     </View>
   );
 }
