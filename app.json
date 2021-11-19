@@ -13,22 +13,18 @@
     "updates": {
       "fallbackToCacheTimeout": 1000
     },
-    "assetBundlePatterns": [
-      "assets/*"
-    ],
+    "assetBundlePatterns": ["assets/*"],
     "ios": {
       "appStoreUrl": "https://apps.apple.com/app/id1084209377",
       "bundleIdentifier": "cheeaun.hackerweb",
-      "buildNumber": "22",
+      "buildNumber": "23",
       "supportsTablet": true,
       "requireFullScreen": false,
       "config": {
         "usesNonExemptEncryption": false
       }
     },
-    "platforms": [
-      "ios"
-    ],
+    "platforms": ["ios"],
     "web": {
       "favicon": "./assets/favicon.png"
     },
