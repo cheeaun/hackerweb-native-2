@@ -9,6 +9,8 @@
     "eject": "expo eject",
     "current-version": "jq '.expo.version' app.json -r",
     "last-eas-build": "eas build:list --limit=1 --buildProfile=preview --json | jq -r .[0].appBuildVersion",
+    "current-prod-release": "jq '.build.release.ios.releaseChannel' eas.json -r",
+    "last-prod-release": "eas build:list --limit=1 --buildProfile=release --json | jq -r .[0].releaseChannel",
     "current-eas-build": "jq -r '.expo.ios.buildNumber' app.json",
     "envsubst-eas-json": "envsubst < eas.json > eas.tmp && mv eas.tmp eas.json",
     "preeas-submit-build": "set -a && source .env && set +a && npm run envsubst-eas-json",
@@ -27,7 +29,7 @@
     "publish": "expo publish --release-channel staging-`npm run current-version --silent`",
     "promote-prod": "expo publish:set --publish-id `npm run latest-publish-id --silent` --release-channel production-`npm run current-version --silent`",
     "viz": "npx react-native-bundle-visualizer --expo managed",
-    "deploy-staging": "if [ $(npm run last-eas-build --silent) = $(npm run current-eas-build --silent) ]; then npm run publish; else npm run eas-build-submit-ci; fi",
+    "deploy-staging": "if [ $(npm run last-prod-release --silent) = $(npm run current-prod-release --silent) ]; then if [ $(npm run last-eas-build --silent) = $(npm run current-eas-build --silent) ]; then npm run publish; else npm run eas-build-submit-ci; fi; fi",
     "deploy-production": "npm run eas-build-submit-ci-prod"
   },
   "dependencies": {
