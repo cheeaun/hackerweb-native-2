@@ -1,22 +1,12 @@
-name: Deploy Staging
+name: Deploy Production
 on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - 'README.md'
-      - '.gitignore'
-      - 'screenshots/**'
+  workflow_dispatch:
 
 jobs:
-  publish:
+  deploy:
     name: Install and deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.9.1
-        with:
-          all_but_latest: true
-          access_token: ${{ github.token }}
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
@@ -35,4 +25,4 @@ jobs:
           EXPO_APPLE_TEAM_ID: ${{ secrets.EXPO_APPLE_TEAM_ID }}
           EXPO_ASC_APP_ID: ${{ secrets.EXPO_ASC_APP_ID }}
           EXPO_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.EXPO_APPLE_APP_SPECIFIC_PASSWORD }}
-        run: npm run deploy-staging
+        run: npm run deploy-production
