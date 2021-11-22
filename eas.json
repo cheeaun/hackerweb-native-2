@@ -3,7 +3,7 @@
     "requireCommit": false
   },
   "build": {
-    "release": {
+    "production": {
       "ios": {
         "releaseChannel": "production-2.0.2"
       }
@@ -20,7 +20,7 @@
     }
   },
   "submit": {
-    "release": {
+    "production": {
       "ios": {
         "appleId": "${EXPO_APPLE_ID}",
         "appleTeamId": "${EXPO_APPLE_TEAM_ID}",
