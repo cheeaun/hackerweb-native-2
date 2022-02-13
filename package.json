@@ -9,7 +9,7 @@
     "eject": "expo eject",
     "current-version": "jq '.expo.version' app.json -r",
     "last-eas-build": "eas build:list --limit=1 --buildProfile=preview --json | jq -r .[0].appBuildVersion",
-    "current-prod-release": "jq '.build.release.ios.releaseChannel' eas.json -r",
+    "current-prod-release": "jq '.build.production.ios.releaseChannel' eas.json -r",
     "last-prod-release": "eas build:list --limit=1 --buildProfile=release --json | jq -r .[0].releaseChannel",
     "current-eas-build": "jq -r '.expo.ios.buildNumber' app.json",
     "envsubst-eas-json": "envsubst < eas.json > eas.tmp && mv eas.tmp eas.json",
