@@ -44,10 +44,10 @@ const styles = StyleSheet.create({
 export default function Comment(item) {
   const navigation = useNavigation();
   const { colors } = useTheme();
-  const { id, user, time, content, deleted, comments } = item;
+  const { id, user, time, content, deleted, dead, comments } = item;
   const datetime = new Date(time * 1000);
   const currentOP = useStore((state) => state.currentOP);
-  if (deleted && !comments.length) return null;
+  if (dead || (deleted && !comments.length)) return null;
   const hnURL = `https://news.ycombinator.com/item?id=${id}`;
 
   const scaleAnim = useRef(new Animated.Value(1)).current;

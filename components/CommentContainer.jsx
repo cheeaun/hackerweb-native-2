@@ -179,7 +179,7 @@ function InnerCommentContainer({
   level = 1,
   last = false,
 }) {
-  if (item.deleted && !item.comments.length) return null;
+  if (item.dead || (item.deleted && !item.comments.length)) return null;
 
   const navigation = useNavigation();
   const { repliesCount, totalComments } = getCommentsMetadata(item);
@@ -247,12 +247,12 @@ function suffixText(comments, repliesCount) {
 export default function CommentContainer({ item, maxWeight = 5 }) {
   const navigation = useNavigation();
 
-  if (item.deleted && !item.comments.length) return null;
+  if (item.dead || (item.deleted && !item.comments.length)) return null;
 
   const { repliesCount, totalComments } = getCommentsMetadata(item);
   const totalWeight =
     calcCommentsWeight(item.comment) + calcCommentsWeight(item.comments);
-  const hasPreviews = item.content.length <= 140 * 4;
+  const hasPreviews = item.content?.length <= 140 * 4;
 
   return (
     <ReadableWidthContainer>
