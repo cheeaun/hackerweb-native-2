@@ -224,6 +224,7 @@ function InnerCommentContainer({
 
 function calcCommentWeight(comment) {
   // TODO: smarter "weight" math
+  if (!comment.content) return 0;
   return comment.content.length / 140;
 }
 
