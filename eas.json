@@ -5,7 +5,7 @@
   "build": {
     "production": {
       "ios": {
-        "releaseChannel": "production-2.0.2"
+        "releaseChannel": "production-2.0.3"
       }
     },
     "preview": {
