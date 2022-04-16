@@ -7,6 +7,7 @@ import Constants from 'expo-constants';
 import { useAppState } from '@react-native-community/hooks';
 import * as Updates from 'expo-updates';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import StoriesScreen from './screens/StoriesScreen';
 import StoryScreen from './screens/StoryScreen';
@@ -120,86 +121,92 @@ export default function App() {
         setViewport({ width, height });
       }}
     >
-      <StatusBar style="auto" animated />
-      <SafeAreaProvider>
-        <NavigationContainer theme={theme} key={reloadKey} ref={navigationRef}>
-          <Stack.Navigator>
-            <Stack.Screen
-              name="Home"
-              component={StoriesScreen}
-              options={{
-                title: Constants.manifest.name,
-                headerLargeTitleShadowVisible: false,
-                headerLargeTitle: true,
-                headerLargeStyle: {
-                  backgroundColor: colors.background,
-                },
-                headerStyle: {
-                  backgroundColor: colors.opaqueHeader,
-                },
-                headerBlurEffect: 'prominent',
-                headerTransparent: true,
-              }}
-            />
-            <Stack.Screen
-              name="Story"
-              component={StoryScreen}
-              options={{
-                headerBackTitle: 'News',
-                title: '',
-                headerShadowVisible: false,
-                headerStyle: {
-                  backgroundColor: colors.background,
-                },
-                headerTransparent: true,
-              }}
-            />
-            <Stack.Screen
-              name="Comments"
-              component={CommentsScreen}
-              options={{
-                headerShown: false,
-                presentation: 'modal',
-                contentStyle: {
-                  backgroundColor: colors.modalBackground,
-                },
-              }}
-            />
-            <Stack.Screen
-              name="User"
-              component={UserScreen}
-              options={{
-                headerShown: false,
-                presentation: 'transparentModal',
-                animation: 'none',
-                contentStyle: {
-                  flexGrow: 1,
-                },
-              }}
-            />
-            <Stack.Screen
-              name="Settings"
-              component={SettingsScreen}
-              options={{
-                headerShown: false,
-                presentation: 'modal',
-                contentStyle: {
-                  backgroundColor: colors.background2,
-                },
-              }}
-            />
-            <Stack.Screen
-              name="Logs"
-              component={LogsScreen}
-              options={{
-                headerShown: false,
-                presentation: 'modal',
-              }}
-            />
-            <Stack.Screen name="DevTest" component={DevTestScreen} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </SafeAreaProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <StatusBar style="auto" animated />
+        <SafeAreaProvider>
+          <NavigationContainer
+            theme={theme}
+            key={reloadKey}
+            ref={navigationRef}
+          >
+            <Stack.Navigator>
+              <Stack.Screen
+                name="Home"
+                component={StoriesScreen}
+                options={{
+                  title: Constants.manifest.name,
+                  headerLargeTitleShadowVisible: false,
+                  headerLargeTitle: true,
+                  headerLargeStyle: {
+                    backgroundColor: colors.background,
+                  },
+                  headerStyle: {
+                    backgroundColor: colors.opaqueHeader,
+                  },
+                  headerBlurEffect: 'prominent',
+                  headerTransparent: true,
+                }}
+              />
+              <Stack.Screen
+                name="Story"
+                component={StoryScreen}
+                options={{
+                  headerBackTitle: 'News',
+                  title: '',
+                  headerShadowVisible: false,
+                  headerStyle: {
+                    backgroundColor: colors.background,
+                  },
+                  headerTransparent: true,
+                }}
+              />
+              <Stack.Screen
+                name="Comments"
+                component={CommentsScreen}
+                options={{
+                  headerShown: false,
+                  presentation: 'modal',
+                  contentStyle: {
+                    backgroundColor: colors.modalBackground,
+                  },
+                }}
+              />
+              <Stack.Screen
+                name="User"
+                component={UserScreen}
+                options={{
+                  headerShown: false,
+                  presentation: 'transparentModal',
+                  animation: 'none',
+                  contentStyle: {
+                    flexGrow: 1,
+                  },
+                }}
+              />
+              <Stack.Screen
+                name="Settings"
+                component={SettingsScreen}
+                options={{
+                  headerShown: false,
+                  presentation: 'modal',
+                  contentStyle: {
+                    backgroundColor: colors.background2,
+                  },
+                }}
+              />
+              <Stack.Screen
+                name="Logs"
+                component={LogsScreen}
+                options={{
+                  headerShown: false,
+                  presentation: 'modal',
+                }}
+              />
+              <Stack.Screen name="DevTest" component={DevTestScreen} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
     </View>
   );
 }
