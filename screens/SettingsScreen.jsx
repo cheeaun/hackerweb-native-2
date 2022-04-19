@@ -311,6 +311,11 @@ export default function SettingsScreen({ navigation }) {
               Expo {Constants.expoVersion}
             </Text>
           )}
+          {Constants.manifest.createdAt && (
+            <Text size="footnote" type="insignificant">
+              Created: {new Date(Constants.manifest.createdAt).toLocaleString()}
+            </Text>
+          )}
           {updateIsAvailable && (
             <Text
               size="footnote"
