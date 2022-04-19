@@ -9,6 +9,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Application from 'expo-application';
 import Constants from 'expo-constants';
 import * as StoreReview from 'expo-store-review';
 import { StatusBar } from 'expo-status-bar';
@@ -292,8 +293,8 @@ export default function SettingsScreen({ navigation }) {
         </ListMenu>
         <OuterSpacer align="top" innerStyle={{ paddingHorizontal: 30 }}>
           <Text size="footnote" type="insignificant">
-            {Constants.manifest.name} {Constants.nativeAppVersion} (
-            {Constants.nativeBuildVersion})
+            {Application.applicationName} {Application.nativeApplicationVersion}{' '}
+            ({Application.nativeBuildVersion})
           </Text>
           {updateId && (
             <Text size="footnote" type="insignificant">
