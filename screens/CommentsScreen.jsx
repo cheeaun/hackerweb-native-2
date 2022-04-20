@@ -21,7 +21,7 @@ import { TouchableOpacity, FlatList } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Text from '../components/Text';
-import HTMLView from '../components/HTMLView';
+import HTMLView2 from '../components/HTMLView2';
 import CommentContainer from '../components/CommentContainer';
 import Separator from '../components/Separator';
 import TimeAgo from '../components/TimeAgo';
@@ -94,7 +94,7 @@ export default function CommentsScreen({ route, navigation }) {
               listHeaderHeight.current = e.nativeEvent.layout.height;
             }}
           >
-            <HTMLView html={content} />
+            <HTMLView2 html={content} />
           </MaskedView>
         </ReadableWidthContainer>
         <Separator />

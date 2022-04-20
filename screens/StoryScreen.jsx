@@ -30,7 +30,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Text from '../components/Text';
 import Separator from '../components/Separator';
 import PrettyURL from '../components/PrettyURL';
-import HTMLView from '../components/HTMLView';
+import HTMLView2 from '../components/HTMLView2';
 import TouchableHighlight from '../components/TouchableHighlight';
 import CommentContainer from '../components/CommentContainer';
 import TimeAgo from '../components/TimeAgo';
@@ -307,7 +307,7 @@ export default function StoryScreen({ route, navigation }) {
           </View>
           {(!!content || !!poll) && (
             <View style={styles.content}>
-              {!!content && <HTMLView html={content} linkify />}
+              {!!content && <HTMLView2 html={content} linkify />}
               {!!poll &&
                 poll.map((p, i) => (
                   <View key={i}>

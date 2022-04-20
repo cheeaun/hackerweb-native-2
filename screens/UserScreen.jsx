@@ -14,7 +14,7 @@ import * as Haptics from 'expo-haptics';
 
 import Text from '../components/Text';
 import Separator from '../components/Separator';
-import HTMLView from '../components/HTMLView';
+import HTMLView2 from '../components/HTMLView2';
 import TouchableOpacity from '../components/TouchableOpacity';
 import ActivityIndicator from '../components/ActivityIndicator';
 
@@ -232,7 +232,7 @@ export default function UserScreen({ route, navigation }) {
                 <Separator />
                 <View style={styles.about}>
                   <Label style={{ marginBottom: 15 }}>About</Label>
-                  <HTMLView html={about} linkify />
+                  <HTMLView2 html={about} linkify />
                 </View>
               </>
             )}

@@ -13,7 +13,7 @@ import * as Haptics from 'expo-haptics';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import Text from './Text';
-import HTMLView from './HTMLView';
+import HTMLView2 from './HTMLView2';
 import TimeAgo from './TimeAgo';
 
 import useStore from '../hooks/useStore';
@@ -161,7 +161,7 @@ export default function Comment(item) {
             </Text>
           </View>
         )}
-        <HTMLView html={content} />
+        <HTMLView2 html={content} />
       </Animated.View>
     </Pressable>
   );
