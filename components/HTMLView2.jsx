@@ -143,7 +143,9 @@ function dom2elements(nodes, parentName) {
               key={key}
               style={nodeStyles[prefix.includes('>') ? 'blockquote' : 'li']}
             >
-              <Text style={nodeStyles.default}>{prefix}</Text>
+              <Text style={nodeStyles.default} fontVariant={['tabular-nums']}>
+                {prefix}
+              </Text>
               <Text
                 style={[
                   nodeStyles.default,
