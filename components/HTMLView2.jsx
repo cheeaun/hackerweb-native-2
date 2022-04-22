@@ -130,7 +130,7 @@ function dom2elements(nodes, parentName) {
           firstChild && firstChild.nodeName === '#text' && firstChild.value;
         const [_, prefix, __, rest] =
           (firstText || '').match(
-            /^((>+|-|\*|[a-z]\)|\d+\.|\(?\d+\)|\d+-|\[\d+\]:?)\s?)([^<>\-\*]{0,1}.*)$/,
+            /^((>+|-|\*|[a-z]\)|\d+\.|\(?\d+\)|\d+-|\[\d+\]:?)\s?)([^<>\-\*]{0,1}.*)$/s,
           ) || [];
         if (firstText && prefix) {
           firstChild.value = rest || '';
