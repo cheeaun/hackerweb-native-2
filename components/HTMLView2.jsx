@@ -27,7 +27,8 @@ const nodeStyles = StyleSheet.create({
     fontSize: baseFontSize,
   },
   li: {
-    marginBottom: 6,
+    marginBottom: 12,
+    // Can't reduce this margin because there's no <ul> or <ol> here
     fontSize: baseFontSize,
     flexDirection: 'row',
   },
