@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   StyleSheet,
   View,
@@ -26,6 +26,11 @@ const nodeStyles = StyleSheet.create({
     marginBottom: 12,
     fontSize: baseFontSize,
   },
+  li: {
+    marginBottom: 6,
+    fontSize: baseFontSize,
+    flexDirection: 'row',
+  },
   blockquote: {
     marginBottom: 12,
     fontSize: baseFontSize,
@@ -35,6 +40,7 @@ const nodeStyles = StyleSheet.create({
     }),
     padding: 8,
     opacity: 0.8,
+    flexDirection: 'row',
   },
   pre: {
     backgroundColor: DynamicColorIOS({
@@ -87,12 +93,13 @@ function PreView({ children, ...props }) {
 
 function dom2elements(nodes, parentName) {
   if (!nodes || !nodes.length) return;
-  return nodes.map((node) => {
+  return nodes.map((node, i) => {
     const { tagName, nodeName, childNodes } = node;
-    const key = nodeName + '-' + Math.random();
+    // Note: React keys must only be unique among siblings, not global
+    const key = i;
     if (tagName) {
       const style = nodeStyles[tagName || 'default'];
-      var elements = dom2elements(childNodes, tagName);
+      let elements = dom2elements(childNodes, tagName);
       if (!elements) return null;
       if (tagName === 'pre') {
         return <PreView key={key}>{elements}</PreView>;
@@ -121,14 +128,32 @@ function dom2elements(nodes, parentName) {
         }
         const firstText =
           firstChild && firstChild.nodeName === '#text' && firstChild.value;
-        if (
-          (firstText && /^>{1,2}[^<>]+$/.test(firstText)) ||
-          firstText === '>'
-        ) {
+        const [_, prefix, __, rest] =
+          (firstText || '').match(
+            /^((>+|-|\*|[a-z]\)|\d+\.|\(?\d+\)|\d+-|\[\d+\]:?)\s?)([^<>\-\*]{0,1}.*)$/,
+          ) || [];
+        if (firstText && prefix) {
+          firstChild.value = rest || '';
+          // Refresh elements
+          elements = dom2elements(childNodes, tagName);
+
           return (
-            <Text key={key} style={nodeStyles.blockquote}>
-              {elements}
-            </Text>
+            <View
+              key={key}
+              style={nodeStyles[prefix.includes('>') ? 'blockquote' : 'li']}
+            >
+              <Text style={nodeStyles.default}>{prefix}</Text>
+              <Text
+                style={[
+                  nodeStyles.default,
+                  {
+                    flex: 1,
+                  },
+                ]}
+              >
+                {elements}
+              </Text>
+            </View>
           );
         }
       }
