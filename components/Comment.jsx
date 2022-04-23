@@ -11,6 +11,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import format from 'date-fns/format';
 
 import Text from './Text';
 import HTMLView2 from './HTMLView2';
@@ -92,6 +93,7 @@ export default function Comment(item) {
         ActionSheetIOS.showActionSheetWithOptions(
           {
             title: `Comment by ${user}`,
+            message: format(datetime, 'EEEE, d LLLL yyyy, h:mm a'),
             options: commentActionOptions,
             cancelButtonIndex: commentActionOptions.findIndex(
               (o) => o.toLowerCase() === 'cancel',
