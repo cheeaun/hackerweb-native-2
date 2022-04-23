@@ -157,7 +157,8 @@ export default function StoryScreen({ route, navigation }) {
           const pageURL = navState.url || url;
           ActionSheetIOS.showActionSheetWithOptions(
             {
-              title: pageTitle + '\n' + pageURL,
+              title: pageTitle,
+              message: pageURL,
               options: ['Reload page', 'Open in browser…', 'Share…', 'Cancel'],
               cancelButtonIndex: 3,
               anchor: findNodeHandle(webButtonRef.current),
@@ -193,7 +194,8 @@ export default function StoryScreen({ route, navigation }) {
         onPress={() => {
           ActionSheetIOS.showActionSheetWithOptions(
             {
-              title: title + '\n' + hnURL,
+              title,
+              message: hnURL,
               options: ['View on HN web site', 'Share…', 'Cancel'],
               cancelButtonIndex: 2,
               anchor: findNodeHandle(commentsButtonRef.current),
