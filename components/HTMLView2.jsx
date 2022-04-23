@@ -92,15 +92,15 @@ function PreView({ children, ...props }) {
   );
 }
 
-function dom2elements(nodes, parentName) {
+function dom2elements(nodes, parentName, level = 0) {
   if (!nodes || !nodes.length) return;
   return nodes.map((node, i) => {
     const { tagName, nodeName, childNodes } = node;
     // Note: React keys must only be unique among siblings, not global
-    const key = i;
+    const key = i + '-' + level;
     if (tagName) {
       const style = nodeStyles[tagName || 'default'];
-      let elements = dom2elements(childNodes, tagName);
+      let elements = dom2elements(childNodes, tagName, level + 1);
       if (!elements) return null;
       if (tagName === 'pre') {
         return <PreView key={key}>{elements}</PreView>;
@@ -136,7 +136,7 @@ function dom2elements(nodes, parentName) {
         if (firstText && prefix) {
           firstChild.value = rest || '';
           // Refresh elements
-          elements = dom2elements(childNodes, tagName);
+          elements = dom2elements(childNodes, tagName, level + 1);
 
           return (
             <View
@@ -175,6 +175,14 @@ function dom2elements(nodes, parentName) {
       } else {
         // Trim ALL newlines, because HTML
         text = value.replace(/[\n\s\t]+/g, ' ');
+      }
+      if (level === 0 && !parentName) {
+        // If root level and there's no parent tag, then it's text that doesn't have a <p> tag
+        return (
+          <Text key={key} style={nodeStyles.p}>
+            {text}
+          </Text>
+        );
       }
       return (
         <Text key={key} style={style}>
