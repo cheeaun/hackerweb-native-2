@@ -21,5 +21,6 @@ export default function (html, opts = {}) {
   } else {
     txt = txt.replace(/\n\n[\n\r]+/, '\n\n');
   }
-  return txt.trim();
+  txt = txt.trim();
+  return txt || '…';
 }
