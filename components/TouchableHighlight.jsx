@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Pressable, PlatformColor } from 'react-native';
 
 export default function (props) {

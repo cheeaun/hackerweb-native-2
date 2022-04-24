@@ -1,4 +1,3 @@
-import React from 'react';
 import { ScrollView } from 'react-native';
 import Text from '../components/Text';
 import HTMLView from '../components/HTMLView';

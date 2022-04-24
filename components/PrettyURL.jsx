@@ -1,4 +1,3 @@
-import React from 'react';
 import { URL } from 'react-native-url-polyfill';
 
 import Text from './Text';
