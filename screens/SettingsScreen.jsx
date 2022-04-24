@@ -209,14 +209,14 @@ export default function SettingsScreen({ navigation }) {
           )}
           <ListItem
             onPress={() => {
-              const subject = `${Constants.manifest.name} feedback`;
+              const subject = `${Application.applicationName} feedback`;
               const body = `
 
               ---
               Additional Info (don't remove):
-              ${Constants.manifest.name} ${Constants.nativeAppVersion} (${
-                Constants.nativeBuildVersion
-              })
+              ${Application.applicationName} ${
+                Application.nativeApplicationVersion
+              } (${Application.nativeBuildVersion})
               Update: ${updateId || '—'}
               Channel: ${releaseChannel || '—'}
               Expo ${Constants.expoVersion || '-'}

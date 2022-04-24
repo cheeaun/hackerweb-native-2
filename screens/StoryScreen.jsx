@@ -23,7 +23,7 @@ import SegmentedControl from '@react-native-segmented-control/segmented-control'
 import * as Haptics from 'expo-haptics';
 import { URL } from 'react-native-url-polyfill';
 import { BlurView } from 'expo-blur';
-import Constants from 'expo-constants';
+import * as Application from 'expo-application';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -588,7 +588,7 @@ export default function StoryScreen({ route, navigation }) {
               <WebView
                 ref={webViewRef}
                 style={{ backgroundColor: colors.background }}
-                applicationNameForUserAgent={`${Constants.manifest.name}/${Constants.nativeAppVersion}`}
+                applicationNameForUserAgent={`${Application.applicationName}/${Application.nativeApplicationVersion}`}
                 source={{ uri: url }}
                 originWhitelist={['http://*', 'https://*', 'data:*', 'about:*']}
                 decelerationRate="normal"
