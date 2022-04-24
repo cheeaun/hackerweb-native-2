@@ -3,27 +3,42 @@ import create from 'zustand';
 import ky from 'ky';
 import { arrayMoveMutable } from 'array-move';
 import pMemoize from 'p-memoize/dist/index';
+import pDebounce from 'p-debounce';
 import ExpiryMap from 'expiry-map';
 
+const STORIES_TTL = 10 * 60 * 1000; // 10 mins
 const cache = new ExpiryMap(60 * 1000);
+const hooks = {
+  beforeRequest: [
+    (request) => {
+      console.log(`🐕 ${request.method} ${request.url}`);
+    },
+  ],
+  beforeRetry: [
+    ({ request }) => {
+      console.log(`♻️ ${request.method} ${request.url}`);
+    },
+  ],
+};
 
 const API_ROOT = 'https://api.hackerwebapp.com';
 const api = ky.create({
   prefixUrl: API_ROOT,
-  hooks: {
-    beforeRequest: [
-      (request) => {
-        console.log(`🐕 ${request.method} ${request.url}`);
-      },
-    ],
-    beforeRetry: [
-      ({ request }) => {
-        console.log(`♻️ ${request.method} ${request.url}`);
-      },
-    ],
-  },
+  hooks,
 });
-const STORIES_TTL = 10 * 60 * 1000; // 10 mins
+
+const ALGOLIA_API_ROOT = 'https://hn.algolia.com/api/v1';
+const algoliaApi = ky.create({
+  prefixUrl: ALGOLIA_API_ROOT,
+  timeout: 15000,
+  hooks,
+});
+
+const OFFICIAL_API_ROOT = `https://hacker-news.firebaseio.com/v0`;
+const officialApi = ky.create({
+  prefixUrl: OFFICIAL_API_ROOT,
+  hooks,
+});
 
 function setItem(key, val, ttl) {
   if (!key || !val) return;
@@ -98,7 +113,7 @@ const useStore = create((set, get) => ({
   fetchStories: async () => {
     console.log(`🥞 fetchStories`);
     let stories = await getItem('stories');
-    if (stories) {
+    if (stories?.length) {
       if (get().stories.length) return;
       set({ stories });
     } else {
@@ -129,22 +144,58 @@ const useStore = create((set, get) => ({
     }
   },
   isStoriesExpired: async () => await isExpired('stories'),
-  fetchStory: pMemoize(
-    async (id) => {
-      console.log(`🥞 fetchStory ${id}`);
-      const { stories } = get();
-      const index = stories.findIndex((s) => s.id === id);
-      let story = stories[index];
-      const storyFetched = !!story?.comments?.length;
-      if (!storyFetched) {
-        story = await api(`item/${id}`).json();
-        stories[index] = story;
-        set({ stories });
-        updateItem('stories', stories, STORIES_TTL);
-      }
-    },
-    { cache },
+  fetchStory: pDebounce(
+    pMemoize(
+      async (id) => {
+        console.log(`🥞 fetchStory ${id}`);
+        const { stories } = get();
+        const index = stories.findIndex((s) => s.id === id);
+        let story = stories[index];
+        const storyFetched = !!story?.comments?.length;
+        if (!storyFetched) {
+          story = await api(`item/${id}`).json();
+          stories[index] = story;
+          set({ stories });
+          updateItem('stories', stories, STORIES_TTL);
+        }
+      },
+      { cache },
+    ),
+    100,
   ),
+  items: new Map(),
+  fetchItem: async (id) => {
+    console.log(`🪂 fetchItem ${id}`);
+    const { stories, items } = get();
+    const index = stories.findIndex((s) => s.id === id);
+    let story = stories[index];
+    const storyFetched = !!story?.comments?.length;
+    if (story && !storyFetched) {
+      story = await api(`item/${id}`).json();
+      stories[index] = story;
+      set({ stories });
+      updateItem('stories', stories, STORIES_TTL);
+    } else {
+      if (items.has(id)) return;
+      const item = await algoliaApi(`items/${id}`).json();
+      items.set(id, item);
+      set({ items });
+    }
+  },
+  minimalItems: new Map(),
+  fetchMinimalItem: async (id) => {
+    console.log(`🔻 fetchMinimalItem ${id}`);
+    const { minimalItems } = get();
+    if (minimalItems.has(id)) {
+      return minimalItems.get(id);
+    }
+    const item = await officialApi(`item/${id}.json`, {
+      timeout: 1000, // 1s
+    }).json();
+    minimalItems.set(id, item);
+    set({ minimalItems });
+    return item;
+  },
   currentOP: null,
   setCurrentOP: (currentOP) => {
     console.log(`🥞 setCurrentOP ${currentOP}`);

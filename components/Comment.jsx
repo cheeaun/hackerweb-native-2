@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Comment(item) {
+export default function Comment({ item }) {
   const navigation = useNavigation();
   const { colors } = useTheme();
   const { id, user, time, content, deleted, dead, comments } = item;

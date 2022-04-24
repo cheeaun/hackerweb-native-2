@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,12 +7,15 @@ import {
   DynamicColorIOS,
   useWindowDimensions,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { parseFragment } from 'parse5';
 import urlRegexSafe from 'url-regex-safe';
 import * as entities from 'entities';
 import stripIndent from 'strip-indent';
 
 import Text from './Text';
+
+import useStore from '../hooks/useStore';
 
 import openBrowser from '../utils/openBrowser';
 import openShare from '../utils/openShare';
@@ -68,12 +71,65 @@ const nodeStyles = StyleSheet.create({
   },
 });
 
-const onLinkPress = (url) => {
-  openBrowser(url);
-};
-const onLinkLongPress = (url) => {
-  openShare({ url });
-};
+function Link({ style, url, ...props }) {
+  if (!url) return null;
+
+  const navigation = useNavigation();
+  const fetchMinimalItem = useStore((state) => state.fetchMinimalItem);
+  const [loading, setLoading] = useState(false);
+
+  return (
+    <Text
+      {...props}
+      style={[
+        nodeStyles.a,
+        style,
+        {
+          opacity: loading ? 0.5 : 1,
+        },
+      ]}
+      onPress={() => {
+        if (loading) return;
+        // get item ID from HN link
+        const [_, itemId] =
+          url.match(/^https?:\/\/news\.ycombinator\.com\/item\?id=(\d+)/) || [];
+        if (itemId) {
+          setLoading(true);
+          fetchMinimalItem(+itemId)
+            .then((item) => {
+              // 4 types: story, comment, job, poll
+              // Ignoring `poll` because Algolia API doesn't contain the poll content
+              if (item?.type === 'story') {
+                navigation.push('StoryModal', {
+                  id: item.id,
+                  tab: 'comments',
+                });
+                // TODO: Add this when Comments screen allow
+                // async loading of comments
+                // } else if (item?.type === 'comment') {
+                //   navigation.push('Comments', {
+                //     id: item.id,
+                //   });
+              } else {
+                openBrowser(url);
+              }
+            })
+            .catch((_) => {
+              openBrowser(url);
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        } else {
+          openBrowser(url);
+        }
+      }}
+      onLongPress={() => {
+        openShare({ url });
+      }}
+    />
+  );
+}
 
 function PreView({ children, ...props }) {
   const windowHeight = useWindowDimensions().height;
@@ -111,14 +167,9 @@ function dom2elements(nodes, parentName, level = 0) {
         const child = childNodes?.length === 1;
         const text = child?.nodeName === '#text' && child.value;
         return (
-          <Text
-            key={key}
-            style={style}
-            onPress={onLinkPress.bind(null, href)}
-            onLongPress={onLinkLongPress.bind(null, href)}
-          >
+          <Link key={key} url={href}>
             {text || elements}
-          </Text>
+          </Link>
         );
       }
       if (tagName === 'p') {

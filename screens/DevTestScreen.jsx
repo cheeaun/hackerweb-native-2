@@ -20,6 +20,14 @@ export default function DevTestScreen() {
       <HTMLView2
         html={`<p>test<pre><code>test</code></pre>this text is not paragraph<p>another paragraph here`}
       />
+      <HTMLView2
+        html={`
+            <p><a href="https://news.ycombinator.com/item?id=31075622">Test story link</a>
+            <p><a href="https://news.ycombinator.com/item?id=31104289">Test comment link</a>
+            <p><a href="https://news.ycombinator.com/item?id=31039184">Test job link</a>
+            <p><a href="https://news.ycombinator.com/item?id=29755614">Test poll link</a>
+          `}
+      />
       <Text bolder>HTMLView</Text>
       <HTMLView
         html={`<p>&test <a href="https://google.com/">google.com</a> test</p><p>&gt; test <a href="https://google.com/">google.com</a> test</p><p>&gt; test <a href="https://google.com/">google.com</a> test</p>`}

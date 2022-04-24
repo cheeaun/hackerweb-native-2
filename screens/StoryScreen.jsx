@@ -44,6 +44,7 @@ import openShare from '../utils/openShare';
 import { isHTTPLink } from '../utils/url';
 import repliesCount2MaxWeight from '../utils/repliesCount2MaxWeight';
 import shortenNumber from '../utils/shortenNumber';
+import proxyItem from '../utils/proxyItem';
 
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
@@ -83,9 +84,20 @@ export default function StoryScreen({ route, navigation }) {
   const { id, tab } = route.params;
 
   const story = useStore(
-    useCallback((state) => state.stories.find((s) => s.id === id) || {}, [id]),
+    useCallback(
+      ({ stories, items, minimalItems }) => {
+        return (
+          stories.find((s) => s.id === id) ||
+          proxyItem(items.get(id)) ||
+          proxyItem(minimalItems.get(id)) ||
+          {}
+        );
+      },
+      [id],
+    ),
   );
   const fetchStory = useStore((state) => state.fetchStory);
+  const fetchItem = useStore((state) => state.fetchItem);
   const [storyLoading, setStoryLoading] = useState(false);
   useFocusEffect(
     useCallback(() => {
@@ -93,17 +105,25 @@ export default function StoryScreen({ route, navigation }) {
       // Fortunately this `comments` key can be used to indicate
       // if this story's comments are already fetched
       if (story.comments) return;
+
       let ignore = false;
       setStoryLoading(true);
-      fetchStory(id).finally(() => {
+      let fetchPromise;
+      if (!story.__isItem) {
+        fetchPromise = fetchStory(id);
+      } else {
+        fetchPromise = fetchItem(id);
+      }
+      fetchPromise.finally(() => {
         if (ignore) return;
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setStoryLoading(false);
       });
+
       return () => {
         ignore = true;
       };
-    }, [!!story.comments]),
+    }, [!!story.comments, !!story.__isItem]),
   );
 
   const {
@@ -124,8 +144,8 @@ export default function StoryScreen({ route, navigation }) {
 
   const setCurrentOP = useStore((state) => state.setCurrentOP);
   useEffect(() => {
-    setCurrentOP(story.user);
-  }, [story.user]);
+    setCurrentOP(user);
+  }, [user]);
 
   const httpLink = isHTTPLink(url);
   const isJob = type === 'job';
@@ -242,7 +262,7 @@ export default function StoryScreen({ route, navigation }) {
     [titleSize, title],
   );
 
-  const repliesCount = comments.length;
+  const repliesCount = comments?.length;
 
   let maxPollPoints = 0;
   if (!!poll) {
@@ -250,132 +270,137 @@ export default function StoryScreen({ route, navigation }) {
   }
 
   const ListHeaderComponent = useMemo(
-    () => (
-      <>
-        <ReadableWidthContainer>
-          <View style={[styles.storyInfo]}>
-            {httpLink ? (
-              <TouchableHighlight
-                onPress={() => {
-                  // openBrowser(url);
-                  Haptics.selectionAsync();
-                  setTabView('web');
-                }}
-                onLongPress={() => {
-                  openShare({ url });
-                }}
-              >
-                {TitleComponent}
-                <View style={{ marginTop: 4 }}>
-                  <PrettyURL
-                    url={url}
-                    size="subhead"
-                    prominent
-                    numberOfLines={2}
-                    ellipsizeMode="middle"
-                  />
-                </View>
-              </TouchableHighlight>
-            ) : (
-              TitleComponent
-            )}
-            <View style={styles.storyMetadata}>
-              {isJob ? (
-                <Text type="insignificant" size="subhead">
-                  <TimeAgo time={datetime} />
-                </Text>
-              ) : (
-                <Text>
-                  <Text type="insignificant" size="subhead">
-                    {points.toLocaleString('en-US')} point{points != 1 && 's'}{' '}
-                  </Text>
-                  <Text type="insignificant" size="subhead">
-                    by{' '}
-                    <Text
+    () =>
+      !!story.title && (
+        <>
+          <ReadableWidthContainer>
+            <View style={[styles.storyInfo]}>
+              {httpLink ? (
+                <TouchableHighlight
+                  onPress={() => {
+                    // openBrowser(url);
+                    Haptics.selectionAsync();
+                    setTabView('web');
+                  }}
+                  onLongPress={() => {
+                    openShare({ url });
+                  }}
+                >
+                  {TitleComponent}
+                  <View style={{ marginTop: 4 }}>
+                    <PrettyURL
+                      url={url}
                       size="subhead"
-                      bold
-                      style={{ color: colors.red }}
-                      onPress={() => {
-                        navigation.push('User', user);
-                      }}
-                    >
-                      {user}
-                    </Text>{' '}
-                    &bull; <TimeAgo time={datetime} />
-                  </Text>
-                </Text>
+                      prominent
+                      numberOfLines={2}
+                      ellipsizeMode="middle"
+                    />
+                  </View>
+                </TouchableHighlight>
+              ) : (
+                TitleComponent
               )}
+              <View style={styles.storyMetadata}>
+                {isJob ? (
+                  <Text type="insignificant" size="subhead">
+                    <TimeAgo time={datetime} />
+                  </Text>
+                ) : (
+                  <Text>
+                    <Text type="insignificant" size="subhead">
+                      {points?.toLocaleString('en-US')} point
+                      {points != 1 && 's'}{' '}
+                    </Text>
+                    <Text type="insignificant" size="subhead">
+                      by{' '}
+                      <Text
+                        size="subhead"
+                        bold
+                        style={{ color: colors.red }}
+                        onPress={() => {
+                          navigation.push('User', user);
+                        }}
+                      >
+                        {user}
+                      </Text>{' '}
+                      &bull; <TimeAgo time={datetime} />
+                    </Text>
+                  </Text>
+                )}
+              </View>
             </View>
-          </View>
-          {(!!content || !!poll) && (
-            <View style={styles.content}>
-              {!!content && <HTMLView2 html={content} linkify />}
-              {!!poll &&
-                poll.map((p, i) => (
-                  <View key={i}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'flex-end',
-                      }}
-                    >
-                      <Text bold size="subhead" style={{ flexShrink: 1 }}>
-                        {p.item}
-                      </Text>
-                      <Text size="subhead" style={{ marginLeft: 15 }}>
-                        {p.points.toLocaleString('en-US')} point
-                        {p.points === 0 ? '' : 's'}
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        backgroundColor: colors.fill,
-                        height: 3,
-                        marginTop: 3,
-                        marginBottom: 8,
-                        borderRadius: 3,
-                        overflow: 'hidden',
-                      }}
-                    >
+            {(!!content || !!poll) && (
+              <View style={styles.content}>
+                {!!content && <HTMLView2 html={content} linkify />}
+                {!!poll &&
+                  poll.map((p, i) => (
+                    <View key={i}>
                       <View
                         style={{
-                          backgroundColor: colors.primary,
-                          height: 3,
-                          borderRadius: 3,
-                          width: (p.points / maxPollPoints) * 100 + '%',
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'flex-end',
                         }}
-                      />
+                      >
+                        <Text bold size="subhead" style={{ flexShrink: 1 }}>
+                          {p.item}
+                        </Text>
+                        <Text size="subhead" style={{ marginLeft: 15 }}>
+                          {p.points.toLocaleString('en-US')} point
+                          {p.points === 0 ? '' : 's'}
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          backgroundColor: colors.fill,
+                          height: 3,
+                          marginTop: 3,
+                          marginBottom: 8,
+                          borderRadius: 3,
+                          overflow: 'hidden',
+                        }}
+                      >
+                        <View
+                          style={{
+                            backgroundColor: colors.primary,
+                            height: 3,
+                            borderRadius: 3,
+                            width: (p.points / maxPollPoints) * 100 + '%',
+                          }}
+                        />
+                      </View>
                     </View>
-                  </View>
-                ))}
-            </View>
-          )}
-        </ReadableWidthContainer>
-        {repliesCount > 0 && (
-          <>
-            <Separator />
-            <OuterSpacer
-              style={{
-                backgroundColor: colors.opaqueSecondaryBackground,
-              }}
-              align="bottom"
-              size={comments_count > 0 ? 'large' : 'default'}
-            >
-              <Text
-                type="insignificant"
-                size="footnote"
-                style={{ textTransform: 'uppercase' }}
+                  ))}
+              </View>
+            )}
+          </ReadableWidthContainer>
+          {repliesCount > 0 && (
+            <>
+              <Separator />
+              <OuterSpacer
+                style={{
+                  backgroundColor: colors.opaqueSecondaryBackground,
+                }}
+                align="bottom"
+                size="large"
               >
-                {comments_count.toLocaleString('en-US')} comment
-                {comments_count != 1 && 's'}
-              </Text>
-            </OuterSpacer>
-            <Separator />
-          </>
-        )}
-      </>
-    ),
+                <Text
+                  type="insignificant"
+                  size="footnote"
+                  style={{ textTransform: 'uppercase' }}
+                >
+                  {comments_count
+                    ? comments_count.toLocaleString('en-US')
+                    : `${repliesCount}${repliesCount > 1 ? '+' : ''}`}{' '}
+                  comment
+                  {comments_count != 1 && 's'}
+                </Text>
+              </OuterSpacer>
+              <Separator />
+            </>
+          )}
+        </>
+      ),
     [story],
   );
 
@@ -398,12 +423,12 @@ export default function StoryScreen({ route, navigation }) {
     () => (
       <ListEmpty
         state={
-          storyLoading ? 'loading' : !isJob && !comments.length ? 'nada' : null
+          storyLoading ? 'loading' : !isJob && !comments?.length ? 'nada' : null
         }
         nadaText="No comments yet."
       />
     ),
-    [storyLoading, isJob, comments.length],
+    [storyLoading, isJob, comments?.length],
   );
 
   const keyExtractor = useCallback((item) => '' + item.id, []);

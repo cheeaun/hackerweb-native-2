@@ -7,7 +7,10 @@ import Constants from 'expo-constants';
 import { useAppState } from '@react-native-community/hooks';
 import * as Updates from 'expo-updates';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import {
+  GestureHandlerRootView,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
 
 import StoriesScreen from './screens/StoriesScreen';
 import StoryScreen from './screens/StoryScreen';
@@ -16,6 +19,8 @@ import UserScreen from './screens/UserScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import LogsScreen from './screens/LogsScreen';
 import DevTestScreen from './screens/DevTestScreen';
+
+import Text from './components/Text';
 
 import useStore from './hooks/useStore';
 import useTheme from './hooks/useTheme';
@@ -153,6 +158,36 @@ export default function App() {
                 options={{
                   headerBackTitle: 'News',
                   title: '',
+                  headerShadowVisible: false,
+                  headerStyle: {
+                    backgroundColor: colors.background,
+                  },
+                  headerTransparent: true,
+                }}
+              />
+              <Stack.Screen
+                name="StoryModal"
+                component={StoryScreen}
+                options={{
+                  headerLeft: () => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigationRef.current?.goBack();
+                      }}
+                      hitSlop={{
+                        top: 44,
+                        right: 44,
+                        bottom: 44,
+                        left: 44,
+                      }}
+                    >
+                      <Text type="link" bold>
+                        Close
+                      </Text>
+                    </TouchableOpacity>
+                  ),
+                  title: '',
+                  presentation: 'modal',
                   headerShadowVisible: false,
                   headerStyle: {
                     backgroundColor: colors.background,

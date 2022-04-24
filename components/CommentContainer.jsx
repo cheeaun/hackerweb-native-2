@@ -184,15 +184,13 @@ function InnerCommentContainer({
   const navigation = useNavigation();
   const { repliesCount, totalComments } = getCommentsMetadata(item);
   const totalWeight =
-    calcCommentsWeight(item.comment) +
-    calcCommentsWeight(item.comments) +
-    accWeight;
+    calcCommentWeight(item) + calcCommentsWeight(item.comments) + accWeight;
   const nextLevel = level + 1;
   return (
     <View style={styles.innerComment} key={item.id}>
       <CommentBar last={last} />
       <View style={{ flex: 1, marginTop: 2 }}>
-        <Comment {...item} />
+        <Comment item={item} />
         {!!repliesCount &&
           (totalWeight < maxWeight && level < 3 ? (
             item.comments.map((comment, i) => (
@@ -229,15 +227,18 @@ function calcCommentWeight(comment) {
 }
 
 function calcCommentsWeight(comments = []) {
-  if (comments.length === 1 && calcCommentWeight(comments[0]) < 3) return 0; // Special case
+  if (comments.length === 1 && calcCommentWeight(comments[0]) < 3) {
+    return 0; // Special case
+  }
   return comments.reduce((acc, comment) => acc + calcCommentWeight(comment), 0);
 }
 
 function suffixText(comments, repliesCount) {
-  return comments[0].user
-    ? `by ${comments[0].user}${
+  const [firstComment, secondComment] = comments;
+  return firstComment.user
+    ? `by ${firstComment.user}${
         repliesCount === 2
-          ? ` & ${comments[1].user}`
+          ? ` & ${secondComment.user}`
           : repliesCount > 1
           ? ' & others'
           : ''
@@ -252,13 +253,13 @@ export default function CommentContainer({ item, maxWeight = 5 }) {
 
   const { repliesCount, totalComments } = getCommentsMetadata(item);
   const totalWeight =
-    calcCommentsWeight(item.comment) + calcCommentsWeight(item.comments);
+    calcCommentWeight(item) + calcCommentsWeight(item.comments);
   const hasPreviews = item.content?.length <= 140 * 4;
 
   return (
     <ReadableWidthContainer>
       <View key={item.id} style={styles.comment}>
-        <Comment {...item} />
+        <Comment item={item} />
         {!!repliesCount &&
           (totalWeight < maxWeight ? (
             item.comments.map((comment, i) => (
