@@ -1,4 +1,5 @@
 import { StyleSheet, View } from 'react-native';
+
 import useTheme from '../hooks/useTheme';
 
 export default function Separator(props) {

@@ -1,30 +1,32 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { LayoutAnimation, View } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+
+import { useAppState } from '@react-native-community/hooks';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Constants from 'expo-constants';
-import { useAppState } from '@react-native-community/hooks';
-import * as Updates from 'expo-updates';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {
   GestureHandlerRootView,
   TouchableOpacity,
 } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import StoriesScreen from './screens/StoriesScreen';
-import StoryScreen from './screens/StoryScreen';
-import CommentsScreen from './screens/CommentsScreen';
-import UserScreen from './screens/UserScreen';
-import SettingsScreen from './screens/SettingsScreen';
-import LogsScreen from './screens/LogsScreen';
-import DevTestScreen from './screens/DevTestScreen';
-
-import Text from './components/Text';
+import * as Updates from 'expo-updates';
+import Constants from 'expo-constants';
+import { StatusBar } from 'expo-status-bar';
 
 import useStore from './hooks/useStore';
 import useTheme from './hooks/useTheme';
 import useViewportStore from './hooks/useViewportStore';
+
+import CommentsScreen from './screens/CommentsScreen';
+import DevTestScreen from './screens/DevTestScreen';
+import LogsScreen from './screens/LogsScreen';
+import SettingsScreen from './screens/SettingsScreen';
+import StoriesScreen from './screens/StoriesScreen';
+import StoryScreen from './screens/StoryScreen';
+import UserScreen from './screens/UserScreen';
+
+import Text from './components/Text';
 
 const BACKGROUND_BUFFER = 15 * 60 * 1000; // 15min
 

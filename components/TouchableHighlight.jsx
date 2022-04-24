@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pressable, PlatformColor } from 'react-native';
+import { PlatformColor, Pressable } from 'react-native';
 
 export default function (props) {
   const { style, ...otherProps } = props;

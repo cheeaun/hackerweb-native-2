@@ -1,4 +1,5 @@
 import { useWindowDimensions } from 'react-native';
+
 import useViewportStore from './useViewportStore';
 
 const useViewport = () => {

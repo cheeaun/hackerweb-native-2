@@ -1,5 +1,6 @@
-import * as WebBrowser from 'expo-web-browser';
 import { Alert } from 'react-native';
+
+import * as WebBrowser from 'expo-web-browser';
 
 export default function (url) {
   return WebBrowser.openBrowserAsync(encodeURI(url), {

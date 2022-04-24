@@ -1,0 +1,21 @@
+{
+  "tabWidth": 2,
+  "useTabs": false,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "importOrder": [
+    "^react(-native)?$",
+    "^@?react",
+    "^expo",
+    "<THIRD_PARTY_MODULES>",
+    "screens/",
+    "components/",
+    "hooks/",
+    "utils/",
+    "assets/",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "importOrderGroupNamespaceSpecifiers": true
+}

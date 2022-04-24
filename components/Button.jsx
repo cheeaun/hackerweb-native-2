@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StyleSheet, Pressable } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   button: {

@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { View } from 'react-native';
-import Text from './Text';
+
 import useTheme from '../hooks/useTheme';
+
+import Text from './Text';
 
 export default function CommentPage({ page }) {
   if (!page) return null;

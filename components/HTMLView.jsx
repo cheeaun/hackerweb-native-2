@@ -1,22 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
+  DynamicColorIOS,
+  PlatformColor,
+  ScrollView,
   StyleSheet,
   View,
-  ScrollView,
-  PlatformColor,
-  DynamicColorIOS,
   useWindowDimensions,
 } from 'react-native';
-import { Parser } from 'htmlparser2';
-import { DomHandler } from 'domhandler';
-import urlRegexSafe from 'url-regex-safe';
-import * as entities from 'entities';
-import stripIndent from 'strip-indent';
 
-import Text from './Text';
+import * as entities from 'entities';
+import { DomHandler } from 'domhandler';
+import { Parser } from 'htmlparser2';
+import stripIndent from 'strip-indent';
+import urlRegexSafe from 'url-regex-safe';
 
 import openBrowser from '../utils/openBrowser';
 import openShare from '../utils/openShare';
+
+import Text from './Text';
 
 const baseFontSize = 15;
 const nodeStyles = StyleSheet.create({

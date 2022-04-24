@@ -1,7 +1,8 @@
 import { ScrollView } from 'react-native';
-import Text from '../components/Text';
+
 import HTMLView from '../components/HTMLView';
 import HTMLView2 from '../components/HTMLView2';
+import Text from '../components/Text';
 
 export default function DevTestScreen() {
   return (

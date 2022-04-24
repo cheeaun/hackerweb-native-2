@@ -3,8 +3,8 @@ import { View } from 'react-native';
 
 import useViewportStore from '../hooks/useViewportStore';
 
-import Text from './Text';
 import ActivityIndicator from './ActivityIndicator';
+import Text from './Text';
 
 export default function ({
   state = null, // loading, nada, error

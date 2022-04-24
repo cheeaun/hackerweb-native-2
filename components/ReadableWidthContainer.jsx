@@ -1,4 +1,5 @@
 import { View } from 'react-native';
+
 import useViewport from '../hooks/useViewport';
 
 const ReadableWidthContainer = ({ children }) => {

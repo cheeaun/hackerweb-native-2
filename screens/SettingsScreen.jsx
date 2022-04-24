@@ -1,31 +1,33 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  Pressable,
-  StyleSheet,
   Alert,
-  View,
-  ScrollView,
   Linking,
+  Pressable,
   SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Application from 'expo-application';
-import Constants from 'expo-constants';
-import * as StoreReview from 'expo-store-review';
-import { StatusBar } from 'expo-status-bar';
-import * as Updates from 'expo-updates';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import * as MailComposer from 'expo-mail-composer';
-import * as Device from 'expo-device';
 
-import Text from '../components/Text';
-import Separator from '../components/Separator';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
+import * as Application from 'expo-application';
+import * as Device from 'expo-device';
+import * as MailComposer from 'expo-mail-composer';
+import * as StoreReview from 'expo-store-review';
+import * as Updates from 'expo-updates';
+import Constants from 'expo-constants';
+import { StatusBar } from 'expo-status-bar';
+
 import OuterSpacer from '../components/OuterSpacer';
 import ReadableWidthContainer from '../components/ReadableWidthContainer';
+import Separator from '../components/Separator';
+import Text from '../components/Text';
 
-import useTheme from '../hooks/useTheme';
-import useStore from '../hooks/useStore';
 import useBottomSheetHeaderHeight from '../hooks/useBottomSheetHeaderHeight';
+import useStore from '../hooks/useStore';
+import useTheme from '../hooks/useTheme';
 
 import openBrowser from '../utils/openBrowser';
 

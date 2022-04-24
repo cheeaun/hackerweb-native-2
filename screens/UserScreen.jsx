@@ -1,22 +1,25 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  StyleSheet,
-  View,
   LayoutAnimation,
   Modal,
-  ScrollView,
   Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
 } from 'react-native';
-import ky from 'ky';
-import format from 'date-fns/format';
+
 import { Modalize } from 'react-native-modalize';
+
 import * as Haptics from 'expo-haptics';
 
-import Text from '../components/Text';
-import Separator from '../components/Separator';
-import HTMLView2 from '../components/HTMLView2';
-import TouchableOpacity from '../components/TouchableOpacity';
+import format from 'date-fns/format';
+import ky from 'ky';
+
 import ActivityIndicator from '../components/ActivityIndicator';
+import HTMLView2 from '../components/HTMLView2';
+import Separator from '../components/Separator';
+import Text from '../components/Text';
+import TouchableOpacity from '../components/TouchableOpacity';
 
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';

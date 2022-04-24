@@ -1,19 +1,20 @@
-import { useState, useCallback } from 'react';
-import { StyleSheet, View, PlatformColor } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import Svg, { Path } from 'react-native-svg';
-import { useFocusEffect } from '@react-navigation/native';
+import { useCallback, useState } from 'react';
+import { PlatformColor, StyleSheet, View } from 'react-native';
 
-import Text from './Text';
-import Button from './Button';
-import Comment from './Comment';
-import Separator from './Separator';
-import ReadableWidthContainer from './ReadableWidthContainer';
+import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
+import Svg, { Path } from 'react-native-svg';
 
 import useTheme from '../hooks/useTheme';
-import getHTMLText from '../utils/getHTMLText';
 
 import getCommentsMetadata from '../utils/getCommentsMetadata';
+import getHTMLText from '../utils/getHTMLText';
+
+import Button from './Button';
+import Comment from './Comment';
+import ReadableWidthContainer from './ReadableWidthContainer';
+import Separator from './Separator';
+import Text from './Text';
 
 const styles = StyleSheet.create({
   comment: {

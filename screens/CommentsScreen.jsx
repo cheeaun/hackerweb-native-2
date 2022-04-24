@@ -1,34 +1,36 @@
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  Animated,
+  SafeAreaView,
+  StyleSheet,
   View,
   useWindowDimensions,
-  Animated,
-  StyleSheet,
-  SafeAreaView,
 } from 'react-native';
+
 import MaskedView from '@react-native-masked-view/masked-view';
-import { LinearGradient } from 'expo-linear-gradient';
-import * as Haptics from 'expo-haptics';
-import { StatusBar } from 'expo-status-bar';
-import { BlurView } from 'expo-blur';
-import { TouchableOpacity, FlatList } from 'react-native-gesture-handler';
+import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import Text from '../components/Text';
-import HTMLView2 from '../components/HTMLView2';
-import CommentContainer from '../components/CommentContainer';
-import Separator from '../components/Separator';
-import TimeAgo from '../components/TimeAgo';
-import OuterSpacer from '../components/OuterSpacer';
-import CommentPage from '../components/CommentPage';
-import ReadableWidthContainer from '../components/ReadableWidthContainer';
+import * as Haptics from 'expo-haptics';
+import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
+import { StatusBar } from 'expo-status-bar';
 
+import CommentContainer from '../components/CommentContainer';
+import CommentPage from '../components/CommentPage';
+import HTMLView2 from '../components/HTMLView2';
+import OuterSpacer from '../components/OuterSpacer';
+import ReadableWidthContainer from '../components/ReadableWidthContainer';
+import Separator from '../components/Separator';
+import Text from '../components/Text';
+import TimeAgo from '../components/TimeAgo';
+
+import useBottomSheetHeaderHeight from '../hooks/useBottomSheetHeaderHeight';
 import useTheme from '../hooks/useTheme';
 import useViewport from '../hooks/useViewport';
-import useBottomSheetHeaderHeight from '../hooks/useBottomSheetHeaderHeight';
 
-import getHTMLText from '../utils/getHTMLText';
 import getCommentsMetadata from '../utils/getCommentsMetadata';
+import getHTMLText from '../utils/getHTMLText';
 import repliesCount2MaxWeight from '../utils/repliesCount2MaxWeight';
 
 import CloseIcon from '../assets/xmark.svg';

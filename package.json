@@ -81,6 +81,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@trivago/prettier-plugin-sort-imports": "~3.2.0",
     "react-native-svg-transformer": "~1.0.0"
   }
 }

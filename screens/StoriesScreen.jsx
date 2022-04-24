@@ -1,19 +1,26 @@
-import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
 import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
+import {
+  ActivityIndicator,
   FlatList,
   LayoutAnimation,
   StyleSheet,
-  ActivityIndicator,
   View,
 } from 'react-native';
+
 import { useFocusEffect } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import StoryItem from '../components/StoryItem';
-import Separator from '../components/Separator';
 import ListEmpty from '../components/ListEmpty';
-import Text from '../components/Text';
 import ReadableWidthContainer from '../components/ReadableWidthContainer';
+import Separator from '../components/Separator';
+import StoryItem from '../components/StoryItem';
+import Text from '../components/Text';
 
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';

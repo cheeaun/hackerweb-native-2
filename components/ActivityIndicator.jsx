@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { ActivityIndicator, Animated } from 'react-native';
 
 export default function (props) {

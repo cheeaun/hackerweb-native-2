@@ -1,51 +1,60 @@
-import { useState, useEffect, useCallback, useMemo, useRef, useLayoutEffect } from 'react';
 import {
-  StyleSheet,
-  View,
-  Linking,
-  FlatList,
-  LayoutAnimation,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import {
   ActionSheetIOS,
   Animated,
+  FlatList,
+  LayoutAnimation,
+  Linking,
   ScrollView,
+  StyleSheet,
+  View,
   findNodeHandle,
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-import { WebView } from 'react-native-webview';
+
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
-import * as Haptics from 'expo-haptics';
-import { URL } from 'react-native-url-polyfill';
-import { BlurView } from 'expo-blur';
-import * as Application from 'expo-application';
+import { useFocusEffect } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { URL } from 'react-native-url-polyfill';
+import { WebView } from 'react-native-webview';
 
-import Text from '../components/Text';
-import Separator from '../components/Separator';
-import PrettyURL from '../components/PrettyURL';
-import HTMLView2 from '../components/HTMLView2';
-import TouchableHighlight from '../components/TouchableHighlight';
+import * as Application from 'expo-application';
+import * as Haptics from 'expo-haptics';
+import { BlurView } from 'expo-blur';
+
 import CommentContainer from '../components/CommentContainer';
-import TimeAgo from '../components/TimeAgo';
+import CommentPage from '../components/CommentPage';
+import HTMLView2 from '../components/HTMLView2';
 import ListEmpty from '../components/ListEmpty';
 import OuterSpacer from '../components/OuterSpacer';
-import CommentPage from '../components/CommentPage';
+import PrettyURL from '../components/PrettyURL';
 import ReadableWidthContainer from '../components/ReadableWidthContainer';
-
-import openBrowser from '../utils/openBrowser';
-import openShare from '../utils/openShare';
-import { isHTTPLink } from '../utils/url';
-import repliesCount2MaxWeight from '../utils/repliesCount2MaxWeight';
-import shortenNumber from '../utils/shortenNumber';
-import proxyItem from '../utils/proxyItem';
+import Separator from '../components/Separator';
+import Text from '../components/Text';
+import TimeAgo from '../components/TimeAgo';
+import TouchableHighlight from '../components/TouchableHighlight';
 
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
 import useViewport from '../hooks/useViewport';
 
-import ShareIcon from '../assets/square.and.arrow.up.svg';
+import openBrowser from '../utils/openBrowser';
+import openShare from '../utils/openShare';
+import proxyItem from '../utils/proxyItem';
+import repliesCount2MaxWeight from '../utils/repliesCount2MaxWeight';
+import shortenNumber from '../utils/shortenNumber';
+import { isHTTPLink } from '../utils/url';
+
 import BackIcon from '../assets/chevron.backward.svg';
 import MoreIcon from '../assets/ellipsis.circle.svg';
+import ShareIcon from '../assets/square.and.arrow.up.svg';
 
 const styles = StyleSheet.create({
   storyInfo: {
