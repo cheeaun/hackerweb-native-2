@@ -107,6 +107,14 @@ export default function App() {
     }
   }, [currentAppState === 'active']);
 
+  useEffect(() => {
+    Updates.addListener((updateEvent) => {
+      console.log(
+        `🔥 Update Event: ${updateEvent.type} - ${updateEvent.message}`,
+      );
+    });
+  }, []);
+
   const { isDark, colors } = useTheme();
 
   const theme = {
