@@ -14,10 +14,6 @@ import * as Updates from 'expo-updates';
 import Constants from 'expo-constants';
 import { StatusBar } from 'expo-status-bar';
 
-import useStore from './hooks/useStore';
-import useTheme from './hooks/useTheme';
-import useViewportStore from './hooks/useViewportStore';
-
 import CommentsScreen from './screens/CommentsScreen';
 import DevTestScreen from './screens/DevTestScreen';
 import LogsScreen from './screens/LogsScreen';
@@ -25,8 +21,13 @@ import SettingsScreen from './screens/SettingsScreen';
 import StoriesScreen from './screens/StoriesScreen';
 import StoryScreen from './screens/StoryScreen';
 import UserScreen from './screens/UserScreen';
+import WebViewScreen from './screens/WebViewScreen';
 
 import Text from './components/Text';
+
+import useStore from './hooks/useStore';
+import useTheme from './hooks/useTheme';
+import useViewportStore from './hooks/useViewportStore';
 
 const BACKGROUND_BUFFER = 15 * 60 * 1000; // 15min
 
@@ -44,8 +45,10 @@ if (!__PRODUCTION__ && !global._consolelog) {
 }
 
 export default function App() {
+  const initSettings = useStore((state) => state.initSettings);
   const initLinks = useStore((state) => state.initLinks);
   useEffect(() => {
+    initSettings();
     initLinks();
   }, []);
 
@@ -237,6 +240,37 @@ export default function App() {
                 options={{
                   headerShown: false,
                   presentation: 'modal',
+                }}
+              />
+              <Stack.Screen
+                name="WebViewModal"
+                component={WebViewScreen}
+                options={{
+                  headerTitleStyle: {
+                    fontWeight: 'normal',
+                  },
+                  headerRight: () => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigationRef.current?.goBack();
+                      }}
+                      hitSlop={{
+                        top: 44,
+                        right: 44,
+                        bottom: 44,
+                        left: 44,
+                      }}
+                    >
+                      <Text type="link" bold>
+                        Done
+                      </Text>
+                    </TouchableOpacity>
+                  ),
+                  title: '',
+                  presentation: 'modal',
+                  headerStyle: {
+                    backgroundColor: colors.background,
+                  },
                 }}
               />
               <Stack.Screen name="DevTest" component={DevTestScreen} />

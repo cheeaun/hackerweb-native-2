@@ -43,7 +43,7 @@ const officialApi = ky.create({
 
 function setItem(key, val, ttl) {
   if (!key || !val) return;
-  console.log(`💾 SET ${key} ${ttl}`);
+  console.log(`💾 SET ${key} ${ttl ? ttl : ''}`);
   return AsyncStorage.setItem(
     key,
     JSON.stringify({
@@ -233,6 +233,21 @@ const useStore = create((set, get) => ({
     const { userInfo } = get();
     userInfo.set(user, info);
     set({ userInfo });
+  },
+  settings: {
+    interactions: false,
+  },
+  initSettings: async () => {
+    console.log(`🥞 initSettings`);
+    let settings = await getItem('settings');
+    if (settings) set({ settings });
+  },
+  setSetting: (key, value) => {
+    console.log(`🥞 setSetting ${key}`);
+    const { settings } = get();
+    settings[key] = value;
+    set({ settings });
+    setItem('settings', settings);
   },
 }));
 

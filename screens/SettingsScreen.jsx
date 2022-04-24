@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
+  Switch,
   View,
 } from 'react-native';
 
@@ -51,6 +52,9 @@ function ListItem({ style = {}, ...props }) {
     paddingHorizontal: 15,
     paddingVertical: 13,
     backgroundColor: colors.background,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   };
 
   return (
@@ -92,6 +96,8 @@ export default function SettingsScreen({ navigation }) {
   }, []);
 
   const updateIsAvailable = useStore((state) => state.updateIsAvailable);
+  const settingsInteractions = useStore((state) => state.settings.interactions);
+  const setSetting = useStore((state) => state.setSetting);
 
   const [canComposeMail, setCanComposeMail] = useState(false);
   MailComposer.isAvailableAsync().then((isAvailable) => {
@@ -152,10 +158,30 @@ export default function SettingsScreen({ navigation }) {
         <OuterSpacer />
         <ListMenu>
           <ListItem>
-            <Text type="insignificant">No settings available yet</Text>
+            <Text>Allow interactions</Text>
+            <Switch
+              value={settingsInteractions}
+              onValueChange={(value) => {
+                console.log({ value });
+                setSetting('interactions', value);
+              }}
+            />
           </ListItem>
         </ListMenu>
-        <OuterSpacer size="large" innerStyle={{ paddingHorizontal: 30 }}>
+        <OuterSpacer align="top" innerStyle={{ paddingHorizontal: 30 }}>
+          <Text size="footnote" type="insignificant">
+            Interactions include upvoting. This works by opening a web view to
+            load Hacker News web site with interactions set in the URL. Login
+            information and session are stored in the web view, not the app
+            itself.
+          </Text>
+        </OuterSpacer>
+        {/* <ListMenu>
+          <ListItem>
+            <Text type="insignificant">No settings available yet</Text>
+          </ListItem>
+        </ListMenu> */}
+        <OuterSpacer innerStyle={{ paddingHorizontal: 30 }}>
           <Text
             size="footnote"
             type="insignificant"

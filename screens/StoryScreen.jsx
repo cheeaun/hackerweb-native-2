@@ -208,8 +208,34 @@ export default function StoryScreen({ route, navigation }) {
     );
   }, [title, navState.title, url, navState.url, webViewRef.current]);
 
+  const settingsInteractions = useStore((state) => state.settings.interactions);
   const commentsButtonRef = useRef(null);
   const commentsHeaderRight = useCallback(() => {
+    const options = [
+      {
+        text: 'View on HN web site',
+        action: () => {
+          openBrowser(hnURL);
+        },
+      },
+      // https://news.ycombinator.com/vote?id=31142560&how=up&goto=item%3Fid%3D31142560
+      settingsInteractions && {
+        text: 'Upvote…',
+        action: () => {
+          navigation.push('WebViewModal', {
+            url: `https://news.ycombinator.com/vote?id=${id}&how=up&goto=${encodeURIComponent(
+              `item?id=${id}`,
+            )}`,
+          });
+        },
+      },
+      {
+        text: 'Share…',
+        action: () => openShare({ url: hnURL }),
+      },
+      { text: 'Cancel', cancel: true },
+    ].filter(Boolean);
+
     return (
       <TouchableOpacity
         ref={commentsButtonRef}
@@ -218,16 +244,12 @@ export default function StoryScreen({ route, navigation }) {
             {
               title,
               message: hnURL,
-              options: ['View on HN web site', 'Share…', 'Cancel'],
-              cancelButtonIndex: 2,
+              options: options.map((o) => o.text),
+              cancelButtonIndex: options.findIndex((o) => o.cancel),
               anchor: findNodeHandle(commentsButtonRef.current),
             },
             (index) => {
-              if (index === 0) {
-                openBrowser(hnURL);
-              } else if (index === 1) {
-                openShare({ url: hnURL });
-              }
+              options[index].action?.();
             },
           );
         }}
@@ -244,7 +266,7 @@ export default function StoryScreen({ route, navigation }) {
         <ShareIcon width={20} height={20} color={colors.primary} />
       </TouchableOpacity>
     );
-  }, [url, hnURL]);
+  }, [id, url, hnURL, settingsInteractions]);
 
   const titleLength = (title || '').length;
   const titleSize = underViewableHeight
