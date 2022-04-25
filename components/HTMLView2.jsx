@@ -66,6 +66,8 @@ const nodeStyles = StyleSheet.create({
   a: {
     color: PlatformColor('link'),
     fontSize: baseFontSize,
+    textDecorationLine: 'underline',
+    textDecorationColor: '#1e90ff66',
   },
   i: {
     fontStyle: 'italic',
