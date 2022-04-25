@@ -94,6 +94,13 @@ export default function Comment({ item }) {
           url: `https://news.ycombinator.com/vote?id=${id}&how=up&goto=${encodeURIComponent(
             `item?id=${id}`,
           )}`,
+          // Once logged in, Vote URL won't work anymore
+          injectedJavaScript: `
+            try {
+              document.getElementById('up_${id}').click();
+            } catch (e) {}
+            true; // note: this is required, or you'll sometimes get silent failures
+          `,
         });
       },
     },

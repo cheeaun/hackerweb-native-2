@@ -11,7 +11,7 @@ export default function WebViewScreen() {
   const { colors } = useTheme();
   const navigation = useNavigation();
   const route = useRoute();
-  const { url } = route.params;
+  const { url, injectedJavaScript = '' } = route.params;
   if (!url) return null;
 
   const [navState, setNavState] = useState({});
@@ -33,6 +33,8 @@ export default function WebViewScreen() {
       onNavigationStateChange={(navState) => {
         setNavState(navState);
       }}
+      onMessage={() => {}} // Required for injectedJavaScript to work
+      injectedJavaScript={injectedJavaScript}
     />
   );
 }
