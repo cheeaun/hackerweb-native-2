@@ -218,9 +218,8 @@ export default function StoryScreen({ route, navigation }) {
           openBrowser(hnURL);
         },
       },
-      // https://news.ycombinator.com/vote?id=31142560&how=up&goto=item%3Fid%3D31142560
       settingsInteractions && {
-        text: 'Upvote…',
+        text: 'Upvote',
         action: () => {
           navigation.push('WebViewModal', {
             url: `https://news.ycombinator.com/vote?id=${id}&how=up&goto=${encodeURIComponent(
