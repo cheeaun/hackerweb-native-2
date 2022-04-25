@@ -154,6 +154,7 @@ function PreView({ children, ...props }) {
 
 function dom2elements(nodes, parentName, level = 0) {
   if (!nodes || !nodes.length) return;
+  let isPrevBlockquote = false;
   return nodes.map((node, i) => {
     const { tagName, nodeName, childNodes } = node;
     // Note: React keys must only be unique among siblings, not global
@@ -193,10 +194,19 @@ function dom2elements(nodes, parentName, level = 0) {
           // Refresh elements
           elements = dom2elements(childNodes, tagName, level + 1);
 
-          return (
+          const isBlockquote = prefix.includes('>');
+
+          const Component = (
             <View
               key={key}
-              style={nodeStyles[prefix.includes('>') ? 'blockquote' : 'li']}
+              style={[
+                nodeStyles[isBlockquote ? 'blockquote' : 'li'],
+                isBlockquote &&
+                  isPrevBlockquote && {
+                    // Collapse margin between blockquotes
+                    marginTop: -12,
+                  },
+              ]}
             >
               <Text style={nodeStyles.default} fontVariant={['tabular-nums']}>
                 {prefix}
@@ -213,6 +223,10 @@ function dom2elements(nodes, parentName, level = 0) {
               </Text>
             </View>
           );
+
+          isPrevBlockquote = isBlockquote;
+
+          return Component;
         }
       }
       return (
