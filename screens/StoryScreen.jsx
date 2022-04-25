@@ -101,6 +101,13 @@ export default function StoryScreen({ route, navigation }) {
   const fetchStory = useStore((state) => state.fetchStory);
   const fetchItem = useStore((state) => state.fetchItem);
   const [storyLoading, setStoryLoading] = useState(false);
+  const transitionEnded = useRef(false);
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('transitionEnd', () => {
+      transitionEnded.current = true;
+    });
+    return unsubscribe;
+  }, [navigation]);
   useFocusEffect(
     useCallback(() => {
       console.log('👀 StoryScreen is focused');
@@ -118,7 +125,9 @@ export default function StoryScreen({ route, navigation }) {
       }
       fetchPromise.finally(() => {
         if (ignore) return;
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        if (transitionEnded.current) {
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        }
         setStoryLoading(false);
       });
 
