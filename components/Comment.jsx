@@ -51,6 +51,8 @@ export default function Comment({ item }) {
   const { id, user, time, content, deleted, dead, comments } = item;
   const datetime = new Date(time * 1000);
   const currentOP = useStore((state) => state.currentOP);
+  const settingsInteractions = useStore((state) => state.settings.interactions);
+
   if (dead || (deleted && !comments.length)) return null;
   const hnURL = `https://news.ycombinator.com/item?id=${id}`;
 
@@ -72,20 +74,56 @@ export default function Comment({ item }) {
 
   const commentRef = useRef();
 
-  const commentActionOptions = __DEV__
-    ? [
-        'View profile',
-        'View comment on HN web site',
-        'Share comment…',
-        'DEV: View HTML',
-        'Cancel',
-      ]
-    : [
-        'View profile',
-        'View comment on HN web site',
-        'Share comment…',
-        'Cancel',
-      ];
+  const options = [
+    {
+      text: 'View profile',
+      action: () => {
+        navigation.push('User', user);
+      },
+    },
+    !settingsInteractions && {
+      text: 'View comment on HN web site',
+      action: () => {
+        openBrowser(hnURL);
+      },
+    },
+    settingsInteractions && {
+      text: 'Upvote',
+      action: () => {
+        navigation.push('WebViewModal', {
+          url: `https://news.ycombinator.com/vote?id=${id}&how=up&goto=${encodeURIComponent(
+            `item?id=${id}`,
+          )}`,
+        });
+      },
+    },
+    settingsInteractions && {
+      text: 'Reply',
+      action: () => {
+        navigation.push('WebViewModal', {
+          url: `https://news.ycombinator.com/reply?id=${id}&goto=${encodeURIComponent(
+            `item?id=${id}`,
+          )}`,
+        });
+      },
+    },
+    {
+      text: 'Share comment…',
+      action: () => {
+        openShare({ url: hnURL });
+      },
+    },
+    __DEV__ && {
+      text: 'DEV: View HTML',
+      action: () => {
+        Alert.alert('Comment HTML', content);
+      },
+    },
+    {
+      text: 'Cancel',
+      cancel: true,
+    },
+  ].filter(Boolean);
 
   return (
     <Pressable
@@ -97,30 +135,12 @@ export default function Comment({ item }) {
           {
             title: `Comment by ${user}`,
             message: format(datetime, 'EEEE, d LLLL yyyy, h:mm a'),
-            options: commentActionOptions,
-            cancelButtonIndex: commentActionOptions.findIndex(
-              (o) => o.toLowerCase() === 'cancel',
-            ),
+            options: options.map((o) => o.text),
+            cancelButtonIndex: options.findIndex((o) => o.cancel),
             anchor: findNodeHandle(commentRef.current),
           },
           (index) => {
-            if (commentActionOptions[index].toLowerCase() === 'cancel') {
-              return;
-            }
-            switch (index) {
-              case 0:
-                navigation.push('User', user);
-                break;
-              case 1:
-                openBrowser(hnURL);
-                break;
-              case 2:
-                openShare({ url: hnURL });
-                break;
-              case 3:
-                Alert.alert('Comment HTML', content);
-                break;
-            }
+            options[index].action?.();
           },
         );
       }}

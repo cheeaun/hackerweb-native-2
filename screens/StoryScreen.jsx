@@ -212,10 +212,18 @@ export default function StoryScreen({ route, navigation }) {
   const commentsButtonRef = useRef(null);
   const commentsHeaderRight = useCallback(() => {
     const options = [
-      {
+      !settingsInteractions && {
         text: 'View on HN web site',
         action: () => {
           openBrowser(hnURL);
+        },
+      },
+      settingsInteractions && {
+        text: 'Reply',
+        action: () => {
+          navigation.push('WebViewModal', {
+            url: hnURL,
+          });
         },
       },
       settingsInteractions && {

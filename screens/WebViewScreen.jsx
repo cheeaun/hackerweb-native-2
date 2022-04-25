@@ -1,11 +1,9 @@
 import { useLayoutEffect, useState } from 'react';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { View, WebView } from 'react-native-webview';
+import { WebView } from 'react-native-webview';
 
 import * as Application from 'expo-application';
-
-import Text from '../components/Text';
 
 import useTheme from '../hooks/useTheme';
 
@@ -31,7 +29,7 @@ export default function WebViewScreen() {
       source={{ uri: url }}
       originWhitelist={['http://*', 'https://*', 'data:*', 'about:*']}
       decelerationRate="normal"
-      renderLoading={() => null}
+      startInLoadingState
       onNavigationStateChange={(navState) => {
         setNavState(navState);
       }}
