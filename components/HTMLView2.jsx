@@ -261,7 +261,8 @@ export default function HTMLView2({ html, linkify }) {
       html = entities
         .decodeHTML(html)
         .replace(/(<\w)/gi, '\n$1') // Some tags are too "sticky"
-        .replace(urlRegex, (url) => `<a href="${url}">${url}</a>`);
+        .replace(urlRegex, (url) => `<a href="${url}">${url}</a>`)
+        .trim();
     }
   }
   const docFrag = parseFragment(html);
