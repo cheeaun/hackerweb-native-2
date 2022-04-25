@@ -253,7 +253,7 @@ const urlRegex = urlRegexSafe({
   strict: true,
 });
 
-export default function HTMLView2({ html, linkify }) {
+export default function HTMLView2({ html, linkify, DEBUG }) {
   if (!html || !html.trim()) return null;
   if (linkify) {
     const containsLink = /<\/a>/i.test(html);
@@ -269,5 +269,8 @@ export default function HTMLView2({ html, linkify }) {
   }
   const docFrag = parseFragment(html);
   const elements = dom2elements(docFrag.childNodes);
+  if (DEBUG) {
+    console.log({ html });
+  }
   return elements;
 }
