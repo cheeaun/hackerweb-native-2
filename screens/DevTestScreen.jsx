@@ -9,6 +9,9 @@ export default function DevTestScreen() {
     <ScrollView style={{ padding: 8 }}>
       <Text bolder>HTMLView2</Text>
       <HTMLView2
+        html={`<p>This is *italic* _italic_ **bold** __bold__ \`code\` \`\`notCode\`\` \`code again\` trap \`trap.<p>\`start code\` yeah`}
+      />
+      <HTMLView2
         html={`<p>&test <a href="https://google.com/">google.com</a> test</p><p>&gt; test <a href="https://google.com/">google.com</a> test</p><p>&gt; test <a href="https://google.com/">google.com</a> test</p>`}
       />
       <HTMLView2

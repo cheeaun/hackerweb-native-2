@@ -245,7 +245,32 @@ function dom2elements(nodes, parentName, level = 0) {
       } else {
         // Trim ALL newlines, because HTML
         text = value.replace(/[\n\s\t]+/g, ' ');
+
+        // Markdownify text
+        // Support "`" for now
+        const separator = '\n\n\n';
+        if (/`/.test(text)) {
+          text = text
+            .replace(
+              /(`)[^\s][^`]+[^\s]\1/g,
+              (m) => `${separator}${m}${separator}`,
+            )
+            .split(separator)
+            .map((chunk, i) => {
+              // if code
+              if (/^(`)[^`]+\1$/.test(chunk)) {
+                return (
+                  <Text key={`c-${i}`} style={nodeStyles.code}>
+                    {chunk}
+                  </Text>
+                );
+              }
+              // others
+              return chunk;
+            });
+        }
       }
+
       if (level === 0 && !parentName) {
         // If root level and there's no parent tag, then it's text that doesn't have a <p> tag
         return (
@@ -254,6 +279,7 @@ function dom2elements(nodes, parentName, level = 0) {
           </Text>
         );
       }
+
       return (
         <Text key={key} style={style}>
           {text}
