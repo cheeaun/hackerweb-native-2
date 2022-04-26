@@ -205,6 +205,7 @@ function dom2elements(nodes, parentName, level = 0) {
                   isPrevBlockquote && {
                     // Collapse margin between blockquotes
                     marginTop: -12,
+                    paddingTop: 4, // 8 + 4 = 12
                   },
               ]}
             >
