@@ -239,7 +239,7 @@ function dom2elements(nodes, parentName, level = 0) {
       const { value } = node;
       let text;
       if (parentName === 'code') {
-        // Trim EOL newline
+        // Trim EOL newline and strip indents
         text = stripIndent(value.replace(/\n$/, ''));
       } else {
         // Trim ALL newlines, because HTML
