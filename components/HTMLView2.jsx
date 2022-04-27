@@ -392,6 +392,13 @@ export default function HTMLView2({ html, linkify, DEBUG }) {
         .trim();
     }
   }
+
+  /* HTML CLEANUP */
+  // Put <p> after </pre>
+  if (!/<\/pre>\s*<p>/i.test(html)) {
+    html = html.replace(/<\/pre>([^<])/gi, '</pre><p>$1');
+  }
+
   const docFrag = parseFragment(html);
   const elements = dom2elements(docFrag.childNodes);
   if (DEBUG) {
