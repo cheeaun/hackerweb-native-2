@@ -182,10 +182,10 @@ function CodeText({ className, children }) {
   return <Text style={[nodeStyles.code, color && { color }]}>{children}</Text>;
 }
 
-function renderRow(row) {
+function renderRow(row, i) {
   if (row.children) {
     return (
-      <CodeText className={row.properties.className}>
+      <CodeText key={i} className={row.properties.className}>
         {row.children.map(renderRow)}
       </CodeText>
     );
