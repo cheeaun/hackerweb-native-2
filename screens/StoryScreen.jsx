@@ -228,14 +228,6 @@ export default function StoryScreen({ route, navigation }) {
         },
       },
       settingsInteractions && {
-        text: 'Reply',
-        action: () => {
-          navigation.push('WebViewModal', {
-            url: hnURL,
-          });
-        },
-      },
-      settingsInteractions && {
         text: 'Upvote',
         action: () => {
           navigation.push('WebViewModal', {
@@ -249,6 +241,14 @@ export default function StoryScreen({ route, navigation }) {
               } catch (e) {}
               true; // note: this is required, or you'll sometimes get silent failures
             `,
+          });
+        },
+      },
+      settingsInteractions && {
+        text: 'View/Reply',
+        action: () => {
+          navigation.push('WebViewModal', {
+            url: hnURL,
           });
         },
       },

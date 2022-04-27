@@ -105,7 +105,7 @@ export default function Comment({ item }) {
       },
     },
     settingsInteractions && {
-      text: 'Reply',
+      text: 'View/Reply',
       action: () => {
         navigation.push('WebViewModal', {
           url: `https://news.ycombinator.com/reply?id=${id}&goto=${encodeURIComponent(
@@ -121,7 +121,7 @@ export default function Comment({ item }) {
       },
     },
     __DEV__ && {
-      text: 'DEV: View HTML',
+      text: '🚧 View HTML',
       action: () => {
         Alert.alert('Comment HTML', content);
       },
