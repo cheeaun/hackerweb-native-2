@@ -158,11 +158,11 @@ export default function App() {
                   headerLargeStyle: {
                     backgroundColor: colors.background,
                   },
-                  headerStyle: {
-                    backgroundColor: colors.opaqueHeader,
-                  },
-                  headerBlurEffect: 'prominent',
-                  headerTransparent: true,
+                  // headerStyle: {
+                  //   backgroundColor: colors.opaqueHeader,
+                  // },
+                  // headerBlurEffect: 'prominent',
+                  // headerTransparent: true,
                 }}
               />
               <Stack.Screen
@@ -171,11 +171,11 @@ export default function App() {
                 options={{
                   headerBackTitle: 'News',
                   title: '',
-                  headerShadowVisible: false,
-                  headerStyle: {
-                    backgroundColor: colors.background,
-                  },
-                  headerTransparent: true,
+                  // headerShadowVisible: false,
+                  // headerStyle: {
+                  //   backgroundColor: colors.background,
+                  // },
+                  // headerTransparent: true,
                 }}
               />
               <Stack.Screen

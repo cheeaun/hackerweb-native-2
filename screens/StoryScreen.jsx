@@ -511,7 +511,7 @@ export default function StoryScreen({ route, navigation }) {
     (e) => {
       if (tabView !== 'comments') return;
       const { y } = e.nativeEvent.contentOffset;
-      const scrolled = y + 44 > 16;
+      const scrolled = y > 16;
       if (scrolled && scrolled === scrolledDown.current) return;
       scrolledDown.current = scrolled;
       const options = {
