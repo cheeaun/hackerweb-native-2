@@ -190,7 +190,10 @@ function renderRow(row, i) {
     );
   }
   if (row.value) {
-    return row.value.replace(/\n+$/, ' ');
+    if (typeof row.value === 'string') {
+      return row.value.replace(/\n+$/, ' ');
+    }
+    return row.value;
   }
 }
 
