@@ -12,6 +12,23 @@ export default function DevTestScreen() {
         html={`<p>This is *italic* _italic_ **bold** __bold__ \`code\` \`\`notCode\`\` \`code again\` trap \`trap.<p>\`start code\` yeah`}
       />
       <HTMLView2
+        html={`<pre><code>
+        import React from 'react';
+        import { View, ScrollView, Text, Platform, ColorValue, TextStyle } from 'react-native';
+        import Highlighter, { SyntaxHighlighterProps as HighlighterProps } from 'react-syntax-highlighter';
+        import * as HLJSSyntaxStyles from 'react-syntax-highlighter/dist/esm/styles/hljs';
+        
+        type Node = {
+            children?: Node[];
+            properties?: {
+                className: string[];
+            };
+            tagName?: string;
+            type: string;
+            value?: string;
+        };</code></pre>`}
+      />
+      <HTMLView2
         html={`<p>&test <a href="https://google.com/">google.com</a> test</p><p>&gt; test <a href="https://google.com/">google.com</a> test</p><p>&gt; test <a href="https://google.com/">google.com</a> test</p>`}
       />
       <HTMLView2

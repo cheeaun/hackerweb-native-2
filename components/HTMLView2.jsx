@@ -9,6 +9,11 @@ import {
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import {
+  a11yDark,
+  a11yLight,
+} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 import * as entities from 'entities';
 import { parseFragment } from 'parse5';
@@ -16,6 +21,7 @@ import stripIndent from 'strip-indent';
 import urlRegexSafe from 'url-regex-safe';
 
 import useStore from '../hooks/useStore';
+import useTheme from '../hooks/useTheme';
 
 import openBrowser from '../utils/openBrowser';
 import openShare from '../utils/openShare';
@@ -141,7 +147,12 @@ function PreView({ children, ...props }) {
     <ScrollView
       automaticallyAdjustContentInsets={false}
       scrollsToTop={false}
-      style={[nodeStyles.pre, { maxHeight: windowHeight * 0.5 }]}
+      style={[
+        nodeStyles.pre,
+        {
+          maxHeight: windowHeight * 0.5,
+        },
+      ]}
       decelerationRate={0} // Easier to read the code
       {...props}
     >
@@ -149,6 +160,80 @@ function PreView({ children, ...props }) {
         {children}
       </View>
     </ScrollView>
+  );
+}
+
+const codeTextColorsLight = {};
+Object.entries(a11yLight).forEach(([key, value]) => {
+  codeTextColorsLight[key] = value.color;
+});
+const codeTextColorsDark = {};
+Object.entries(a11yDark).forEach(([key, value]) => {
+  codeTextColorsDark[key] = value.color;
+});
+
+function CodeText({ className, children }) {
+  const { isDark } = useTheme();
+  const colors = isDark ? codeTextColorsDark : codeTextColorsLight;
+  const color = className.reduce(
+    (color, _className) => colors[_className] || color,
+    null,
+  );
+  return <Text style={[nodeStyles.code, color && { color }]}>{children}</Text>;
+}
+
+function renderRow(row) {
+  if (row.children) {
+    return (
+      <CodeText className={row.properties.className}>
+        {row.children.map(renderRow)}
+      </CodeText>
+    );
+  }
+  if (row.value) {
+    return row.value.replace(/\n+$/, ' ');
+  }
+}
+
+const EmptyTag = ({ children }) => children;
+
+function CodeBlock({ children }) {
+  const windowHeight = useWindowDimensions().height;
+
+  let codeText = children
+    .map((node) => {
+      if (node.tagName === 'code') {
+        return node.childNodes.map((node) => node.value).join('');
+      }
+      return node.value;
+    })
+    .join('');
+  codeText = stripIndent(codeText.replace(/^\n+/, '').replace(/\n+$/, ''));
+
+  return (
+    <SyntaxHighlighter
+      CodeTag={EmptyTag}
+      PreTag={EmptyTag}
+      style={{}}
+      renderer={({ rows }) => (
+        <ScrollView
+          automaticallyAdjustContentInsets={false}
+          automaticallyAdjustsScrollIndicatorInsets={false}
+          scrollsToTop={false}
+          style={[nodeStyles.pre, { maxHeight: windowHeight * 0.5 }]}
+          decelerationRate={0} // Easier to read the code
+        >
+          <View
+            style={nodeStyles.preInner}
+            onStartShouldSetResponder={() => true}
+          >
+            {rows.map(renderRow)}
+          </View>
+        </ScrollView>
+      )}
+    >
+      {codeText}
+    </SyntaxHighlighter>
   );
 }
 
@@ -164,7 +249,8 @@ function dom2elements(nodes, parentName, level = 0) {
       let elements = dom2elements(childNodes, tagName, level + 1);
       if (!elements) return null;
       if (tagName === 'pre') {
-        return <PreView key={key}>{elements}</PreView>;
+        return <CodeBlock key={key}>{childNodes}</CodeBlock>;
+        // return <PreView key={key}>{elements}</PreView>;
       }
       if (tagName === 'a') {
         const href = node.attrs?.find((attr) => attr.name === 'href').value;
