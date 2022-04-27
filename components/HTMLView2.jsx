@@ -47,8 +47,8 @@ const nodeStyles = StyleSheet.create({
     marginBottom: 12,
     fontSize: baseFontSize,
     backgroundColor: DynamicColorIOS({
-      dark: 'rgba(255,255,255,.05)',
-      light: 'rgba(0,0,0,.05)',
+      dark: '#34435166',
+      light: '#dee4ec66',
     }),
     padding: 8,
     flexDirection: 'row',
@@ -239,6 +239,21 @@ function CodeBlock({ children }) {
   );
 }
 
+function InlineCode(props) {
+  const { isDark } = useTheme();
+  return (
+    <Text
+      style={[
+        nodeStyles.code,
+        {
+          backgroundColor: isDark ? '#29412caa' : '#e3ece6aa',
+        },
+      ]}
+      {...props}
+    />
+  );
+}
+
 function dom2elements(nodes, parentName, level = 0) {
   if (!nodes || !nodes.length) return;
   let nodeStates = [];
@@ -345,11 +360,7 @@ function dom2elements(nodes, parentName, level = 0) {
             .map((chunk, i) => {
               // if code
               if (/^(`)[^`]+\1$/.test(chunk)) {
-                return (
-                  <Text key={`c-${i}`} style={nodeStyles.code}>
-                    {chunk}
-                  </Text>
-                );
+                return <InlineCode key={`c-${i}`}>{chunk}</InlineCode>;
               }
               // others
               return chunk;
