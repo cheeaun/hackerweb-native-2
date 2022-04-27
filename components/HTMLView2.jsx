@@ -239,7 +239,7 @@ function CodeBlock({ children }) {
 
 function dom2elements(nodes, parentName, level = 0) {
   if (!nodes || !nodes.length) return;
-  let isPrevBlockquote = false;
+  let nodeStates = [];
   return nodes.map((node, i) => {
     const { tagName, nodeName, childNodes } = node;
     // Note: React keys must only be unique among siblings, not global
@@ -281,8 +281,10 @@ function dom2elements(nodes, parentName, level = 0) {
           elements = dom2elements(childNodes, tagName, level + 1);
 
           const isBlockquote = prefix.includes('>');
+          if (isBlockquote) nodeStates[i] = 'blockquote';
+          const isPrevBlockquote = nodeStates[i - 1] === 'blockquote';
 
-          const Component = (
+          return (
             <View
               key={key}
               style={[
@@ -310,10 +312,6 @@ function dom2elements(nodes, parentName, level = 0) {
               </Text>
             </View>
           );
-
-          isPrevBlockquote = isBlockquote;
-
-          return Component;
         }
       }
       return (
