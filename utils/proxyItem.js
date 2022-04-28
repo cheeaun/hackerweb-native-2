@@ -35,7 +35,9 @@ const get = (target, prop) => {
       return content || text || '';
     case 'comments':
       // undefined for kids because they are just list of IDs, not actual list of comments
-      return kids ? undefined : (comments || children || []).map(proxyItem);
+      return kids
+        ? undefined
+        : (comments || children?.filter((c) => c.text) || []).map(proxyItem);
     case 'comments_count':
       return comments_count || descendants || undefined;
     case '__isItem':
