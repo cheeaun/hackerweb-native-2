@@ -195,16 +195,18 @@ function InnerCommentContainer({
         <Comment item={item} />
         {!!repliesCount &&
           (totalWeight < maxWeight && level < 3 ? (
-            item.comments.map((comment, i) => (
-              <InnerCommentContainer
-                key={comment.id}
-                last={i === repliesCount - 1}
-                item={comment}
-                accWeight={totalWeight}
-                maxWeight={maxWeight}
-                level={nextLevel}
-              />
-            ))
+            item.comments
+              .filter((c) => !c.dead && !c.deleted)
+              .map((comment, i) => (
+                <InnerCommentContainer
+                  key={comment.id}
+                  last={i === repliesCount - 1}
+                  item={comment}
+                  accWeight={totalWeight}
+                  maxWeight={maxWeight}
+                  level={nextLevel}
+                />
+              ))
           ) : (
             <RepliesCommentsButton
               level={nextLevel}
@@ -265,15 +267,17 @@ export default function CommentContainer({ item, maxWeight = 5 }) {
         <Comment item={item} />
         {!!repliesCount &&
           (totalWeight < maxWeight ? (
-            item.comments.map((comment, i) => (
-              <InnerCommentContainer
-                key={comment.id}
-                last={i === repliesCount - 1}
-                item={comment}
-                accWeight={totalWeight}
-                maxWeight={maxWeight}
-              />
-            ))
+            item.comments
+              .filter((c) => !c.dead && !c.deleted)
+              .map((comment, i) => (
+                <InnerCommentContainer
+                  key={comment.id}
+                  last={i === repliesCount - 1}
+                  item={comment}
+                  accWeight={totalWeight}
+                  maxWeight={maxWeight}
+                />
+              ))
           ) : (
             <RepliesCommentsButton
               replies={repliesCount}
