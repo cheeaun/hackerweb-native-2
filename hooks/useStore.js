@@ -31,7 +31,7 @@ const api = ky.create({
 const ALGOLIA_API_ROOT = 'https://hn.algolia.com/api/v1';
 const algoliaApi = ky.create({
   prefixUrl: ALGOLIA_API_ROOT,
-  timeout: 15000,
+  timeout: false,
   hooks,
 });
 
