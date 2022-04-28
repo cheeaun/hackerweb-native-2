@@ -123,13 +123,21 @@ export default function StoryScreen({ route, navigation }) {
       } else {
         fetchPromise = fetchItem(id);
       }
-      fetchPromise.finally(() => {
-        if (ignore) return;
-        if (transitionEnded.current) {
-          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        }
-        setStoryLoading(false);
-      });
+      fetchPromise
+        .catch((e) => {
+          Alert.alert({
+            title: 'Error loading story',
+          });
+        })
+        .finally(() => {
+          if (ignore) return;
+          if (transitionEnded.current) {
+            LayoutAnimation.configureNext(
+              LayoutAnimation.Presets.easeInEaseOut,
+            );
+          }
+          setStoryLoading(false);
+        });
 
       return () => {
         ignore = true;
