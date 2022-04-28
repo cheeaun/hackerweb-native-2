@@ -440,7 +440,8 @@ export default function StoryScreen({ route, navigation }) {
                     ? comments_count.toLocaleString('en-US')
                     : `${repliesCount}${repliesCount > 1 ? '+' : ''}`}{' '}
                   comment
-                  {comments_count != 1 && 's'}
+                  {(comments_count ? comments_count > 1 : repliesCount > 1) &&
+                    's'}
                 </Text>
               </OuterSpacer>
               <Separator />
