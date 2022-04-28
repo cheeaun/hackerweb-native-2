@@ -37,8 +37,8 @@ import CloseIcon from '../assets/xmark.svg';
 
 export default function CommentsScreen({ route, navigation }) {
   const { isDark, colors } = useTheme();
-  const { item } = route.params;
-  const { comments = [], content, level } = item;
+  const { item, zIndex } = route.params;
+  const { comments = [], content } = item;
   const { repliesCount, totalComments } = getCommentsMetadata(item);
   const countDiffer = repliesCount !== totalComments;
 
@@ -327,10 +327,10 @@ export default function CommentsScreen({ route, navigation }) {
                 Close thread
               </Text>
             </View>
-            {level >= 0 && (
+            {zIndex > 0 && (
               <Text center style={{ position: 'absolute', bottom: 0 }}>
-                {[...Array(level + 2)].map((_, i) => {
-                  const notLast = i < level + 1;
+                {[...Array(zIndex + 1)].map((_, i) => {
+                  const notLast = i < zIndex;
                   return (
                     <Text
                       key={i}

@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { PlatformColor, StyleSheet, View } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
 import Svg, { Path } from 'react-native-svg';
 
@@ -183,6 +183,7 @@ function InnerCommentContainer({
   if (item.dead || (item.deleted && !item.comments.length)) return null;
 
   const navigation = useNavigation();
+  const { zIndex = 0 } = useRoute().params;
   const { repliesCount, totalComments } = getCommentsMetadata(item);
   const totalWeight =
     calcCommentWeight(item) + calcCommentsWeight(item.comments) + accWeight;
@@ -212,7 +213,7 @@ function InnerCommentContainer({
               comments={totalComments}
               suffix={suffixText(item.comments, repliesCount)}
               onPress={() => {
-                navigation.push('Comments', { item });
+                navigation.push('Comments', { item, zIndex: zIndex + 1 });
               }}
             />
           ))}
@@ -248,6 +249,7 @@ function suffixText(comments, repliesCount) {
 }
 
 export default function CommentContainer({ item, maxWeight = 5 }) {
+  const { zIndex = 0 } = useRoute().params;
   const navigation = useNavigation();
 
   if (item.dead || (item.deleted && !item.comments.length)) return null;
@@ -279,7 +281,7 @@ export default function CommentContainer({ item, maxWeight = 5 }) {
               suffix={suffixText(item.comments, repliesCount)}
               previews={hasPreviews ? item.comments.slice(0, 2) : []}
               onPress={() => {
-                navigation.push('Comments', { item });
+                navigation.push('Comments', { item, zIndex: zIndex + 1 });
               }}
             />
           ))}
