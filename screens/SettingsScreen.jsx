@@ -98,6 +98,7 @@ export default function SettingsScreen({ navigation }) {
   const updateIsAvailable = useStore((state) => state.updateIsAvailable);
   const settingsInteractions = useStore((state) => state.settings.interactions);
   const setSetting = useStore((state) => state.setSetting);
+  const fetchMinimalItem = useStore((state) => state.fetchMinimalItem);
 
   const [canComposeMail, setCanComposeMail] = useState(false);
   MailComposer.isAvailableAsync().then((isAvailable) => {
@@ -303,6 +304,40 @@ export default function SettingsScreen({ navigation }) {
           </Text>
         </OuterSpacer>
         <ListMenu>
+          <ListItem
+            onPress={() => {
+              Alert.prompt(
+                'Open Story',
+                'Enter a HN story ID',
+                (itemId) => {
+                  if (!itemId) return;
+                  fetchMinimalItem(+itemId)
+                    .then((item) => {
+                      if (item?.type === 'story') {
+                        navigation.push('StoryModal', {
+                          id: item.id,
+                          tab: 'comments',
+                        });
+                      } else {
+                        Alert.alert(
+                          'Not a story',
+                          'Please enter a valid HN story ID',
+                        );
+                      }
+                    })
+                    .catch((e) => {
+                      Alert.alert('An error occured', e?.toString());
+                    });
+                },
+                'plain-text',
+                null,
+                'numeric',
+              );
+            }}
+          >
+            <Text type="link">Open Story</Text>
+          </ListItem>
+          <ListItemSeparator />
           <ListItem
             onPress={async () => {
               try {
