@@ -10,10 +10,8 @@ import {
 
 import { useNavigation } from '@react-navigation/native';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import {
-  a11yDark,
-  a11yLight,
-} from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import a11yDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
+import a11yLight from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-light';
 
 import * as entities from 'entities';
 import { parseFragment } from 'parse5';
