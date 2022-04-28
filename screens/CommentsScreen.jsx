@@ -37,8 +37,8 @@ import CloseIcon from '../assets/xmark.svg';
 
 export default function CommentsScreen({ route, navigation }) {
   const { isDark, colors } = useTheme();
-  const item = route.params;
-  const { comments = [], content } = item;
+  const { item } = route.params;
+  const { comments = [], content, level } = item;
   const { repliesCount, totalComments } = getCommentsMetadata(item);
   const countDiffer = repliesCount !== totalComments;
 
@@ -283,7 +283,7 @@ export default function CommentsScreen({ route, navigation }) {
         <BlurView
           intensity={99}
           tint={isDark ? 'dark' : 'light'}
-          style={{ borderRadius: 25, overflow: 'hidden' }}
+          style={{ borderRadius: 30, overflow: 'hidden' }}
           onLayout={({ nativeEvent }) => {
             console.log('📐 BlurView onLayout', nativeEvent.layout);
             footerRef.current?.setNativeProps({
@@ -301,9 +301,8 @@ export default function CommentsScreen({ route, navigation }) {
             style={{
               paddingVertical: 15,
               paddingHorizontal: 20,
-              flexDirection: 'row',
-              alignItems: 'center',
               backgroundColor: isDark ? colors.opaqueBackground : 'transparent',
+              alignItems: 'center',
             }}
             hitSlop={{
               top: 44,
@@ -312,15 +311,38 @@ export default function CommentsScreen({ route, navigation }) {
               left: 44,
             }}
           >
-            <CloseIcon
-              width={11}
-              height={11}
-              color={colors.link}
-              style={{ marginRight: 8 }}
-            />
-            <Text type="link" bolder>
-              Close thread
-            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
+              <CloseIcon
+                width={11}
+                height={11}
+                color={colors.link}
+                style={{ marginRight: 8 }}
+              />
+              <Text type="link" bolder>
+                Close thread
+              </Text>
+            </View>
+            {level >= 0 && (
+              <Text center style={{ position: 'absolute', bottom: 0 }}>
+                {[...Array(level + 2)].map((_, i) => {
+                  const notLast = i < level + 1;
+                  return (
+                    <Text
+                      key={i}
+                      type={notLast ? 'insignificant' : 'link'}
+                      style={{ opacity: notLast ? 0.3 : 0.7 }}
+                    >
+                      &bull;
+                    </Text>
+                  );
+                })}
+              </Text>
+            )}
           </TouchableOpacity>
         </BlurView>
       </Animated.View>

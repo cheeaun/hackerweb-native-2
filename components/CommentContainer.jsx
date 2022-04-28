@@ -212,7 +212,7 @@ function InnerCommentContainer({
               comments={totalComments}
               suffix={suffixText(item.comments, repliesCount)}
               onPress={() => {
-                navigation.push('Comments', item);
+                navigation.push('Comments', { item });
               }}
             />
           ))}
@@ -279,7 +279,7 @@ export default function CommentContainer({ item, maxWeight = 5 }) {
               suffix={suffixText(item.comments, repliesCount)}
               previews={hasPreviews ? item.comments.slice(0, 2) : []}
               onPress={() => {
-                navigation.push('Comments', item);
+                navigation.push('Comments', { item });
               }}
             />
           ))}
