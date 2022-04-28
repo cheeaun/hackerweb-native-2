@@ -201,11 +201,11 @@ export default function App() {
                   ),
                   title: '',
                   presentation: 'modal',
-                  headerShadowVisible: false,
-                  headerStyle: {
-                    backgroundColor: colors.background,
-                  },
-                  headerTransparent: true,
+                  // headerShadowVisible: false,
+                  // headerStyle: {
+                  //   backgroundColor: colors.background,
+                  // },
+                  // headerTransparent: true,
                 }}
               />
               <Stack.Screen
