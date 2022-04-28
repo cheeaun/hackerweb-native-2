@@ -2,7 +2,7 @@
   "expo": {
     "name": "HackerWeb",
     "slug": "hackerweb-native-2",
-    "version": "2.0.4",
+    "version": "2.1.0",
     "description": "A read-only Hacker News client.",
     "icon": "./assets/icon.png",
     "splash": {
@@ -17,7 +17,7 @@
     "ios": {
       "appStoreUrl": "https://apps.apple.com/app/id1084209377",
       "bundleIdentifier": "cheeaun.hackerweb",
-      "buildNumber": "28",
+      "buildNumber": "29",
       "supportsTablet": true,
       "requireFullScreen": false,
       "config": {
