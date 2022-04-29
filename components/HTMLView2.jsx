@@ -264,13 +264,36 @@ function dom2elements(nodes, parentName, level = 0) {
         );
       }
       if (tagName === 'p') {
-        let firstChild = childNodes && childNodes[0];
-        if (firstChild.tagName) {
-          // Sometimes can be an <i> tag
-          firstChild = firstChild.childNodes && firstChild.childNodes[0];
+        const firstChildNode = childNodes?.[0];
+        const isPrevBlockquote = nodeStates[i - 1] === 'blockquote';
+        const blockquoteCollapsedStyle = isPrevBlockquote && {
+          // Collapse margin between blockquotes
+          marginTop: -12,
+          paddingTop: 4, // 8 + 4 = 12
+        };
+
+        // If first child is <i> and the only child
+        if (
+          firstChildNode?.tagName === 'i' &&
+          firstChildNode.childNodes.length === 1
+        ) {
+          nodeStates[i] = 'blockquote';
+          return (
+            <View
+              key={key}
+              style={[nodeStyles.blockquote, blockquoteCollapsedStyle]}
+            >
+              {elements}
+            </View>
+          );
         }
-        const firstText =
-          firstChild && firstChild.nodeName === '#text' && firstChild.value;
+
+        let firstChild = firstChildNode;
+        if (firstChild?.tagName) {
+          // Sometimes can be an <i> tag
+          firstChild = firstChild?.childNodes?.[0];
+        }
+        const firstText = firstChild?.nodeName === '#text' && firstChild?.value;
         const [_, prefix, __, rest] =
           (firstText || '').match(
             /^((>{1,5}|-|\+|\*|[a-z]\)|\d+\.|\(?\d+\)|\d+-|\[\d+\]:?)\s?)([^<>\-\*]{0,1}.*)$/s,
@@ -282,19 +305,13 @@ function dom2elements(nodes, parentName, level = 0) {
 
           const isBlockquote = prefix.includes('>');
           if (isBlockquote) nodeStates[i] = 'blockquote';
-          const isPrevBlockquote = nodeStates[i - 1] === 'blockquote';
 
           return (
             <View
               key={key}
               style={[
                 nodeStyles[isBlockquote ? 'blockquote' : 'li'],
-                isBlockquote &&
-                  isPrevBlockquote && {
-                    // Collapse margin between blockquotes
-                    marginTop: -12,
-                    paddingTop: 4, // 8 + 4 = 12
-                  },
+                isBlockquote && blockquoteCollapsedStyle,
               ]}
             >
               <Text style={nodeStyles.default} fontVariant={['tabular-nums']}>
