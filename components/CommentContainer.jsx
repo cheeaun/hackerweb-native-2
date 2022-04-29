@@ -229,7 +229,7 @@ function InnerCommentContainer({
 function calcCommentWeight(comment) {
   // TODO: smarter "weight" math
   if (!comment.content) return 0;
-  return comment.content.length / 140;
+  return getHTMLText(comment.content, { singleLine: true }).length / 140;
 }
 
 function calcCommentsWeight(comments = []) {
