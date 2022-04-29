@@ -188,25 +188,27 @@ function InnerCommentContainer({
   const totalWeight =
     calcCommentWeight(item) + calcCommentsWeight(item.comments) + accWeight;
   const nextLevel = level + 1;
+  const comments = item.comments.filter((c) => !c.dead && !c.deleted);
+  const hasOneCommentAndIsShort =
+    comments.length === 1 && comments[0].content.length <= 140;
+
   return (
     <View style={styles.innerComment} key={item.id}>
       <CommentBar last={last} />
       <View style={{ flex: 1, marginTop: 2 }}>
         <Comment item={item} />
         {!!repliesCount &&
-          (totalWeight < maxWeight && level < 3 ? (
-            item.comments
-              .filter((c) => !c.dead && !c.deleted)
-              .map((comment, i) => (
-                <InnerCommentContainer
-                  key={comment.id}
-                  last={i === repliesCount - 1}
-                  item={comment}
-                  accWeight={totalWeight}
-                  maxWeight={maxWeight}
-                  level={nextLevel}
-                />
-              ))
+          (totalWeight < maxWeight && (level < 3 || hasOneCommentAndIsShort) ? (
+            comments.map((comment, i) => (
+              <InnerCommentContainer
+                key={comment.id}
+                last={i === repliesCount - 1}
+                item={comment}
+                accWeight={totalWeight}
+                maxWeight={maxWeight}
+                level={nextLevel}
+              />
+            ))
           ) : (
             <RepliesCommentsButton
               level={nextLevel}
