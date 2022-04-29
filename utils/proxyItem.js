@@ -6,12 +6,14 @@ const get = (target, prop) => {
     comments,
     points,
     comments_count,
+    poll,
 
     /* Algolia */
     author, // user
     created_at_i, // time
     text, // content
     children, // comments
+    options, // poll
 
     /* Official (Firebase) */
     by, // user
@@ -40,6 +42,15 @@ const get = (target, prop) => {
         : (comments || children?.filter((c) => c.text) || []).map(proxyItem);
     case 'comments_count':
       return comments_count || descendants || undefined;
+    case 'poll':
+      return (
+        poll ||
+        options?.map((o) => ({
+          item: o.text.replace(/<[^>]+>/g, ''),
+          points: o.points,
+        })) ||
+        undefined
+      );
     case '__isItem':
       return isItem;
     default:

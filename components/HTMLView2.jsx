@@ -109,7 +109,7 @@ function Link({ style, url, ...props }) {
             .then((item) => {
               // 4 types: story, comment, job, poll
               // Ignoring `poll` because Algolia API doesn't contain the poll content
-              if (item?.type === 'story') {
+              if (item?.type === 'story' || item?.type === 'poll') {
                 navigation.push('StoryModal', {
                   id: item.id,
                   tab: 'comments',

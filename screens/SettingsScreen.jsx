@@ -263,7 +263,7 @@ export default function SettingsScreen({ navigation }) {
                   if (!itemId) return;
                   fetchMinimalItem(+itemId)
                     .then((item) => {
-                      if (item?.type === 'story') {
+                      if (item?.type === 'story' || item?.type === 'poll') {
                         navigation.push('StoryModal', {
                           id: item.id,
                           tab: 'comments',
