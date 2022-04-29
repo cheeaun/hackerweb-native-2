@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {
   DynamicColorIOS,
   PlatformColor,
+  Pressable,
   ScrollView,
   StyleSheet,
   View,
@@ -49,6 +50,8 @@ const nodeStyles = StyleSheet.create({
       light: 'rgba(0,0,0,.05)',
     }),
     padding: 8,
+  },
+  blockquoteWithQuotes: {
     flexDirection: 'row',
   },
   pre: {
@@ -283,7 +286,7 @@ function dom2elements(nodes, parentName, level = 0) {
               key={key}
               style={[nodeStyles.blockquote, blockquoteCollapsedStyle]}
             >
-              {elements}
+              <Text style={nodeStyles.default}>{elements}</Text>
             </View>
           );
         }
@@ -311,6 +314,7 @@ function dom2elements(nodes, parentName, level = 0) {
               key={key}
               style={[
                 nodeStyles[isBlockquote ? 'blockquote' : 'li'],
+                isBlockquote && nodeStyles.blockquoteWithQuotes,
                 isBlockquote && blockquoteCollapsedStyle,
               ]}
             >
@@ -420,6 +424,17 @@ export default function HTMLView2({ html, linkify, DEBUG }) {
   const elements = dom2elements(docFrag.childNodes);
   if (DEBUG) {
     console.log({ html });
+  }
+  if (__DEV__) {
+    return (
+      <Pressable
+        onLongPress={() => {
+          console.log({ html });
+        }}
+      >
+        {elements}
+      </Pressable>
+    );
   }
   return elements;
 }
