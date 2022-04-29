@@ -238,7 +238,7 @@ export default function SettingsScreen({ navigation }) {
                   }
                 }}
               >
-                <Text type="link">Rate {Constants.manifest.name}</Text>
+                <Text type="link">Rate {Constants.manifest.name}…</Text>
               </ListItem>
               <ListItemSeparator />
             </>
@@ -278,7 +278,7 @@ export default function SettingsScreen({ navigation }) {
               }
             }}
           >
-            <Text type="link">Share Feedback</Text>
+            <Text type="link">Share Feedback…</Text>
           </ListItem>
           <ListItemSeparator />
           <ListItem
@@ -335,18 +335,35 @@ export default function SettingsScreen({ navigation }) {
               );
             }}
           >
-            <Text type="link">Open Story</Text>
+            <Text type="link">Open Story…</Text>
           </ListItem>
           <ListItemSeparator />
           <ListItem
-            onPress={async () => {
-              try {
-                await AsyncStorage.clear();
-              } catch (e) {}
-              Alert.alert('Cache cleared.');
+            onPress={() => {
+              Alert.prompt(
+                'Are you sure?',
+                'This is usually meant for debugging issues.',
+                [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'Clear',
+                    style: 'destructive',
+                    onPress: async () => {
+                      try {
+                        await AsyncStorage.clear();
+                        Alert.alert('Cache cleared.');
+                      } catch (e) {}
+                    },
+                  },
+                ],
+                'default',
+              );
             }}
           >
-            <Text>Clear Cache</Text>
+            <Text>Clear Cache…</Text>
           </ListItem>
           {!__PRODUCTION__ && (
             <>
