@@ -421,10 +421,8 @@ export default function HTMLView2({ html, linkify, DEBUG }) {
 
   const docFrag = parseFragment(html);
   const elements = dom2elements(docFrag.childNodes);
-  if (DEBUG) {
+  if (__DEV__ && DEBUG) {
     console.log({ html });
-  }
-  if (__DEV__) {
     return (
       <Pressable
         onLongPress={() => {
