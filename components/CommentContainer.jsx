@@ -70,7 +70,7 @@ function RepliesCommentsButton({
         }}
         {...props}
       >
-        {!!previews && !!previews.length && (
+        {!!previews?.length && (
           <>
             {previews.map((comment) => {
               const commentText = getHTMLText(comment.content);
