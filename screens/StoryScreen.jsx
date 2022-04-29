@@ -29,6 +29,8 @@ import * as Application from 'expo-application';
 import * as Haptics from 'expo-haptics';
 import { BlurView } from 'expo-blur';
 
+import format from 'date-fns/format';
+
 import CommentContainer from '../components/CommentContainer';
 import CommentPage from '../components/CommentPage';
 import HTMLView2 from '../components/HTMLView2';
@@ -274,7 +276,10 @@ export default function StoryScreen({ route, navigation }) {
           ActionSheetIOS.showActionSheetWithOptions(
             {
               title,
-              message: hnURL,
+              message: `${format(
+                datetime,
+                'EEEE, d LLLL yyyy, h:mm a',
+              )}\n${hnURL}`,
               options: options.map((o) => o.text),
               cancelButtonIndex: options.findIndex((o) => o.cancel),
               anchor: findNodeHandle(commentsButtonRef.current),

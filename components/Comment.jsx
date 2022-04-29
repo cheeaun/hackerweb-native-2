@@ -132,24 +132,28 @@ export default function Comment({ item }) {
     },
   ].filter(Boolean);
 
+  const showActionSheet = useCallback(() => {
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        title: `Comment by ${user}`,
+        message: `${format(datetime, 'EEEE, d LLLL yyyy, h:mm a')}\n${hnURL}`,
+        options: options.map((o) => o.text),
+        cancelButtonIndex: options.findIndex((o) => o.cancel),
+        anchor: findNodeHandle(commentRef.current),
+      },
+      (index) => {
+        options[index].action?.();
+      },
+    );
+  }, [options, user, datetime, hnURL]);
+
   return (
     <Pressable
       ref={commentRef}
       onLongPress={() => {
         bobble();
         Haptics.selectionAsync();
-        ActionSheetIOS.showActionSheetWithOptions(
-          {
-            title: `Comment by ${user}`,
-            message: format(datetime, 'EEEE, d LLLL yyyy, h:mm a'),
-            options: options.map((o) => o.text),
-            cancelButtonIndex: options.findIndex((o) => o.cancel),
-            anchor: findNodeHandle(commentRef.current),
-          },
-          (index) => {
-            options[index].action?.();
-          },
-        );
+        showActionSheet();
       }}
     >
       <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
@@ -189,7 +193,14 @@ export default function Comment({ item }) {
             )}
             <Text size="subhead" type="insignificant">
               {' '}
-              &bull; <TimeAgo time={datetime} />
+              &bull;{' '}
+              <Text
+                size="subhead"
+                type="insignificant"
+                onPress={showActionSheet}
+              >
+                <TimeAgo time={datetime} />
+              </Text>
             </Text>
           </View>
         )}
