@@ -276,10 +276,7 @@ function dom2elements(nodes, parentName, level = 0) {
         };
 
         // If first child is <i> and the only child
-        if (
-          firstChildNode?.tagName === 'i' &&
-          firstChildNode.childNodes.length === 1
-        ) {
+        if (firstChildNode?.tagName === 'i' && childNodes.length === 1) {
           nodeStates[i] = 'blockquote';
           return (
             <View
