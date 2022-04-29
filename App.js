@@ -238,6 +238,9 @@ export default function App() {
                   headerLargeTitleShadowVisible: false,
                   headerLargeTitle: true,
                   presentation: 'modal',
+                  headerLargeStyle: {
+                    backgroundColor: colors.background2,
+                  },
                   contentStyle: {
                     backgroundColor: colors.background2,
                   },
