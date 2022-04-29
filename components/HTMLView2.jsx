@@ -374,6 +374,8 @@ function dom2elements(nodes, parentName, level = 0) {
       }
 
       if (level === 0 && !parentName) {
+        if (!text.trim()) return null;
+
         // If root level and there's no parent tag, then it's text that doesn't have a <p> tag
         return (
           <Text key={key} style={nodeStyles.p}>
