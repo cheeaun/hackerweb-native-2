@@ -2,6 +2,8 @@ import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
 
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+import safeStringify from '@sindresorhus/safe-stringify';
+
 import Text from '../components/Text';
 
 import useTheme from '../hooks/useTheme';
@@ -38,7 +40,7 @@ const renderItem = ({ item }) => {
         }}
       >
         {log
-          .map((l) => (typeof l === 'string' ? l : JSON.stringify(l)))
+          .map((l) => (typeof l === 'string' ? l : safeStringify(l)))
           .join(' ')}
       </Text>
     </View>
