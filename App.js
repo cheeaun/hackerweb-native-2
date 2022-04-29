@@ -235,11 +235,29 @@ export default function App() {
                 name="Settings"
                 component={SettingsScreen}
                 options={{
-                  headerShown: false,
+                  headerLargeTitleShadowVisible: false,
+                  headerLargeTitle: true,
                   presentation: 'modal',
                   contentStyle: {
                     backgroundColor: colors.background2,
                   },
+                  headerRight: () => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigationRef.current?.goBack();
+                      }}
+                      hitSlop={{
+                        top: 44,
+                        right: 44,
+                        bottom: 44,
+                        left: 44,
+                      }}
+                    >
+                      <Text type="link" bolder>
+                        Done
+                      </Text>
+                    </TouchableOpacity>
+                  ),
                 }}
               />
               <Stack.Screen

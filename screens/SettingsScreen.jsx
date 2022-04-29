@@ -3,7 +3,6 @@ import {
   Alert,
   Linking,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Switch,
@@ -11,7 +10,6 @@ import {
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import * as Application from 'expo-application';
 import * as Device from 'expo-device';
@@ -26,7 +24,6 @@ import ReadableWidthContainer from '../components/ReadableWidthContainer';
 import Separator from '../components/Separator';
 import Text from '../components/Text';
 
-import useBottomSheetHeaderHeight from '../hooks/useBottomSheetHeaderHeight';
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
 
@@ -84,7 +81,7 @@ const ListItemSeparator = () => (
 );
 
 export default function SettingsScreen({ navigation }) {
-  const { isDark, colors } = useTheme();
+  const { isDark } = useTheme();
   const { releaseChannel, updateId, reloadAsync } = Updates;
 
   const [canRate, setCanRate] = useState(false);
@@ -105,56 +102,9 @@ export default function SettingsScreen({ navigation }) {
     setCanComposeMail(isAvailable);
   });
 
-  const headerHeight = useBottomSheetHeaderHeight();
-
   return (
     <>
       {!isDark && <StatusBar style="inverted" animated />}
-      <View
-        style={{
-          backgroundColor: colors.background,
-          borderBottomColor: colors.separator,
-          borderBottomWidth: StyleSheet.hairlineWidth,
-        }}
-      >
-        <SafeAreaView>
-          <View
-            style={{
-              height: headerHeight,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            {/* Start Faux Spacer */}
-            <Text style={{ paddingHorizontal: 15, color: 'transparent' }}>
-              Done
-            </Text>
-            {/* End Faux Spacer */}
-            <View style={{ paddingHorizontal: 15 }}>
-              <Text bolder style={{ textAlign: 'center' }}>
-                Settings
-              </Text>
-            </View>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.pop();
-              }}
-              style={{ paddingHorizontal: 15 }}
-              hitSlop={{
-                top: 44,
-                right: 44,
-                bottom: 44,
-                left: 44,
-              }}
-            >
-              <Text type="link" bolder>
-                Done
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
-      </View>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <OuterSpacer />
         <ListMenu>
