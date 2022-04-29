@@ -190,7 +190,7 @@ function InnerCommentContainer({
   const nextLevel = level + 1;
   const comments = item.comments.filter((c) => !c.dead && !c.deleted);
 
-  // Set content length based on level
+  // Set content length limit based on level
   // level 1 = 140x3, level 2 = 140x2, level 3 = 140
   // level 4 = 140 <- this is the min
   const contentLengthLimit = Math.max(140, 140 * (4 - level));
