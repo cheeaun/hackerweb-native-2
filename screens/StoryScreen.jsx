@@ -568,10 +568,12 @@ export default function StoryScreen({ route, navigation }) {
               headerStyle: {
                 backgroundColor: colors.opaqueHeader,
               },
+              fullScreenGestureEnabled: false,
               headerRight: webHeaderRight,
             }
           : {
               ...commentsNavOptions.current,
+              fullScreenGestureEnabled: true,
               headerRight: commentsHeaderRight,
             },
       );
