@@ -478,7 +478,7 @@ export default function HTMLView2({ html, linkify, DEBUG }) {
 
   const docFrag = parseFragment(html);
   const elements = dom2elements(docFrag.childNodes);
-  if (__DEV__) {
+  if (__DEV__ && DEBUG) {
     if (DEBUG) console.log({ html });
     return (
       <Pressable
