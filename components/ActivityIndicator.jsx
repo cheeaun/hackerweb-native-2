@@ -5,7 +5,11 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 export default function (props) {
   return (
-    <Animated.View entering={FadeIn.duration(700).delay(300)} exiting={FadeOut}>
+    <Animated.View
+      entering={FadeIn.duration(700).delay(300)}
+      exiting={FadeOut}
+      pointerEvents="none"
+    >
       <ActivityIndicator {...props} />
     </Animated.View>
   );
