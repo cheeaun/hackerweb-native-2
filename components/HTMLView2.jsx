@@ -265,9 +265,9 @@ function CodeBlock({ children }) {
                 {
                   title: `Characters: ${codeText.length.toLocaleString(
                     'en-US',
-                  )}  Lines: ${(1 + codeText.split('\n').length).toLocaleString(
-                    'en-US',
-                  )}`,
+                  )}  Lines: ${codeText
+                    .split('\n')
+                    .length.toLocaleString('en-US')}`,
                   message: `Detected languages (relevance score):\n${autoHighlightResult.language.toUpperCase()} (${
                     autoHighlightResult.relevance
                   })${
