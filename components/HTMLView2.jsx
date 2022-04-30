@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
+import { URL } from 'react-native-url-polyfill';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import a11yDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
 import a11yLight from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-light';
@@ -240,6 +241,30 @@ function CodeBlock({ children }) {
   );
 }
 
+function PrettyURLText(url) {
+  if (!url) return null;
+  if (typeof url !== 'string') return url;
+  try {
+    const urlObj = new URL(url);
+    const { hostname } = urlObj;
+    // split text by hostname
+    // Using `//` as safety pin
+    const [textBeforeHostname, textAfterHostname] = url.split('//' + hostname);
+    // return text with <Text> of hostname
+    return (
+      <>
+        {textBeforeHostname}//
+        <Text style={nodeStyles.a} bold>
+          {hostname}
+        </Text>
+        {textAfterHostname}
+      </>
+    );
+  } catch (e) {
+    return url;
+  }
+}
+
 function dom2elements(nodes, parentName, level = 0) {
   if (!nodes || !nodes.length) return;
   let nodeStates = [];
@@ -258,11 +283,11 @@ function dom2elements(nodes, parentName, level = 0) {
       if (tagName === 'a') {
         const href = node.attrs?.find((attr) => attr.name === 'href').value;
         // Steps to make sure children inside is ACTUALLY text
-        const child = childNodes?.length === 1;
+        const child = childNodes?.length === 1 && childNodes[0];
         const text = child?.nodeName === '#text' && child.value;
         return (
           <Link key={key} url={href}>
-            {text || elements}
+            {PrettyURLText(text) || elements}
           </Link>
         );
       }
