@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
+  ActionSheetIOS,
   DynamicColorIOS,
   PlatformColor,
   Pressable,
   ScrollView,
   StyleSheet,
   View,
+  findNodeHandle,
   useWindowDimensions,
 } from 'react-native';
 
@@ -16,6 +18,7 @@ import a11yDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
 import a11yLight from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-light';
 
 import * as entities from 'entities';
+import hljs from 'highlight.js';
 import { parseFragment } from 'parse5';
 import stripIndent from 'strip-indent';
 import urlRegexSafe from 'url-regex-safe';
@@ -142,6 +145,17 @@ function Link({ style, url, ...props }) {
   );
 }
 
+function Pre({ elements, childNodes, ...props }) {
+  const settingsSyntaxHighlighting = useStore(
+    (state) => state.settings.syntaxHighlighting,
+  );
+  if (settingsSyntaxHighlighting) {
+    return <CodeBlock {...props}>{childNodes}</CodeBlock>;
+  } else {
+    return <PreView {...props}>{elements}</PreView>;
+  }
+}
+
 function PreView({ children, ...props }) {
   const windowHeight = useWindowDimensions().height;
   return (
@@ -212,13 +226,26 @@ function CodeBlock({ children }) {
       return node.value;
     })
     .join('');
-  codeText = stripIndent(codeText.replace(/^\n+/, '').replace(/\n+$/, ''));
+  codeText = stripIndent(
+    codeText.replace(/^\n+/, '').replace(/\n+$/, ''),
+  ).trim();
+
+  const autoHighlightResult = hljs.highlightAuto(codeText);
+
+  const codeblockRef = useRef(null);
+  const options = [
+    {
+      text: 'Close',
+      cancel: true,
+    },
+  ];
 
   return (
     <SyntaxHighlighter
       CodeTag={EmptyTag}
       PreTag={EmptyTag}
       style={{}}
+      language={autoHighlightResult.language || 'plaintext'}
       renderer={({ rows }) => (
         <ScrollView
           automaticallyAdjustContentInsets={false}
@@ -227,12 +254,37 @@ function CodeBlock({ children }) {
           style={[nodeStyles.pre, { maxHeight: windowHeight * 0.5 }]}
           decelerationRate={0} // Easier to read the code
         >
-          <View
+          <Pressable
+            ref={codeblockRef}
             style={nodeStyles.preInner}
-            onStartShouldSetResponder={() => true}
+            onLongPress={() => {
+              ActionSheetIOS.showActionSheetWithOptions(
+                {
+                  title: `Characters: ${codeText.length.toLocaleString(
+                    'en-US',
+                  )}  Lines: ${(1 + codeText.split('\n').length).toLocaleString(
+                    'en-US',
+                  )}`,
+                  message: `Detected languages (relevance score):\n${autoHighlightResult.language.toUpperCase()} (${
+                    autoHighlightResult.relevance
+                  })${
+                    !!autoHighlightResult.second_best &&
+                    `, ${autoHighlightResult.second_best?.language?.toUpperCase()} (${
+                      autoHighlightResult.second_best?.relevance
+                    })`
+                  }`,
+                  options: options.map((o) => o.text),
+                  cancelButtonIndex: options.findIndex((o) => o.cancel),
+                  anchor: findNodeHandle(codeblockRef.current),
+                },
+                (index) => {
+                  options[index].action?.();
+                },
+              );
+            }}
           >
             {rows.map(renderRow)}
-          </View>
+          </Pressable>
         </ScrollView>
       )}
     >
@@ -277,8 +329,7 @@ function dom2elements(nodes, parentName, level = 0) {
       let elements = dom2elements(childNodes, tagName, level + 1);
       if (!elements) return null;
       if (tagName === 'pre') {
-        return <CodeBlock key={key}>{childNodes}</CodeBlock>;
-        // return <PreView key={key}>{elements}</PreView>;
+        return <Pre key={key} elements={elements} childNodes={childNodes} />;
       }
       if (tagName === 'a') {
         const href = node.attrs?.find((attr) => attr.name === 'href').value;
@@ -368,7 +419,9 @@ function dom2elements(nodes, parentName, level = 0) {
       let text;
       if (parentName === 'code') {
         // Trim EOL newline and strip indents
-        text = stripIndent(value.replace(/\n$/, ''));
+        text = stripIndent(
+          value.replace(/^\n+/, '').replace(/\n+$/, ''),
+        ).trim();
       } else {
         // Trim ALL newlines, because HTML
         text = value.replace(/[\n\s\t]+/g, ' ');

@@ -94,6 +94,9 @@ export default function SettingsScreen({ navigation }) {
 
   const updateIsAvailable = useStore((state) => state.updateIsAvailable);
   const settingsInteractions = useStore((state) => state.settings.interactions);
+  const settingsSyntaxHighlighting = useStore(
+    (state) => state.settings.syntaxHighlighting,
+  );
   const setSetting = useStore((state) => state.setSetting);
   const fetchMinimalItem = useStore((state) => state.fetchMinimalItem);
 
@@ -107,6 +110,30 @@ export default function SettingsScreen({ navigation }) {
       {!isDark && <StatusBar style="inverted" animated />}
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <OuterSpacer />
+        <ListMenu>
+          <ListItem>
+            <Text>
+              <Text>Syntax highlighting</Text>
+            </Text>
+            <Switch
+              value={settingsSyntaxHighlighting}
+              onValueChange={(value) => {
+                console.log({ value });
+                setSetting('syntaxHighlighting', value);
+              }}
+            />
+          </ListItem>
+        </ListMenu>
+        <OuterSpacer align="top" innerStyle={{ paddingHorizontal: 30 }}>
+          <Text
+            size="footnote"
+            type="insignificant"
+            style={{ marginBottom: 8 }}
+          >
+            Syntax highlighting for code blocks, with best-effort automatic
+            detection of languages.
+          </Text>
+        </OuterSpacer>
         <ListMenu>
           <ListItem>
             <Text>Allow interactions</Text>

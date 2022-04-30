@@ -236,6 +236,7 @@ const useStore = create((set, get) => ({
   },
   settings: {
     interactions: false,
+    syntaxHighlighting: false,
   },
   initSettings: async () => {
     console.log(`🥞 initSettings`);
