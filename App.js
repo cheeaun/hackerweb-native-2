@@ -171,6 +171,7 @@ export default function App() {
                 options={{
                   headerBackTitle: 'News',
                   title: '',
+                  fullScreenGestureEnabled: true,
                   // headerShadowVisible: false,
                   // headerStyle: {
                   //   backgroundColor: colors.background,
