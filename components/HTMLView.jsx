@@ -8,6 +8,8 @@ import {
   useWindowDimensions,
 } from 'react-native';
 
+import * as Haptics from 'expo-haptics';
+
 import * as entities from 'entities';
 import { DomHandler } from 'domhandler';
 import { Parser } from 'htmlparser2';
@@ -67,6 +69,7 @@ const onLinkPress = (url) => {
   openBrowser(url);
 };
 const onLinkLongPress = (url) => {
+  Haptics.selectionAsync();
   openShare({ url });
 };
 

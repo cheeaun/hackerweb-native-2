@@ -42,20 +42,20 @@ export default function CommentsScreen({ route, navigation }) {
   const { repliesCount, totalComments } = getCommentsMetadata(item);
   const countDiffer = repliesCount !== totalComments;
 
-  useEffect(() => {
-    const commentsScreenCount = navigation
-      .getState()
-      .routes.filter((r) => r.name.toLowerCase() === 'comments').length;
-    Haptics.impactAsync(
-      Haptics.ImpactFeedbackStyle[
-        commentsScreenCount === 1
-          ? 'Light'
-          : commentsScreenCount === 2
-          ? 'Medium'
-          : 'Heavy'
-      ],
-    );
-  }, []);
+  // useEffect(() => {
+  //   const commentsScreenCount = navigation
+  //     .getState()
+  //     .routes.filter((r) => r.name.toLowerCase() === 'comments').length;
+  //   Haptics.impactAsync(
+  //     Haptics.ImpactFeedbackStyle[
+  //       commentsScreenCount === 1
+  //         ? 'Light'
+  //         : commentsScreenCount === 2
+  //         ? 'Medium'
+  //         : 'Heavy'
+  //     ],
+  //   );
+  // }, []);
 
   const windowHeight = useWindowDimensions().height;
   const listHeaderHeight = useRef(0);

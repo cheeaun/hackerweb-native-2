@@ -3,6 +3,8 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
+import * as Haptics from 'expo-haptics';
+
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
 
@@ -103,7 +105,10 @@ export default function StoryItem({ id, position }) {
         }
       }}
       onLongPress={() => {
-        if (httpLink) openShare({ url });
+        if (httpLink) {
+          Haptics.selectionAsync();
+          openShare({ url });
+        }
       }}
     >
       <View

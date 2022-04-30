@@ -290,6 +290,7 @@ export default function StoryScreen({ route, navigation }) {
           );
         }}
         onLongPress={() => {
+          Haptics.selectionAsync();
           openShare({ url: hnURL });
         }}
         hitSlop={{
@@ -339,10 +340,11 @@ export default function StoryScreen({ route, navigation }) {
                 <TouchableHighlight
                   onPress={() => {
                     // openBrowser(url);
-                    Haptics.selectionAsync();
+                    // Haptics.selectionAsync();
                     setTabView('web');
                   }}
                   onLongPress={() => {
+                    Haptics.selectionAsync();
                     openShare({ url });
                   }}
                 >

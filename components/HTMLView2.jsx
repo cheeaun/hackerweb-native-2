@@ -17,6 +17,8 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import a11yDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
 import a11yLight from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-light';
 
+import * as Haptics from 'expo-haptics';
+
 import * as entities from 'entities';
 import hljs from 'highlight.js';
 import { parseFragment } from 'parse5';
@@ -139,6 +141,7 @@ function Link({ style, url, ...props }) {
         }
       }}
       onLongPress={() => {
+        Haptics.selectionAsync();
         openShare({ url });
       }}
     />
@@ -258,6 +261,7 @@ function CodeBlock({ children }) {
             ref={codeblockRef}
             style={nodeStyles.preInner}
             onLongPress={() => {
+              Haptics.selectionAsync();
               ActionSheetIOS.showActionSheetWithOptions(
                 {
                   title: `Characters: ${codeText.length.toLocaleString(

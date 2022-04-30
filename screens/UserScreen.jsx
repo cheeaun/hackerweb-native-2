@@ -96,7 +96,7 @@ export default function UserScreen({ route, navigation }) {
 
   useEffect(() => {
     modalRef.current?.open();
-    Haptics.selectionAsync();
+    // Haptics.selectionAsync();
   }, []);
 
   const onClose = () => {
