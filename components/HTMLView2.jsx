@@ -351,7 +351,7 @@ function dom2elements(nodes, parentName, level = 0) {
         const firstText = firstChild?.nodeName === '#text' && firstChild?.value;
         const [_, prefix, __, rest] =
           (firstText || '').match(
-            /^((>{1,5}|-{1,2}|\+|\*|[a-z]\)|[a-z]\.|\d+\.|\(?\d+\)|\d+-|\[\d+\]:?)\s?)([^<>\-\*]{0,1}.*)$/is,
+            /^((>{1,5}|-{1,2}|\+|\*|[a-z]\)|[a-z]\.|\d+\.|\(?\d+\)|\[\d+\]:?)\s?)([^<>\-\*]{0,1}.*)$/is,
           ) || [];
         if (firstText && prefix) {
           firstChild.value = rest || '';
