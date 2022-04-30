@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Animated,
   SafeAreaView,
   StyleSheet,
   View,
@@ -9,9 +8,9 @@ import {
 
 import MaskedView from '@react-native-masked-view/masked-view';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
+import Animated, { FadeOut, SlideInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import * as Haptics from 'expo-haptics';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
@@ -148,23 +147,7 @@ export default function CommentsScreen({ route, navigation }) {
 
   const footerRef = useRef(null);
   const ListFooterComponent = useMemo(() => <View ref={footerRef} />, []);
-  const appearAnim = useRef(new Animated.Value(0)).current;
   const { underViewableHeight } = useViewport();
-  useEffect(() => {
-    if (underViewableHeight) {
-      Animated.spring(appearAnim, {
-        toValue: 0,
-        delay: 300,
-        useNativeDriver: true,
-      }).start();
-    } else {
-      Animated.spring(appearAnim, {
-        toValue: 1,
-        delay: 300,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [underViewableHeight]);
 
   const headerRef = useRef(null);
   const headerHeight = useBottomSheetHeaderHeight();
@@ -258,94 +241,96 @@ export default function CommentsScreen({ route, navigation }) {
         removeClippedSubviews
         onScroll={onScroll}
       />
-      <Animated.View
-        key={`bottombar-${item.id}`}
-        pointerEvents="box-none"
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          width: '100%',
-          alignItems: 'center',
-          marginBottom: insets.bottom + 15,
-          transform: [
-            {
-              translateY: appearAnim.interpolate({
-                inputRange: [0, 1],
-                outputRange: [200, 0],
-              }),
-            },
-          ],
-          shadowRadius: 5,
-          shadowOpacity: 0.2,
-          shadowOffset: { width: 0, height: 3 },
-        }}
-      >
-        <BlurView
-          intensity={99}
-          tint={isDark ? 'dark' : 'light'}
-          style={{ borderRadius: 30, overflow: 'hidden' }}
-          onLayout={({ nativeEvent }) => {
-            console.log('📐 BlurView onLayout', nativeEvent.layout);
-            footerRef.current?.setNativeProps({
-              style: {
-                height: nativeEvent.layout.height + 30,
-              },
-            });
+      {!underViewableHeight && (
+        <View
+          key={`bottombar-${item.id}`}
+          pointerEvents="box-none"
+          style={{
+            position: 'absolute',
+            bottom: insets.bottom + 15,
+            width: '100%',
+            alignItems: 'center',
           }}
         >
-          <TouchableOpacity
-            disallowInterruption
-            onPress={() => {
-              navigation.pop();
-            }}
+          <Animated.View
+            entering={SlideInDown.delay(300).springify().damping(15)}
+            exiting={FadeOut}
             style={{
-              paddingVertical: 15,
-              paddingHorizontal: 20,
-              backgroundColor: isDark ? colors.opaqueBackground : 'transparent',
-              alignItems: 'center',
-            }}
-            hitSlop={{
-              top: 44,
-              right: 44,
-              bottom: 44,
-              left: 44,
+              shadowRadius: 5,
+              shadowOpacity: 0.2,
+              shadowOffset: { width: 0, height: 3 },
             }}
           >
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
+            <BlurView
+              intensity={99}
+              tint={isDark ? 'dark' : 'light'}
+              style={{ borderRadius: 30, overflow: 'hidden' }}
+              onLayout={({ nativeEvent }) => {
+                console.log('📐 BlurView onLayout', nativeEvent.layout);
+                footerRef.current?.setNativeProps({
+                  style: {
+                    height: nativeEvent.layout.height + 30,
+                  },
+                });
               }}
             >
-              <CloseIcon
-                width={11}
-                height={11}
-                color={colors.link}
-                style={{ marginRight: 8 }}
-              />
-              <Text type="link" bolder>
-                Close thread
-              </Text>
-            </View>
-            {zIndex > 0 && (
-              <Text center style={{ position: 'absolute', bottom: 0 }}>
-                {[...Array(zIndex + 1)].map((_, i) => {
-                  const notLast = i < zIndex;
-                  return (
-                    <Text
-                      key={i}
-                      type={notLast ? 'insignificant' : 'link'}
-                      style={{ opacity: notLast ? 0.3 : 0.7 }}
-                    >
-                      &bull;
-                    </Text>
-                  );
-                })}
-              </Text>
-            )}
-          </TouchableOpacity>
-        </BlurView>
-      </Animated.View>
+              <TouchableOpacity
+                disallowInterruption
+                onPress={() => {
+                  navigation.pop();
+                }}
+                style={{
+                  paddingVertical: 15,
+                  paddingHorizontal: 20,
+                  backgroundColor: isDark
+                    ? colors.opaqueBackground
+                    : 'transparent',
+                  alignItems: 'center',
+                }}
+                hitSlop={{
+                  top: 44,
+                  right: 44,
+                  bottom: 44,
+                  left: 44,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}
+                >
+                  <CloseIcon
+                    width={11}
+                    height={11}
+                    color={colors.link}
+                    style={{ marginRight: 8 }}
+                  />
+                  <Text type="link" bolder>
+                    Close thread
+                  </Text>
+                </View>
+                {zIndex > 0 && (
+                  <Text center style={{ position: 'absolute', bottom: 0 }}>
+                    {[...Array(zIndex + 1)].map((_, i) => {
+                      const notLast = i < zIndex;
+                      return (
+                        <Text
+                          key={i}
+                          type={notLast ? 'insignificant' : 'link'}
+                          style={{ opacity: notLast ? 0.3 : 0.7 }}
+                        >
+                          &bull;
+                        </Text>
+                      );
+                    })}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            </BlurView>
+          </Animated.View>
+        </View>
+      )}
     </>
   );
 }
