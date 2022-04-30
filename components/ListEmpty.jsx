@@ -17,6 +17,7 @@ export default function ({
 
   return (
     <View
+      pointerEvents="none"
       style={{
         flex: 1,
         justifyContent: 'center',
