@@ -281,40 +281,44 @@ export default function SettingsScreen({ navigation }) {
           </Text>
         </OuterSpacer>
         <ListMenu>
-          <ListItem
-            onPress={() => {
-              Alert.prompt(
-                'Open Story',
-                'Enter a HN story ID',
-                (itemId) => {
-                  if (!itemId) return;
-                  fetchMinimalItem(+itemId)
-                    .then((item) => {
-                      if (item?.type === 'story' || item?.type === 'poll') {
-                        navigation.push('StoryModal', {
-                          id: item.id,
-                          tab: 'comments',
+          {!__PRODUCTION__ && (
+            <>
+              <ListItem
+                onPress={() => {
+                  Alert.prompt(
+                    'Open Story',
+                    'Enter a HN story ID',
+                    (itemId) => {
+                      if (!itemId) return;
+                      fetchMinimalItem(+itemId)
+                        .then((item) => {
+                          if (item?.type === 'story' || item?.type === 'poll') {
+                            navigation.push('StoryModal', {
+                              id: item.id,
+                              tab: 'comments',
+                            });
+                          } else {
+                            Alert.alert(
+                              'Not a story',
+                              'Please enter a valid HN story ID',
+                            );
+                          }
+                        })
+                        .catch((e) => {
+                          Alert.alert('An error occured', e?.toString());
                         });
-                      } else {
-                        Alert.alert(
-                          'Not a story',
-                          'Please enter a valid HN story ID',
-                        );
-                      }
-                    })
-                    .catch((e) => {
-                      Alert.alert('An error occured', e?.toString());
-                    });
-                },
-                'plain-text',
-                null,
-                'numeric',
-              );
-            }}
-          >
-            <Text type="link">Open Story…</Text>
-          </ListItem>
-          <ListItemSeparator />
+                    },
+                    'plain-text',
+                    null,
+                    'numeric',
+                  );
+                }}
+              >
+                <Text type="link">Open Story…</Text>
+              </ListItem>
+              <ListItemSeparator />
+            </>
+          )}
           <ListItem
             onPress={() => {
               Alert.prompt(
@@ -351,6 +355,35 @@ export default function SettingsScreen({ navigation }) {
                 }}
               >
                 <Text>Logs</Text>
+              </ListItem>
+              <ListItemSeparator />
+              <ListItem
+                onPress={() => {
+                  Updates.checkForUpdateAsync()
+                    .then(({ isAvailable }) => {
+                      if (isAvailable) {
+                        Updates.fetchUpdateAsync()
+                          .then(({ isNew }) => {
+                            if (isNew) {
+                              Alert.alert('Bundle is new');
+                              setUpdateIsAvailable(true);
+                            } else {
+                              Alert.alert('Bundle is old');
+                            }
+                          })
+                          .catch((e) => {
+                            Alert.alert('An error occured', e?.toString());
+                          });
+                      } else {
+                        Alert.alert('No updates available');
+                      }
+                    })
+                    .catch((e) => {
+                      Alert.alert('An error occured', e?.toString());
+                    });
+                }}
+              >
+                <Text type="link">Check for Updates</Text>
               </ListItem>
             </>
           )}
