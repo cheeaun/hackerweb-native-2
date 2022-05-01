@@ -135,6 +135,7 @@ export default function WebViewScreen() {
       originWhitelist={['http://*', 'https://*', 'data:*', 'about:*']}
       decelerationRate="normal"
       startInLoadingState
+      allowsBackForwardNavigationGestures
       onNavigationStateChange={(navState) => {
         setNavState(navState);
       }}
