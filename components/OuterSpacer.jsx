@@ -10,6 +10,7 @@ export default function ({
   ...props
 }) {
   const heights = {
+    small: 20,
     default: 34,
     large: 48,
   };

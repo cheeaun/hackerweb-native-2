@@ -113,7 +113,7 @@ export default function SettingsScreen({ navigation }) {
         <ListMenu>
           <ListItem>
             <Text>
-              <Text>Syntax highlighting</Text>
+              <Text>Syntax highlighting (beta)</Text>
             </Text>
             <Switch
               value={settingsSyntaxHighlighting}
@@ -281,8 +281,48 @@ export default function SettingsScreen({ navigation }) {
           </Text>
         </OuterSpacer>
         <ListMenu>
-          {!__PRODUCTION__ && (
-            <>
+          <ListItem
+            onPress={() => {
+              Alert.prompt(
+                'Are you sure?',
+                'This is usually meant for debugging issues.',
+                [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'Clear',
+                    style: 'destructive',
+                    onPress: async () => {
+                      try {
+                        await AsyncStorage.clear();
+                        Alert.alert('Cache cleared.');
+                      } catch (e) {}
+                    },
+                  },
+                ],
+                'default',
+              );
+            }}
+          >
+            <Text>Clear Cache…</Text>
+          </ListItem>
+        </ListMenu>
+        {!__PRODUCTION__ && (
+          <>
+            <OuterSpacer size="small" />
+            <ListMenu>
+              <ListItem
+                onPress={() => {
+                  navigation.push('Logs');
+                }}
+              >
+                <Text>Logs</Text>
+              </ListItem>
+
+              <ListItemSeparator />
+
               <ListItem
                 onPress={() => {
                   Alert.prompt(
@@ -316,47 +356,9 @@ export default function SettingsScreen({ navigation }) {
               >
                 <Text type="link">Open Story…</Text>
               </ListItem>
+
               <ListItemSeparator />
-            </>
-          )}
-          <ListItem
-            onPress={() => {
-              Alert.prompt(
-                'Are you sure?',
-                'This is usually meant for debugging issues.',
-                [
-                  {
-                    text: 'Cancel',
-                    style: 'cancel',
-                  },
-                  {
-                    text: 'Clear',
-                    style: 'destructive',
-                    onPress: async () => {
-                      try {
-                        await AsyncStorage.clear();
-                        Alert.alert('Cache cleared.');
-                      } catch (e) {}
-                    },
-                  },
-                ],
-                'default',
-              );
-            }}
-          >
-            <Text>Clear Cache…</Text>
-          </ListItem>
-          {!__PRODUCTION__ && (
-            <>
-              <ListItemSeparator />
-              <ListItem
-                onPress={() => {
-                  navigation.push('Logs');
-                }}
-              >
-                <Text>Logs</Text>
-              </ListItem>
-              <ListItemSeparator />
+
               <ListItem
                 onPress={() => {
                   Updates.checkForUpdateAsync()
@@ -385,9 +387,9 @@ export default function SettingsScreen({ navigation }) {
               >
                 <Text type="link">Check for Updates</Text>
               </ListItem>
-            </>
-          )}
-        </ListMenu>
+            </ListMenu>
+          </>
+        )}
         <OuterSpacer align="top" innerStyle={{ paddingHorizontal: 30 }}>
           <Text size="footnote" type="insignificant">
             {Application.applicationName} {Application.nativeApplicationVersion}{' '}
