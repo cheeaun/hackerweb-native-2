@@ -17,7 +17,7 @@
     "ios": {
       "appStoreUrl": "https://apps.apple.com/app/id1084209377",
       "bundleIdentifier": "cheeaun.hackerweb",
-      "buildNumber": "29",
+      "buildNumber": "30",
       "supportsTablet": true,
       "requireFullScreen": false,
       "config": {
