@@ -112,6 +112,9 @@ export default function App() {
       console.log(
         `🔥 Update Event: ${updateEvent.type} - ${updateEvent.message}`,
       );
+      if (updateEvent.type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
+        setUpdateIsAvailable(true);
+      }
     });
   }, []);
 
