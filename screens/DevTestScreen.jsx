@@ -1,26 +1,12 @@
-import { useState } from 'react';
-import { Button, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 
-import ActivityIndicator from '../components/ActivityIndicator';
 import HTMLView from '../components/HTMLView';
 import HTMLView2 from '../components/HTMLView2';
 import Text from '../components/Text';
 
 export default function DevTestScreen() {
-  const [showActivityIndicator, setShowActivityIndicator] = useState(false);
   return (
     <ScrollView style={{ padding: 8 }}>
-      <Button
-        onPress={() => {
-          setShowActivityIndicator(!showActivityIndicator);
-        }}
-        title="Toggle Activity Indicator"
-      />
-      {showActivityIndicator ? (
-        <ActivityIndicator />
-      ) : (
-        <Text>Activity Indicator is hidden.</Text>
-      )}
       <Text bolder>HTMLView2</Text>
       <HTMLView2
         html={`<p>This is *italic* _italic_ **bold** __bold__ \`code\` \`\`notCode\`\` \`code again\` trap \`trap.<p>\`start code\` yeah`}
