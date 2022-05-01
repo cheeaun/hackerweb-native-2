@@ -1,11 +1,17 @@
-import { useLayoutEffect, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
+import { ActionSheetIOS, Animated, View, findNodeHandle } from 'react-native';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { WebView } from 'react-native-webview';
 
 import * as Application from 'expo-application';
 
+import Text from '../components/Text';
+
 import useTheme from '../hooks/useTheme';
+
+import MoreIcon from '../assets/ellipsis.circle.svg';
 
 export default function WebViewScreen() {
   const { colors } = useTheme();
@@ -15,15 +21,114 @@ export default function WebViewScreen() {
   if (!url) return null;
 
   const [navState, setNavState] = useState({});
+  const webButtonRef = useRef();
+  const webViewRef = useRef();
 
   useLayoutEffect(() => {
+    if (!navState?.url) return;
+    const pageTitle = navState.title;
+    const pageURL = navState.url;
+
+    const options = [
+      navState.canGoBack && {
+        text: 'Back',
+        action: () => {
+          webViewRef.current?.goBack();
+        },
+      },
+      navState.canGoForward && {
+        text: 'Forward',
+        action: () => {
+          webViewRef.current?.goForward();
+        },
+      },
+      {
+        text: 'Reload page',
+        action: () => {
+          webViewRef.current?.reload();
+        },
+      },
+      {
+        text: 'Open in browser',
+        action: () => {
+          Linking.openURL(pageURL);
+        },
+      },
+      {
+        text: 'Cancel',
+        cancel: true,
+      },
+    ].filter(Boolean);
+
     navigation.setOptions({
-      title: navState.url || url,
+      headerRight: () => (
+        <TouchableOpacity
+          ref={webButtonRef}
+          onPress={() => {
+            ActionSheetIOS.showActionSheetWithOptions(
+              {
+                title: pageTitle,
+                message: pageURL,
+                options: options.map((o) => o.text),
+                cancelButtonIndex: options.findIndex((o) => o.cancel),
+                anchor: findNodeHandle(webButtonRef.current),
+              },
+              (index) => {
+                options[index].action?.();
+              },
+            );
+          }}
+          hitSlop={{
+            top: 44,
+            right: 44,
+            bottom: 44,
+            left: 44,
+          }}
+        >
+          <MoreIcon width={20} height={20} color={colors.primary} />
+        </TouchableOpacity>
+      ),
+      headerTitle: () => (
+        <Animated.View
+          style={{
+            flex: 1,
+            flexGrow: 0.75,
+            transform: [
+              {
+                translateX: -5,
+              },
+            ],
+          }}
+          pointerEvents="none"
+        >
+          {!!pageTitle && (
+            <Text
+              size="subhead"
+              bold
+              center
+              numberOfLines={1}
+              allowFontScaling={false}
+            >
+              {pageTitle}
+            </Text>
+          )}
+          <Text
+            center
+            size="footnote"
+            numberOfLines={pageTitle ? 1 : 2}
+            allowFontScaling={false}
+            ellipsizeMode="middle"
+          >
+            {pageURL}
+          </Text>
+        </Animated.View>
+      ),
     });
   }, [navState, url]);
 
   return (
     <WebView
+      ref={webViewRef}
       style={{ backgroundColor: colors.background }}
       applicationNameForUserAgent={`${Application.applicationName}/${Application.nativeApplicationVersion}`}
       source={{ uri: url }}

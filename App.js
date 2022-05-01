@@ -278,10 +278,8 @@ export default function App() {
                 name="WebViewModal"
                 component={WebViewScreen}
                 options={{
-                  headerTitleStyle: {
-                    fontWeight: 'normal',
-                  },
-                  headerRight: () => (
+                  title: '',
+                  headerLeft: () => (
                     <TouchableOpacity
                       onPress={() => {
                         navigationRef.current?.goBack();
@@ -298,7 +296,6 @@ export default function App() {
                       </Text>
                     </TouchableOpacity>
                   ),
-                  title: '',
                   presentation: 'modal',
                   headerStyle: {
                     backgroundColor: colors.background,
