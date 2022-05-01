@@ -118,12 +118,6 @@ export default function StoriesScreen({ navigation }) {
     });
   }, [noStories, storiesLoading]);
 
-  const [showList, setShowList] = useState(null);
-  useEffect(() => {
-    let timer = setTimeout(() => setShowList(true), 0);
-    return () => clearTimeout(timer);
-  }, []);
-
   const [showMore, setShowMore] = useState(false);
   const [showMoreStories, setShowMoreStories] = useState(false);
 
@@ -135,59 +129,57 @@ export default function StoriesScreen({ navigation }) {
   }, [exceedsReadableWidth]);
 
   return (
-    showList && (
-      <FlatList
-        pointerEvents={storiesLoading ? 'none' : 'auto'}
-        contentInsetAdjustmentBehavior="automatic"
-        data={showMoreStories ? stories : stories.slice(0, 30)}
-        renderItem={({ item, index }) => {
-          return (
-            <ReadableWidthContainer>
-              <StoryItem id={item.id} position={index + 1} />
-            </ReadableWidthContainer>
-          );
-        }}
-        keyExtractor={(item) => '' + item.id}
-        ItemSeparatorComponent={ItemSeparatorComponent}
-        ListFooterComponent={
-          !!showMore &&
-          !showMoreStories &&
-          !storiesLoading &&
-          stories.length > 30 && (
-            <>
-              <ItemSeparatorComponent />
-              <TouchableOpacity
-                onPress={() => {
-                  setShowMoreStories(true);
-                }}
-              >
-                <View style={{ padding: 15, marginBottom: 30 }}>
-                  <Text type="link" center>
-                    More&hellip;
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </>
-          )
-        }
-        ListEmptyComponent={() => (
-          <ListEmpty
-            state={storiesLoading ? 'loading' : noStories ? 'error' : null}
-            errorComponent={() => (
-              <Text
-                onPress={() => {
-                  onFetchStories();
-                }}
-                style={{ textAlign: 'center' }}
-              >
-                Unable to get stories.
-                {'\n'}
-                <Text type="link">Try again?</Text>
-              </Text>
-            )}
-          />
-        )}
-      />
-    )
+    <FlatList
+      pointerEvents={storiesLoading ? 'none' : 'auto'}
+      contentInsetAdjustmentBehavior="automatic"
+      data={showMoreStories ? stories : stories.slice(0, 30)}
+      renderItem={({ item, index }) => {
+        return (
+          <ReadableWidthContainer>
+            <StoryItem id={item.id} position={index + 1} />
+          </ReadableWidthContainer>
+        );
+      }}
+      keyExtractor={(item) => '' + item.id}
+      ItemSeparatorComponent={ItemSeparatorComponent}
+      ListFooterComponent={
+        !!showMore &&
+        !showMoreStories &&
+        !storiesLoading &&
+        stories.length > 30 && (
+          <>
+            <ItemSeparatorComponent />
+            <TouchableOpacity
+              onPress={() => {
+                setShowMoreStories(true);
+              }}
+            >
+              <View style={{ padding: 15, marginBottom: 30 }}>
+                <Text type="link" center>
+                  More&hellip;
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </>
+        )
+      }
+      ListEmptyComponent={() => (
+        <ListEmpty
+          state={storiesLoading ? 'loading' : noStories ? 'error' : null}
+          errorComponent={() => (
+            <Text
+              onPress={() => {
+                onFetchStories();
+              }}
+              style={{ textAlign: 'center' }}
+            >
+              Unable to get stories.
+              {'\n'}
+              <Text type="link">Try again?</Text>
+            </Text>
+          )}
+        />
+      )}
+    />
   );
 }
