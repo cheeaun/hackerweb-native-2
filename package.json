@@ -28,7 +28,7 @@
     "latest-publish-id": "npm run latest-staging --silent | jq '.queryResult[0].publicationId' -r",
     "publish": "expo publish --release-channel staging-`npm run current-version --silent`",
     "promote-prod": "expo publish:set --publish-id `npm run latest-publish-id --silent` --release-channel production-`npm run current-version --silent`",
-    "viz": "npx react-native-bundle-visualizer@2",
+    "viz": "npx react-native-bundle-visualizer",
     "deploy-staging": "if [ $(npm run last-prod-release --silent) = $(npm run current-prod-release --silent) ]; then if [ $(npm run last-eas-build --silent) = $(npm run current-eas-build --silent) ]; then npm run publish; else npm run eas-build-submit-ci; fi; fi",
     "deploy-production": "npm run eas-build-submit-ci-prod"
   },
