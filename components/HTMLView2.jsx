@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
-import SyntaxHighlighter from 'react-syntax-highlighter';
 import a11yDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
 import a11yLight from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-light';
 
@@ -30,6 +29,7 @@ import useTheme from '../hooks/useTheme';
 import openBrowser from '../utils/openBrowser';
 import openShare from '../utils/openShare';
 
+import SyntaxHighlighter from './SyntaxHighlighter';
 import Text from './Text';
 
 const baseFontSize = 15;
