@@ -361,7 +361,7 @@ export default function SettingsScreen({ navigation }) {
             ({Application.nativeBuildVersion})
           </Text>
           {updateId && (
-            <Text size="footnote" type="insignificant">
+            <Text size="footnote" type="insignificant" numberOfLines={1}>
               Update: {updateId}
             </Text>
           )}
