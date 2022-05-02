@@ -204,7 +204,8 @@ function InnerCommentContainer({
       <View style={{ flex: 1, marginTop: 2 }}>
         <Comment item={item} />
         {!!repliesCount &&
-          (totalWeight < maxWeight && (level < 3 || hasOneCommentAndIsShort) ? (
+          (totalWeight < maxWeight &&
+          (level < 3 || (hasOneCommentAndIsShort && level < 5)) ? (
             comments.map((comment, i) => (
               <InnerCommentContainer
                 key={comment.id}
