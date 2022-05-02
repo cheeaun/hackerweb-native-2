@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Animated,
+  LayoutAnimation,
+  Pressable,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   View,
   useWindowDimensions,
@@ -35,6 +38,50 @@ import repliesCount2MaxWeight from '../utils/repliesCount2MaxWeight';
 
 import CloseIcon from '../assets/xmark.svg';
 
+function FadedContent({ maxHeight, children, ...props }) {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <Pressable
+      onPress={() => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setExpanded(!expanded);
+      }}
+    >
+      <MaskedView
+        pointerEvents="none"
+        style={{
+          padding: 15,
+          paddingTop: 1,
+          maxHeight: expanded ? undefined : maxHeight,
+        }}
+        maskElement={
+          <LinearGradient
+            colors={expanded ? ['#000'] : ['#000', 'transparent']}
+            start={[0, 0]}
+            end={[0, 0.95]}
+            style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
+            }}
+          />
+        }
+        {...props}
+      >
+        <ScrollView
+          automaticallyAdjustContentInsets={false}
+          removeClippedSubviews
+          scrollEnabled={false}
+        >
+          {children}
+        </ScrollView>
+      </MaskedView>
+    </Pressable>
+  );
+}
+
 export default function CommentsScreen({ route, navigation }) {
   const { isDark, colors } = useTheme();
   const { item, zIndex } = route.params;
@@ -61,37 +108,17 @@ export default function CommentsScreen({ route, navigation }) {
   const listHeaderHeight = useRef(0);
   const ListHeaderComponent = useMemo(
     () => (
-      <View pointerEvents="none">
+      <>
         <ReadableWidthContainer>
-          <MaskedView
-            style={{
-              padding: 15,
-              paddingTop: 1,
-              maxHeight: windowHeight / 6,
-              overflow: 'hidden',
-              position: 'relative',
-            }}
-            maskElement={
-              <LinearGradient
-                colors={['rgba(0,0,0,.7)', 'transparent']}
-                start={[0, 0]}
-                end={[0, 0.95]}
-                style={{
-                  position: 'absolute',
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  bottom: 0,
-                }}
-              />
-            }
+          <FadedContent
+            maxHeight={windowHeight / 6}
             onLayout={(e) => {
               console.log('📐 MaskedView onLayout', e.nativeEvent.layout);
               listHeaderHeight.current = e.nativeEvent.layout.height;
             }}
           >
             <HTMLView2 html={content} />
-          </MaskedView>
+          </FadedContent>
         </ReadableWidthContainer>
         <Separator />
         <OuterSpacer
@@ -124,7 +151,7 @@ export default function CommentsScreen({ route, navigation }) {
           </Text>
         </OuterSpacer>
         <Separator />
-      </View>
+      </>
     ),
     [windowHeight, content],
   );
