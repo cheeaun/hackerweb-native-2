@@ -92,6 +92,7 @@ export default function SettingsScreen({ navigation }) {
     });
   }, []);
 
+  const setUpdateIsAvailable = useStore((state) => state.setUpdateIsAvailable);
   const updateIsAvailable = useStore((state) => state.updateIsAvailable);
   const settingsInteractions = useStore((state) => state.settings.interactions);
   const settingsSyntaxHighlighting = useStore(
