@@ -284,6 +284,7 @@ export default function CommentsScreen({ route, navigation }) {
         ListFooterComponent={ListFooterComponent}
         removeClippedSubviews
         onScroll={onScroll}
+        scrollIndicatorInsets={{ top: -1 }}
       />
       <Animated.View
         key={`bottombar-${item.id}`}
