@@ -197,11 +197,6 @@ const useStore = create((set, get) => ({
     set({ minimalItems });
     return item;
   },
-  currentOP: null,
-  setCurrentOP: (currentOP) => {
-    console.log(`🥞 setCurrentOP ${currentOP}`);
-    set({ currentOP });
-  },
   links: [],
   initLinks: async () => {
     console.log(`🥞 initLinks`);

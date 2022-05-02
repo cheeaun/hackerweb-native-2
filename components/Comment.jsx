@@ -45,12 +45,20 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Comment({ item }) {
+export default function Comment({ item, storyID }) {
   const navigation = useNavigation();
   const { colors } = useTheme();
   const { id, user, time, content, deleted, dead, comments } = item;
   const datetime = new Date(time * 1000);
-  const currentOP = useStore((state) => state.currentOP);
+  const currentOP = useStore(
+    useCallback(
+      (state) =>
+        state.stories.find((s) => {
+          return s.id === storyID;
+        })?.user,
+      [storyID],
+    ),
+  );
   const settingsInteractions = useStore((state) => state.settings.interactions);
 
   if (dead || (deleted && !comments.length)) return null;

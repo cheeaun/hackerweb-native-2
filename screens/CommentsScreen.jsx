@@ -84,7 +84,7 @@ function FadedContent({ maxHeight, children, ...props }) {
 
 export default function CommentsScreen({ route, navigation }) {
   const { isDark, colors } = useTheme();
-  const { item, zIndex } = route.params;
+  const { item, zIndex, storyID } = route.params;
   const { comments = [], content } = item;
   const { repliesCount, totalComments } = getCommentsMetadata(item);
   const countDiffer = repliesCount !== totalComments;
@@ -163,12 +163,13 @@ export default function CommentsScreen({ route, navigation }) {
           <CommentPage page={(index + 1) / 10 + 1} />
         )}
         <CommentContainer
+          storyID={storyID}
           item={item}
           maxWeight={repliesCount2MaxWeight(repliesCount)}
         />
       </>
     ),
-    [repliesCount],
+    [storyID, repliesCount],
   );
 
   const keyExtractor = useCallback((item) => '' + item.id, []);

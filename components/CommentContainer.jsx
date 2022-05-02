@@ -179,6 +179,7 @@ function InnerCommentContainer({
   maxWeight,
   level = 1,
   last = false,
+  storyID,
 }) {
   if (item.dead || (item.deleted && !item.comments.length)) return null;
 
@@ -202,7 +203,7 @@ function InnerCommentContainer({
     <View style={styles.innerComment} key={item.id}>
       <CommentBar last={last} />
       <View style={{ flex: 1, marginTop: 2 }}>
-        <Comment item={item} />
+        <Comment item={item} storyID={storyID} />
         {!!repliesCount &&
           (totalWeight < maxWeight &&
           (level < 3 || (hasOneCommentAndIsShort && level < 5)) ? (
@@ -214,6 +215,7 @@ function InnerCommentContainer({
                 accWeight={totalWeight}
                 maxWeight={maxWeight}
                 level={nextLevel}
+                storyID={storyID}
               />
             ))
           ) : (
@@ -224,7 +226,11 @@ function InnerCommentContainer({
               comments={totalComments}
               suffix={suffixText(item.comments, repliesCount)}
               onPress={() => {
-                navigation.push('Comments', { item, zIndex: zIndex + 1 });
+                navigation.push('Comments', {
+                  item,
+                  zIndex: zIndex + 1,
+                  storyID,
+                });
               }}
             />
           ))}
@@ -259,7 +265,7 @@ function suffixText(comments, repliesCount) {
     : '';
 }
 
-export default function CommentContainer({ item, maxWeight = 5 }) {
+export default function CommentContainer({ item, maxWeight = 5, storyID }) {
   const { zIndex = 0 } = useRoute().params;
   const navigation = useNavigation();
 
@@ -273,7 +279,7 @@ export default function CommentContainer({ item, maxWeight = 5 }) {
   return (
     <ReadableWidthContainer>
       <View key={item.id} style={styles.comment}>
-        <Comment item={item} />
+        <Comment item={item} storyID={storyID} />
         {!!repliesCount &&
           (totalWeight < maxWeight ? (
             item.comments
@@ -285,6 +291,7 @@ export default function CommentContainer({ item, maxWeight = 5 }) {
                   item={comment}
                   accWeight={totalWeight}
                   maxWeight={maxWeight}
+                  storyID={storyID}
                 />
               ))
           ) : (
@@ -294,7 +301,11 @@ export default function CommentContainer({ item, maxWeight = 5 }) {
               suffix={suffixText(item.comments, repliesCount)}
               previews={hasPreviews ? item.comments.slice(0, 2) : []}
               onPress={() => {
-                navigation.push('Comments', { item, zIndex: zIndex + 1 });
+                navigation.push('Comments', {
+                  item,
+                  zIndex: zIndex + 1,
+                  storyID,
+                });
               }}
             />
           ))}

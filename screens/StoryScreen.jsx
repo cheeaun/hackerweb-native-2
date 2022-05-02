@@ -163,11 +163,6 @@ export default function StoryScreen({ route, navigation }) {
 
   const addLink = useStore((state) => state.addLink);
 
-  const setCurrentOP = useStore((state) => state.setCurrentOP);
-  useEffect(() => {
-    setCurrentOP(user);
-  }, [user]);
-
   const httpLink = isHTTPLink(url);
   const isJob = type === 'job';
   const hnURL = `https://news.ycombinator.com/item?id=${id}`;
@@ -474,12 +469,13 @@ export default function StoryScreen({ route, navigation }) {
           <CommentPage page={(index + 1) / 10 + 1} />
         )}
         <CommentContainer
+          storyID={id}
           item={item}
           maxWeight={repliesCount2MaxWeight(repliesCount)}
         />
       </>
     ),
-    [repliesCount],
+    [id, repliesCount],
   );
 
   const ListEmptyComponent = useMemo(
