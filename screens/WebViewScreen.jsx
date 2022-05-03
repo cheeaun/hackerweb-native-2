@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState } from 'react';
-import { ActionSheetIOS, Animated, View, findNodeHandle } from 'react-native';
+import { ActionSheetIOS, View, findNodeHandle } from 'react-native';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -89,7 +89,7 @@ export default function WebViewScreen() {
         </TouchableOpacity>
       ),
       headerTitle: () => (
-        <Animated.View
+        <View
           style={{
             flex: 1,
             flexGrow: 0.75,
@@ -121,7 +121,7 @@ export default function WebViewScreen() {
           >
             {pageURL}
           </Text>
-        </Animated.View>
+        </View>
       ),
     });
   }, [navState, url]);
