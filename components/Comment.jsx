@@ -45,7 +45,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Comment({ item, storyID }) {
+export default function Comment({
+  item,
+  storyID,
+  disableViewThread,
+  insignificant,
+}) {
   const navigation = useNavigation();
   const { colors } = useTheme();
   const { id, user, time, content, deleted, dead, comments } = item;
@@ -87,6 +92,15 @@ export default function Comment({ item, storyID }) {
       text: 'View profile',
       action: () => {
         navigation.push('User', user);
+      },
+    },
+    !disableViewThread && {
+      text: 'View thread',
+      action: () => {
+        navigation.push('ThreadModal', {
+          storyID,
+          commentID: id,
+        });
       },
     },
     !settingsInteractions && {
@@ -170,7 +184,10 @@ export default function Comment({ item, storyID }) {
             <Text
               size="subhead"
               bold
-              style={{ color: colors.red, flexShrink: 1 }}
+              style={{
+                color: insignificant ? colors.text : colors.red,
+                flexShrink: 1,
+              }}
               numberOfLines={1}
               onPress={() => {
                 navigation.push('User', user);
@@ -180,7 +197,10 @@ export default function Comment({ item, storyID }) {
             </Text>
             {user === currentOP && (
               <TouchableOpacity
-                style={[styles.opBox, { backgroundColor: colors.red }]}
+                style={[
+                  styles.opBox,
+                  { backgroundColor: insignificant ? colors.text : colors.red },
+                ]}
                 onPress={() => {
                   Alert.alert(
                     'What does OP mean?',

@@ -29,6 +29,7 @@ export default () => {
     separator: PlatformColor('separator'),
     opaqueSeparator: PlatformColor('opaqueSeparator'),
     overlay: 'rgba(0, 0, 0, 0.35)',
+    white: '#fff',
   };
 
   return { scheme, isDark, colors };

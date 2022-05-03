@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
 });
 
 export default function (props) {
-  const { style, pressedStyle, ...otherProps } = props;
+  const { style, pressedStyle, disabled, ...otherProps } = props;
   const [pressed, setPressed] = useState(false);
   return (
     <Pressable
@@ -20,7 +20,14 @@ export default function (props) {
       onPressOut={() => {
         setPressed(false);
       }}
-      style={[styles.button, style, pressed && pressedStyle]}
+      style={[
+        styles.button,
+        style,
+        disabled && {
+          opacity: 0.3,
+        },
+        pressed && pressedStyle,
+      ]}
     />
   );
 }

@@ -20,6 +20,7 @@ import LogsScreen from './screens/LogsScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import StoriesScreen from './screens/StoriesScreen';
 import StoryScreen from './screens/StoryScreen';
+import ThreadScreen from './screens/ThreadScreen';
 import UserScreen from './screens/UserScreen';
 import WebViewScreen from './screens/WebViewScreen';
 
@@ -299,6 +300,38 @@ export default function App() {
                   presentation: 'modal',
                   headerStyle: {
                     backgroundColor: colors.background,
+                  },
+                }}
+              />
+              <Stack.Screen
+                name="ThreadModal"
+                component={ThreadScreen}
+                options={{
+                  title: 'Thread',
+                  headerRight: () => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigationRef.current?.goBack();
+                      }}
+                      hitSlop={{
+                        top: 44,
+                        right: 44,
+                        bottom: 44,
+                        left: 44,
+                      }}
+                    >
+                      <Text type="link" bolder>
+                        Done
+                      </Text>
+                    </TouchableOpacity>
+                  ),
+                  presentation: 'modal',
+                  headerShadowVisible: false,
+                  headerStyle: {
+                    backgroundColor: colors.background2,
+                  },
+                  contentStyle: {
+                    backgroundColor: colors.background2,
                   },
                 }}
               />
