@@ -386,7 +386,7 @@ export default function SettingsScreen({ navigation }) {
                     });
                 }}
               >
-                <Text type="link">Check for Updates</Text>
+                <Text type="link">Check for Updates…</Text>
               </ListItem>
             </ListMenu>
           </>
