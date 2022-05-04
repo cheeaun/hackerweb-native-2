@@ -49,7 +49,7 @@ export default function Comment({
   item,
   storyID,
   disableViewThread,
-  insignificant,
+  significant,
 }) {
   const navigation = useNavigation();
   const { colors } = useTheme();
@@ -182,10 +182,11 @@ export default function Comment({
         {!deleted && (
           <View style={styles.metadata}>
             <Text
-              size="subhead"
-              bold
+              size={significant ? 'body' : 'subhead'}
+              bold={!significant}
+              bolder={significant}
               style={{
-                color: insignificant ? colors.text : colors.red,
+                color: colors.red,
                 flexShrink: 1,
               }}
               numberOfLines={1}
@@ -199,7 +200,9 @@ export default function Comment({
               <TouchableOpacity
                 style={[
                   styles.opBox,
-                  { backgroundColor: insignificant ? colors.text : colors.red },
+                  {
+                    backgroundColor: colors.red,
+                  },
                 ]}
                 onPress={() => {
                   Alert.alert(
@@ -214,16 +217,19 @@ export default function Comment({
                   left: 10,
                 }}
               >
-                <Text size="caption2" style={styles.op}>
+                <Text
+                  size={significant ? 'footnote' : 'caption2'}
+                  style={styles.op}
+                >
                   OP
                 </Text>
               </TouchableOpacity>
             )}
-            <Text size="subhead" type="insignificant">
+            <Text size={significant ? 'body' : 'subhead'} type="insignificant">
               {' '}
               &bull;{' '}
               <Text
-                size="subhead"
+                size={significant ? 'body' : 'subhead'}
                 type="insignificant"
                 onPress={showActionSheet}
               >
@@ -232,7 +238,7 @@ export default function Comment({
             </Text>
           </View>
         )}
-        <HTMLView2 html={content} />
+        <HTMLView2 html={content} fontSize={significant ? 17 : undefined} />
       </Animated.View>
     </Pressable>
   );

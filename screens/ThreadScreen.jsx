@@ -50,12 +50,12 @@ const styles = StyleSheet.create({
 });
 
 function CommentArrow() {
-  const color = PlatformColor('systemGray2');
+  const color = PlatformColor('systemGray');
   return (
     <Svg
-      width="8"
-      height="12"
-      viewBox="0 0 8 12"
+      width="10"
+      height="14"
+      viewBox="0 0 10 14"
       strokeLinecap="round"
       color={color}
     >
@@ -63,7 +63,7 @@ function CommentArrow() {
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
-        d="M4 1V11M1 8 4 11 7 8"
+        d="M5 1V13M1 9 5 13 9 9"
       />
     </Svg>
   );
@@ -112,16 +112,27 @@ export default function ThreadScreen() {
 
   const tabViews = ['thread', 'share'];
   const [tabView, setTabView] = useState('thread');
-  const tabValues = ['Thread', 'Share as Image'];
+  const tabValues = [
+    `Thread ${comments.length > 1 ? `(${comments.length})` : ''}`,
+    'Share as Image',
+  ];
 
   const scrollViewRef = useRef();
   useEffect(() => {
-    if (tabView === 'thread') {
-      toggleShowStory(true);
-      setCommentsLimit(parentCommentsCount);
-      setTimeout(() => {
-        scrollViewRef.current?.scrollToEnd();
-      }, 500);
+    switch (tabView) {
+      case 'share': {
+        toggleShowStory(false);
+        setCommentsLimit(0);
+        break;
+      }
+      default: {
+        // thread
+        toggleShowStory(true);
+        setCommentsLimit(parentCommentsCount);
+        setTimeout(() => {
+          scrollViewRef.current?.scrollToEnd();
+        }, 500);
+      }
     }
   }, [storyID, tabView]);
 
@@ -146,16 +157,16 @@ export default function ThreadScreen() {
           pointerEvents={tabView === 'thread' ? 'auto' : 'none'}
           style={{
             backgroundColor: colors.background,
-            marginHorizontal: 15,
-            marginTop: 1,
-            marginBottom: 1,
+            margin: 15,
             borderRadius: 16,
             overflow: 'hidden',
+            borderColor: colors.separator,
+            borderWidth: 1,
           }}
         >
           {showStory && (
             <View style={[styles.storyInfo]}>
-              <Text size="title3" bolder>
+              <Text size="title2" bolder>
                 {title}
               </Text>
               {httpLink && (
@@ -193,7 +204,9 @@ export default function ThreadScreen() {
               </View>
             </View>
           )}
-          {showStory && !!slicedComments?.length && <Separator />}
+          {showStory && !!slicedComments?.length && (
+            <Separator style={{ height: 1 }} />
+          )}
           {slicedComments.map((comment, i) => (
             <View key={comment.id}>
               {i > 0 && (
@@ -202,25 +215,29 @@ export default function ThreadScreen() {
                     flexDirection: 'row',
                     alignItems: 'center',
                     paddingLeft: 20,
-                    marginTop: -16,
-                    marginBottom: -8,
+                    marginVertical: -7,
+                    position: 'relative',
+                    zIndex: 1,
                   }}
                 >
                   <CommentArrow />
-                  <Separator style={{ marginLeft: 8, flexGrow: 1 }} />
+                  <Separator
+                    style={{ marginLeft: 16, flexGrow: 1, height: 1 }}
+                  />
                 </View>
               )}
               <View
                 style={{
-                  margin: 15,
-                  opacity: i < slicedComments.length - 1 ? 0.8 : 1,
+                  padding: 15,
+                  paddingBottom: 8,
+                  opacity: i < commentsLimit ? 0.85 : 1,
                 }}
               >
                 <Comment
                   item={comment}
                   storyID={storyID}
                   disableViewThread
-                  insignificant={i < slicedComments.length - 1}
+                  significant={i === slicedComments.length - 1}
                 />
               </View>
             </View>
@@ -232,9 +249,12 @@ export default function ThreadScreen() {
           style={{
             paddingVertical: 8,
             paddingHorizontal: 15,
+            borderColor: colors.separator,
+            borderTopWidth: StyleSheet.hairlineWidth,
           }}
         >
           <SegmentedControl
+            disabled={loadingShare}
             style={{ marginHorizontal: 15, marginTop: 8 }}
             appearance={isDark ? 'dark' : 'light'}
             values={tabValues}
@@ -263,72 +283,70 @@ export default function ThreadScreen() {
                     }}
                   />
                 </TableItem>
-                <Separator />
-                <TableItem>
-                  <Text>Parent Comments</Text>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Text bold>
-                      {commentsLimit}
-                      {'   '}
-                    </Text>
-                    <View
-                      style={{
-                        backgroundColor: colors.opaqueBackground2,
-                        flexDirection: 'row',
-                        borderRadius: 8,
-                        overflow: 'hidden',
-                      }}
-                    >
-                      <Button
+                {parentCommentsCount > 0 && (
+                  <>
+                    <Separator />
+                    <TableItem>
+                      <Text style={{ flexGrow: 1 }}>Parent Comments</Text>
+                      <Text bold fontVariant={['tabular-nums']}>
+                        {' '}
+                        {commentsLimit}
+                        {'   '}
+                      </Text>
+                      <View
                         style={{
-                          paddingHorizontal: 20,
-                          paddingVertical: 8,
-                          borderRadius: 0,
-                        }}
-                        pressedStyle={{
                           backgroundColor: colors.opaqueBackground2,
-                        }}
-                        disabled={loadingShare || commentsLimit === 0}
-                        onPress={() => {
-                          setCommentsLimit(Math.max(0, commentsLimit - 1));
+                          flexDirection: 'row',
+                          borderRadius: 8,
+                          overflow: 'hidden',
                         }}
                       >
-                        <Text bolder>−</Text>
-                      </Button>
-                      <Separator
-                        vertical
-                        style={{
-                          marginVertical: 8,
-                        }}
-                      />
-                      <Button
-                        style={{
-                          paddingHorizontal: 20,
-                          paddingVertical: 8,
-                          borderRadius: 0,
-                        }}
-                        pressedStyle={{
-                          backgroundColor: colors.opaqueBackground2,
-                        }}
-                        disabled={
-                          loadingShare || commentsLimit >= parentCommentsCount
-                        }
-                        onPress={() => {
-                          setCommentsLimit(
-                            Math.min(parentCommentsCount, commentsLimit + 1),
-                          );
-                        }}
-                      >
-                        <Text bolder>+</Text>
-                      </Button>
-                    </View>
-                  </View>
-                </TableItem>
+                        <Button
+                          style={{
+                            paddingHorizontal: 20,
+                            paddingVertical: 8,
+                            borderRadius: 0,
+                          }}
+                          pressedStyle={{
+                            backgroundColor: colors.opaqueBackground2,
+                          }}
+                          disabled={loadingShare || commentsLimit === 0}
+                          onPress={() => {
+                            setCommentsLimit(Math.max(0, commentsLimit - 1));
+                          }}
+                        >
+                          <Text bolder>−</Text>
+                        </Button>
+                        <Separator
+                          vertical
+                          style={{
+                            marginVertical: 8,
+                          }}
+                        />
+                        <Button
+                          style={{
+                            paddingHorizontal: 20,
+                            paddingVertical: 8,
+                            borderRadius: 0,
+                          }}
+                          pressedStyle={{
+                            backgroundColor: colors.opaqueBackground2,
+                          }}
+                          disabled={
+                            loadingShare || commentsLimit >= parentCommentsCount
+                          }
+                          onPress={() => {
+                            setCommentsLimit(
+                              Math.min(parentCommentsCount, commentsLimit + 1),
+                            );
+                          }}
+                        >
+                          <Text bolder>+</Text>
+                        </Button>
+                      </View>
+                    </TableItem>
+                  </>
+                )}
               </View>
               <Button
                 style={{
@@ -339,6 +357,7 @@ export default function ThreadScreen() {
                 pressedStyle={{
                   opacity: 0.75,
                 }}
+                disabled={loadingShare}
                 onPress={async () => {
                   try {
                     setLoadingShare(true);
@@ -362,7 +381,7 @@ export default function ThreadScreen() {
                     marginLeft: 24,
                   }}
                 >
-                  Share
+                  Share…
                 </Text>
                 <ActivityIndicator
                   color={colors.white}

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import {
   ActionSheetIOS,
   DynamicColorIOS,
@@ -32,24 +32,17 @@ import openShare from '../utils/openShare';
 import SyntaxHighlighter from './SyntaxHighlighter';
 import Text from './Text';
 
-const baseFontSize = 15;
 const nodeStyles = StyleSheet.create({
-  default: {
-    fontSize: baseFontSize,
-  },
   p: {
     marginBottom: 12,
-    fontSize: baseFontSize,
   },
   li: {
     marginBottom: 12,
     // Can't reduce this margin because there's no <ul> or <ol> here
-    fontSize: baseFontSize,
     flexDirection: 'row',
   },
   blockquote: {
     marginBottom: 12,
-    fontSize: baseFontSize,
     backgroundColor: DynamicColorIOS({
       dark: 'rgba(255,255,255,.05)',
       light: 'rgba(0,0,0,.05)',
@@ -72,17 +65,14 @@ const nodeStyles = StyleSheet.create({
   },
   code: {
     fontFamily: 'Menlo',
-    fontSize: baseFontSize - 2,
   },
   a: {
     color: PlatformColor('link'),
-    fontSize: baseFontSize,
     textDecorationLine: 'underline',
     textDecorationColor: '#1e90ff66',
   },
   i: {
     fontStyle: 'italic',
-    fontSize: baseFontSize,
   },
 });
 
@@ -189,35 +179,49 @@ Object.entries(a11yDark).forEach(([key, value]) => {
   codeTextColorsDark[key] = value.color;
 });
 
-function CodeText({ className, children }) {
+function CodeText({ style, className, children }) {
   const { isDark } = useTheme();
   const colors = isDark ? codeTextColorsDark : codeTextColorsLight;
   const color = className.reduce(
     (color, _className) => colors[_className] || color,
     null,
   );
-  return <Text style={[nodeStyles.code, color && { color }]}>{children}</Text>;
+  return (
+    <Text style={[nodeStyles.code, style, color && { color }]}>{children}</Text>
+  );
 }
 
-function renderRow(row, i) {
-  if (row.children) {
-    return (
-      <CodeText key={i} className={row.properties.className}>
-        {row.children.map(renderRow)}
-      </CodeText>
-    );
-  }
-  if (row.value) {
-    if (typeof row.value === 'string') {
-      return row.value.replace(/\n+$/, ' ');
+function renderRow(props) {
+  return (row, i) => {
+    const { style } = props;
+    if (row.children) {
+      return (
+        <CodeText
+          key={i}
+          className={row.properties.className}
+          style={[
+            style,
+            {
+              fontSize: style.fontSize - 2,
+            },
+          ]}
+        >
+          {row.children.map(renderRow(props))}
+        </CodeText>
+      );
     }
-    return row.value;
-  }
+    if (row.value) {
+      if (typeof row.value === 'string') {
+        return row.value.replace(/\n+$/, ' ');
+      }
+      return row.value;
+    }
+  };
 }
 
 const EmptyTag = ({ children }) => children;
 
-function CodeBlock({ children }) {
+function CodeBlock({ style, children }) {
   const windowHeight = useWindowDimensions().height;
 
   let codeText = children
@@ -286,7 +290,7 @@ function CodeBlock({ children }) {
               );
             }}
           >
-            {rows.map(renderRow)}
+            {rows.map(renderRow({ style }))}
           </Pressable>
         </ScrollView>
       )}
@@ -296,19 +300,32 @@ function CodeBlock({ children }) {
   );
 }
 
-function dom2elements(nodes, parentName, level = 0) {
+function dom2elements(nodes, { parentName, level = 0, fontSize }) {
   if (!nodes || !nodes.length) return;
   let nodeStates = [];
+  const HTMLText = useCallback(
+    ({ style, ...props }) => {
+      return <Text style={[{ fontSize }, style]} {...props} />;
+    },
+    [fontSize],
+  );
   return nodes.map((node, i) => {
     const { tagName, nodeName, childNodes } = node;
     // Note: React keys must only be unique among siblings, not global
     const key = i + '-' + level;
     if (tagName) {
       const style = nodeStyles[tagName || 'default'];
-      let elements = dom2elements(childNodes, tagName, level + 1);
+      let elements = dom2elements(childNodes, { tagName, level: level + 1 });
       if (!elements) return null;
       if (tagName === 'pre') {
-        return <Pre key={key} elements={elements} childNodes={childNodes} />;
+        return (
+          <Pre
+            key={key}
+            elements={elements}
+            childNodes={childNodes}
+            style={{ fontSize }}
+          />
+        );
       }
       if (tagName === 'a') {
         const href = node.attrs?.find((attr) => attr.name === 'href').value;
@@ -316,7 +333,7 @@ function dom2elements(nodes, parentName, level = 0) {
         const child = childNodes?.length === 1 && childNodes[0];
         const text = child?.nodeName === '#text' && child.value;
         return (
-          <Link key={key} url={href}>
+          <Link key={key} url={href} style={{ fontSize }}>
             {text || elements}
           </Link>
         );
@@ -338,7 +355,7 @@ function dom2elements(nodes, parentName, level = 0) {
               key={key}
               style={[nodeStyles.blockquote, blockquoteCollapsedStyle]}
             >
-              <Text style={nodeStyles.default}>{elements}</Text>
+              <HTMLText style={nodeStyles.default}>{elements}</HTMLText>
             </View>
           );
         }
@@ -356,7 +373,7 @@ function dom2elements(nodes, parentName, level = 0) {
         if (firstText && prefix) {
           firstChild.value = rest || '';
           // Refresh elements
-          elements = dom2elements(childNodes, tagName, level + 1);
+          elements = dom2elements(childNodes, { tagName, level: level + 1 });
 
           const isBlockquote = prefix.includes('>');
           if (isBlockquote) nodeStates[i] = 'blockquote';
@@ -370,10 +387,13 @@ function dom2elements(nodes, parentName, level = 0) {
                 isBlockquote && blockquoteCollapsedStyle,
               ]}
             >
-              <Text style={nodeStyles.default} fontVariant={['tabular-nums']}>
+              <HTMLText
+                style={nodeStyles.default}
+                fontVariant={['tabular-nums']}
+              >
                 {prefix}
-              </Text>
-              <Text
+              </HTMLText>
+              <HTMLText
                 style={[
                   nodeStyles.default,
                   {
@@ -382,15 +402,15 @@ function dom2elements(nodes, parentName, level = 0) {
                 ]}
               >
                 {elements}
-              </Text>
+              </HTMLText>
             </View>
           );
         }
       }
       return (
-        <Text key={key} style={style}>
+        <HTMLText key={key} style={style}>
           {elements}
-        </Text>
+        </HTMLText>
       );
     } else if (nodeName === '#text') {
       const style = nodeStyles[parentName || 'default'];
@@ -419,9 +439,9 @@ function dom2elements(nodes, parentName, level = 0) {
               // if code
               if (/^(`)[^`]+\1$/.test(chunk)) {
                 return (
-                  <Text key={`c-${i}`} style={nodeStyles.code}>
+                  <HTMLText key={`c-${i}`} style={nodeStyles.code}>
                     {chunk}
-                  </Text>
+                  </HTMLText>
                 );
               }
               // others
@@ -435,16 +455,16 @@ function dom2elements(nodes, parentName, level = 0) {
 
         // If root level and there's no parent tag, then it's text that doesn't have a <p> tag
         return (
-          <Text key={key} style={nodeStyles.p}>
+          <HTMLText key={key} style={nodeStyles.p}>
             {text}
-          </Text>
+          </HTMLText>
         );
       }
 
       return (
-        <Text key={key} style={style}>
+        <HTMLText key={key} style={style}>
           {text}
-        </Text>
+        </HTMLText>
       );
     }
   });
@@ -455,7 +475,7 @@ const urlRegex = urlRegexSafe({
   strict: true,
 });
 
-export default function HTMLView2({ html, linkify, DEBUG }) {
+export default function HTMLView2({ html, linkify, fontSize = 15, DEBUG }) {
   if (!html || !html.trim()) return null;
   if (linkify) {
     const containsLink = /<\/a>/i.test(html);
@@ -477,7 +497,9 @@ export default function HTMLView2({ html, linkify, DEBUG }) {
   }
 
   const docFrag = parseFragment(html);
-  const elements = dom2elements(docFrag.childNodes);
+  const elements = dom2elements(docFrag.childNodes, {
+    fontSize,
+  });
   if (__DEV__ && DEBUG) {
     if (DEBUG) console.log({ html });
     return (

@@ -326,7 +326,6 @@ export default function App() {
                     </TouchableOpacity>
                   ),
                   presentation: 'modal',
-                  headerShadowVisible: false,
                   headerStyle: {
                     backgroundColor: colors.background2,
                   },
