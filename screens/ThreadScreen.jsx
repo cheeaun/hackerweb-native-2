@@ -21,6 +21,7 @@ import * as Haptics from 'expo-haptics';
 import Button from '../components/Button';
 import Comment from '../components/Comment';
 import PrettyURL from '../components/PrettyURL';
+import ReadableWidthContainer from '../components/ReadableWidthContainer';
 import Separator from '../components/Separator';
 import Text from '../components/Text';
 import TimeAgo from '../components/TimeAgo';
@@ -152,97 +153,99 @@ export default function ThreadScreen() {
         scrollIndicatorInsets={{ top: -1 }}
         centerContent
       >
-        <View
-          ref={threadRef}
-          pointerEvents={tabView === 'thread' ? 'auto' : 'none'}
-          style={{
-            backgroundColor: colors.background,
-            margin: 15,
-            borderRadius: 16,
-            overflow: 'hidden',
-            borderColor: colors.separator,
-            borderWidth: 1,
-          }}
-        >
-          {showStory && (
-            <View style={[styles.storyInfo]}>
-              <Text size="title2" bolder>
-                {title}
-              </Text>
-              {httpLink && (
-                <View style={{ marginTop: 4 }}>
-                  <PrettyURL
-                    url={url}
-                    size="subhead"
-                    prominent
-                    numberOfLines={2}
-                    ellipsizeMode="middle"
-                  />
-                </View>
-              )}
-              <View style={styles.storyMetadata}>
-                <Text>
-                  <Text type="insignificant" size="subhead">
-                    {points?.toLocaleString('en-US')} point
-                    {points != 1 && 's'}{' '}
-                  </Text>
-                  <Text type="insignificant" size="subhead">
-                    by{' '}
-                    <Text
-                      size="subhead"
-                      bold
-                      style={{ color: colors.red }}
-                      onPress={() => {
-                        navigation.push('User', user);
-                      }}
-                    >
-                      {user}
-                    </Text>{' '}
-                    &bull; <TimeAgo time={datetime} />
-                  </Text>
+        <ReadableWidthContainer>
+          <View
+            ref={threadRef}
+            pointerEvents={tabView === 'thread' ? 'auto' : 'none'}
+            style={{
+              backgroundColor: colors.background,
+              margin: 15,
+              borderRadius: 16,
+              overflow: 'hidden',
+              borderColor: colors.separator,
+              borderWidth: 1,
+            }}
+          >
+            {showStory && (
+              <View style={[styles.storyInfo]}>
+                <Text size="title2" bolder>
+                  {title}
                 </Text>
+                {httpLink && (
+                  <View style={{ marginTop: 4 }}>
+                    <PrettyURL
+                      url={url}
+                      size="subhead"
+                      prominent
+                      numberOfLines={2}
+                      ellipsizeMode="middle"
+                    />
+                  </View>
+                )}
+                <View style={styles.storyMetadata}>
+                  <Text>
+                    <Text type="insignificant" size="subhead">
+                      {points?.toLocaleString('en-US')} point
+                      {points != 1 && 's'}{' '}
+                    </Text>
+                    <Text type="insignificant" size="subhead">
+                      by{' '}
+                      <Text
+                        size="subhead"
+                        bold
+                        style={{ color: colors.red }}
+                        onPress={() => {
+                          navigation.push('User', user);
+                        }}
+                      >
+                        {user}
+                      </Text>{' '}
+                      &bull; <TimeAgo time={datetime} />
+                    </Text>
+                  </Text>
+                </View>
               </View>
-            </View>
-          )}
-          {showStory && !!slicedComments?.length && (
-            <Separator style={{ height: 1 }} />
-          )}
-          {slicedComments.map((comment, i) => (
-            <View key={comment.id}>
-              {i > 0 && (
+            )}
+            {showStory && !!slicedComments?.length && (
+              <Separator style={{ height: 1 }} />
+            )}
+            {slicedComments.map((comment, i) => (
+              <View key={comment.id}>
+                {i > 0 && (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      paddingLeft: 20,
+                      marginVertical: -7,
+                      position: 'relative',
+                      zIndex: 1,
+                    }}
+                  >
+                    <CommentArrow />
+                    <Separator
+                      style={{ marginLeft: 16, flexGrow: 1, height: 1 }}
+                    />
+                  </View>
+                )}
                 <View
                   style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    paddingLeft: 20,
-                    marginVertical: -7,
-                    position: 'relative',
-                    zIndex: 1,
+                    padding: 15,
+                    paddingBottom: 8,
+                    opacity: i < commentsLimit ? 0.85 : 1,
                   }}
                 >
-                  <CommentArrow />
-                  <Separator
-                    style={{ marginLeft: 16, flexGrow: 1, height: 1 }}
+                  <Comment
+                    item={comment}
+                    storyID={storyID}
+                    disableViewThread
+                    significant={i === slicedComments.length - 1}
                   />
                 </View>
-              )}
-              <View
-                style={{
-                  padding: 15,
-                  paddingBottom: 8,
-                  opacity: i < commentsLimit ? 0.85 : 1,
-                }}
-              >
-                <Comment
-                  item={comment}
-                  storyID={storyID}
-                  disableViewThread
-                  significant={i === slicedComments.length - 1}
-                />
               </View>
-            </View>
-          ))}
-        </View>
+            ))}
+          </View>
+        </ReadableWidthContainer>
       </ScrollView>
       <SafeAreaView>
         <View
@@ -253,143 +256,149 @@ export default function ThreadScreen() {
             borderTopWidth: StyleSheet.hairlineWidth,
           }}
         >
-          <SegmentedControl
-            disabled={loadingShare}
-            style={{ marginHorizontal: 15, marginTop: 8 }}
-            appearance={isDark ? 'dark' : 'light'}
-            values={tabValues}
-            selectedIndex={tabViews.findIndex((v) => v === tabView)}
-            onChange={(e) => {
-              Haptics.selectionAsync();
-              const index = e.nativeEvent.selectedSegmentIndex;
-              const tab = tabViews[index].toLowerCase();
+          <ReadableWidthContainer>
+            <SegmentedControl
+              disabled={loadingShare}
+              style={{ marginHorizontal: 15, marginTop: 8 }}
+              appearance={isDark ? 'dark' : 'light'}
+              values={tabValues}
+              selectedIndex={tabViews.findIndex((v) => v === tabView)}
+              onChange={(e) => {
+                Haptics.selectionAsync();
+                const index = e.nativeEvent.selectedSegmentIndex;
+                const tab = tabViews[index].toLowerCase();
 
-              LayoutAnimation.configureNext(
-                LayoutAnimation.Presets.easeInEaseOut,
-              );
-              setTabView(tab);
-            }}
-          />
-          {tabView === 'share' && (
-            <>
-              <View style={{ marginVertical: 8 }}>
-                <TableItem>
-                  <Text>Show Story</Text>
-                  <Switch
-                    disable={loadingShare}
-                    value={showStory}
-                    onValueChange={() => {
-                      toggleShowStory(!showStory);
-                    }}
-                  />
-                </TableItem>
-                {parentCommentsCount > 0 && (
-                  <>
-                    <Separator />
-                    <TableItem>
-                      <Text style={{ flexGrow: 1 }}>Parent Comments</Text>
-                      <Text bold fontVariant={['tabular-nums']}>
-                        {' '}
-                        {commentsLimit}
-                        {'   '}
-                      </Text>
-                      <View
-                        style={{
-                          backgroundColor: colors.opaqueBackground2,
-                          flexDirection: 'row',
-                          borderRadius: 8,
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <Button
+                LayoutAnimation.configureNext(
+                  LayoutAnimation.Presets.easeInEaseOut,
+                );
+                setTabView(tab);
+              }}
+            />
+            {tabView === 'share' && (
+              <>
+                <View style={{ marginVertical: 8 }}>
+                  <TableItem>
+                    <Text>Show Story</Text>
+                    <Switch
+                      disable={loadingShare}
+                      value={showStory}
+                      onValueChange={() => {
+                        toggleShowStory(!showStory);
+                      }}
+                    />
+                  </TableItem>
+                  {parentCommentsCount > 0 && (
+                    <>
+                      <Separator />
+                      <TableItem>
+                        <Text style={{ flexGrow: 1 }}>Parent Comments</Text>
+                        <Text bold fontVariant={['tabular-nums']}>
+                          {' '}
+                          {commentsLimit}
+                          {'   '}
+                        </Text>
+                        <View
                           style={{
-                            paddingHorizontal: 20,
-                            paddingVertical: 8,
-                            borderRadius: 0,
-                          }}
-                          pressedStyle={{
                             backgroundColor: colors.opaqueBackground2,
-                          }}
-                          disabled={loadingShare || commentsLimit === 0}
-                          onPress={() => {
-                            setCommentsLimit(Math.max(0, commentsLimit - 1));
+                            flexDirection: 'row',
+                            borderRadius: 8,
+                            overflow: 'hidden',
                           }}
                         >
-                          <Text bolder>−</Text>
-                        </Button>
-                        <Separator
-                          vertical
-                          style={{
-                            marginVertical: 8,
-                          }}
-                        />
-                        <Button
-                          style={{
-                            paddingHorizontal: 20,
-                            paddingVertical: 8,
-                            borderRadius: 0,
-                          }}
-                          pressedStyle={{
-                            backgroundColor: colors.opaqueBackground2,
-                          }}
-                          disabled={
-                            loadingShare || commentsLimit >= parentCommentsCount
-                          }
-                          onPress={() => {
-                            setCommentsLimit(
-                              Math.min(parentCommentsCount, commentsLimit + 1),
-                            );
-                          }}
-                        >
-                          <Text bolder>+</Text>
-                        </Button>
-                      </View>
-                    </TableItem>
-                  </>
-                )}
-              </View>
-              <Button
-                style={{
-                  backgroundColor: colors.primary,
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                }}
-                pressedStyle={{
-                  opacity: 0.75,
-                }}
-                disabled={loadingShare}
-                onPress={async () => {
-                  try {
-                    setLoadingShare(true);
-                    const result = await captureRef(threadRef);
-                    console.log(result);
-                    await openShare({ url: result });
-                  } catch (e) {
-                    Alert('Error', 'Something went wrong.');
-                  } finally {
-                    setLoadingShare(false);
-                  }
-                }}
-              >
-                <Text
-                  size="title3"
-                  bolder
-                  center
+                          <Button
+                            style={{
+                              paddingHorizontal: 20,
+                              paddingVertical: 8,
+                              borderRadius: 0,
+                            }}
+                            pressedStyle={{
+                              backgroundColor: colors.opaqueBackground2,
+                            }}
+                            disabled={loadingShare || commentsLimit === 0}
+                            onPress={() => {
+                              setCommentsLimit(Math.max(0, commentsLimit - 1));
+                            }}
+                          >
+                            <Text bolder>−</Text>
+                          </Button>
+                          <Separator
+                            vertical
+                            style={{
+                              marginVertical: 8,
+                            }}
+                          />
+                          <Button
+                            style={{
+                              paddingHorizontal: 20,
+                              paddingVertical: 8,
+                              borderRadius: 0,
+                            }}
+                            pressedStyle={{
+                              backgroundColor: colors.opaqueBackground2,
+                            }}
+                            disabled={
+                              loadingShare ||
+                              commentsLimit >= parentCommentsCount
+                            }
+                            onPress={() => {
+                              setCommentsLimit(
+                                Math.min(
+                                  parentCommentsCount,
+                                  commentsLimit + 1,
+                                ),
+                              );
+                            }}
+                          >
+                            <Text bolder>+</Text>
+                          </Button>
+                        </View>
+                      </TableItem>
+                    </>
+                  )}
+                </View>
+                <Button
                   style={{
-                    color: colors.white,
-                    flexGrow: 1,
-                    marginLeft: 24,
+                    backgroundColor: colors.primary,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                  }}
+                  pressedStyle={{
+                    opacity: 0.75,
+                  }}
+                  disabled={loadingShare}
+                  onPress={async () => {
+                    try {
+                      setLoadingShare(true);
+                      const result = await captureRef(threadRef);
+                      console.log(result);
+                      await openShare({ url: result });
+                    } catch (e) {
+                      Alert('Error', 'Something went wrong.');
+                    } finally {
+                      setLoadingShare(false);
+                    }
                   }}
                 >
-                  Share…
-                </Text>
-                <ActivityIndicator
-                  color={colors.white}
-                  animating={loadingShare}
-                />
-              </Button>
-            </>
-          )}
+                  <Text
+                    size="title3"
+                    bolder
+                    center
+                    style={{
+                      color: colors.white,
+                      flexGrow: 1,
+                      marginLeft: 24,
+                    }}
+                  >
+                    Share…
+                  </Text>
+                  <ActivityIndicator
+                    color={colors.white}
+                    animating={loadingShare}
+                  />
+                </Button>
+              </>
+            )}
+          </ReadableWidthContainer>
         </View>
       </SafeAreaView>
     </>
