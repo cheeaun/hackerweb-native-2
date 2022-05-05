@@ -124,6 +124,12 @@ export default function ThreadScreen() {
       case 'share': {
         toggleShowStory(false);
         setCommentsLimit(0);
+        setTimeout(() => {
+          scrollViewRef.current?.scrollTo({
+            x: 0,
+            y: 0,
+          });
+        }, 310);
         break;
       }
       default: {
@@ -132,7 +138,7 @@ export default function ThreadScreen() {
         setCommentsLimit(parentCommentsCount);
         setTimeout(() => {
           scrollViewRef.current?.scrollToEnd();
-        }, 500);
+        }, 310);
       }
     }
   }, [storyID, tabView]);
@@ -142,6 +148,12 @@ export default function ThreadScreen() {
 
   useEffect(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setTimeout(() => {
+      scrollViewRef.current?.scrollTo({
+        x: 0,
+        y: 0,
+      });
+    }, 310);
   }, [showStory, commentsLimit, loadingShare]);
 
   return (
