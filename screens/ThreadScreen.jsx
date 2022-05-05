@@ -138,7 +138,7 @@ export default function ThreadScreen() {
         setCommentsLimit(parentCommentsCount);
         setTimeout(() => {
           scrollViewRef.current?.scrollToEnd();
-        }, 310);
+        }, 600);
       }
     }
   }, [storyID, tabView]);
