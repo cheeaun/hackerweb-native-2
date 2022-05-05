@@ -33,6 +33,9 @@ import SyntaxHighlighter from './SyntaxHighlighter';
 import Text from './Text';
 
 const nodeStyles = StyleSheet.create({
+  default: {
+    fontSize: 15,
+  },
   p: {
     marginBottom: 12,
   },
@@ -303,12 +306,7 @@ function CodeBlock({ style, children }) {
 function dom2elements(nodes, { parentName, level = 0, fontSize }) {
   if (!nodes || !nodes.length) return;
   let nodeStates = [];
-  const HTMLText = useCallback(
-    ({ style, ...props }) => {
-      return <Text style={[{ fontSize }, style]} {...props} />;
-    },
-    [fontSize],
-  );
+
   return nodes.map((node, i) => {
     const { tagName, nodeName, childNodes } = node;
     // Note: React keys must only be unique among siblings, not global
@@ -355,7 +353,7 @@ function dom2elements(nodes, { parentName, level = 0, fontSize }) {
               key={key}
               style={[nodeStyles.blockquote, blockquoteCollapsedStyle]}
             >
-              <HTMLText style={nodeStyles.default}>{elements}</HTMLText>
+              <Text style={[nodeStyles.default, { fontSize }]}>{elements}</Text>
             </View>
           );
         }
@@ -387,30 +385,31 @@ function dom2elements(nodes, { parentName, level = 0, fontSize }) {
                 isBlockquote && blockquoteCollapsedStyle,
               ]}
             >
-              <HTMLText
-                style={nodeStyles.default}
+              <Text
+                style={[nodeStyles.default, { fontSize }]}
                 fontVariant={['tabular-nums']}
               >
                 {prefix}
-              </HTMLText>
-              <HTMLText
+              </Text>
+              <Text
                 style={[
                   nodeStyles.default,
                   {
+                    fontSize,
                     flex: 1,
                   },
                 ]}
               >
                 {elements}
-              </HTMLText>
+              </Text>
             </View>
           );
         }
       }
       return (
-        <HTMLText key={key} style={style}>
+        <Text key={key} style={[style, { fontSize }]}>
           {elements}
-        </HTMLText>
+        </Text>
       );
     } else if (nodeName === '#text') {
       const style = nodeStyles[parentName || 'default'];
@@ -439,9 +438,9 @@ function dom2elements(nodes, { parentName, level = 0, fontSize }) {
               // if code
               if (/^(`)[^`]+\1$/.test(chunk)) {
                 return (
-                  <HTMLText key={`c-${i}`} style={nodeStyles.code}>
+                  <Text key={`c-${i}`} style={[nodeStyles.code, { fontSize }]}>
                     {chunk}
-                  </HTMLText>
+                  </Text>
                 );
               }
               // others
@@ -455,16 +454,16 @@ function dom2elements(nodes, { parentName, level = 0, fontSize }) {
 
         // If root level and there's no parent tag, then it's text that doesn't have a <p> tag
         return (
-          <HTMLText key={key} style={nodeStyles.p}>
+          <Text key={key} style={[nodeStyles.p, { fontSize }]}>
             {text}
-          </HTMLText>
+          </Text>
         );
       }
 
       return (
-        <HTMLText key={key} style={style}>
+        <Text key={key} style={[style, { fontSize }]}>
           {text}
-        </HTMLText>
+        </Text>
       );
     }
   });
