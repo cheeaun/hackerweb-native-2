@@ -1,7 +1,4 @@
-import { useMemo } from 'react';
 import { View } from 'react-native';
-
-import useViewportStore from '../hooks/useViewportStore';
 
 import ActivityIndicator from './ActivityIndicator';
 import Text from './Text';
@@ -12,17 +9,14 @@ export default function ({
   errorComponent = () => null,
 }) {
   if (!state) return null;
-  const height = useViewportStore((state) => state.height);
-  const paddingVertical = useMemo(() => height / 3, [height]);
 
   return (
     <View
       style={{
-        flex: 1,
+        flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingVertical,
-        paddingHorizontal: 15,
+        padding: 15,
       }}
     >
       {state === 'loading' ? (

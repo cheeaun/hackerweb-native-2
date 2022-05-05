@@ -611,6 +611,7 @@ export default function StoryScreen({ route, navigation }) {
           left: 0,
         }}
         ListFooterComponent={() => <View style={{ height: toolbarHeight }} />}
+        contentContainerStyle={{ flexGrow: 1 }}
         // onViewableItemsChanged={useCallback(({ viewableItems }) => {
         //   const indices = viewableItems.map((item) => item.index);
         //   console.log({ indices });
