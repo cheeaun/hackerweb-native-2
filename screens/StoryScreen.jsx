@@ -707,7 +707,7 @@ export default function StoryScreen({ route, navigation }) {
             )}
           </Animated.View>
           <Separator opaque style={{ marginTop: -1 }} />
-          <BlurView intensity={99} tint={isDark ? 'dark' : 'light'}>
+          <BlurView intensity={100} tint={isDark ? 'dark' : 'light'}>
             <View
               onLayout={(e) => {
                 console.log(
