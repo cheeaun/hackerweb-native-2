@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 
+import { useLayout } from '@react-native-community/hooks';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Svg, { Path } from 'react-native-svg';
@@ -124,12 +125,6 @@ export default function ThreadScreen() {
       case 'share': {
         toggleShowStory(false);
         setCommentsLimit(0);
-        setTimeout(() => {
-          scrollViewRef.current?.scrollTo({
-            x: 0,
-            y: 0,
-          });
-        }, 310);
         break;
       }
       default: {
@@ -148,13 +143,20 @@ export default function ThreadScreen() {
 
   useEffect(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setTimeout(() => {
-      scrollViewRef.current?.scrollTo({
-        x: 0,
-        y: 0,
-      });
-    }, 310);
-  }, [showStory, commentsLimit, loadingShare]);
+  }, [loadingShare]);
+
+  const { onLayout: onScrollViewLayout, height: scrollViewHeight } =
+    useLayout();
+  const { onLayout, height } = useLayout();
+
+  const [scale, setScale] = useState(1);
+  const spacing = 30;
+  useEffect(() => {
+    const wholeHeight = height + spacing;
+    const scale =
+      wholeHeight > scrollViewHeight ? scrollViewHeight / wholeHeight : 1;
+    setScale(scale);
+  }, [Math.round(scrollViewHeight), Math.round(height)]);
 
   return (
     <>
@@ -164,6 +166,8 @@ export default function ThreadScreen() {
         contentInsetAdjustmentBehavior="automatic"
         scrollIndicatorInsets={{ top: -1 }}
         centerContent
+        scrollEnabled={tabView === 'thread'}
+        onLayout={onScrollViewLayout}
       >
         <ReadableWidthContainer>
           <View
@@ -171,12 +175,25 @@ export default function ThreadScreen() {
             pointerEvents={tabView === 'thread' ? 'auto' : 'none'}
             style={{
               backgroundColor: colors.background,
-              margin: 15,
-              borderRadius: 16,
+              margin: spacing / 2,
+              borderRadius: tabView === 'thread' ? 16 : 0,
               overflow: 'hidden',
               borderColor: colors.separator,
               borderWidth: 1,
+              transform: [
+                {
+                  scale: tabView === 'thread' ? 1 : scale,
+                },
+                {
+                  translateY:
+                    tabView === 'thread' || scale >= 1
+                      ? 0
+                      : (-(height + spacing - scrollViewHeight) / 2) *
+                        ((height + spacing) / scrollViewHeight),
+                },
+              ],
             }}
+            onLayout={onLayout}
           >
             {showStory && (
               <View style={[styles.storyInfo]}>
