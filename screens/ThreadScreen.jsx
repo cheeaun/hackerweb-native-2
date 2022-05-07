@@ -132,6 +132,7 @@ export default function ThreadScreen() {
         toggleShowStory(true);
         setCommentsLimit(parentCommentsCount);
         setTimeout(() => {
+          scrollViewRef.current?.flashScrollIndicators();
           scrollViewRef.current?.scrollToEnd();
         }, 600);
       }
@@ -149,14 +150,34 @@ export default function ThreadScreen() {
     useLayout();
   const { onLayout, height } = useLayout();
 
-  const [scale, setScale] = useState(1);
   const spacing = 30;
   useEffect(() => {
-    const wholeHeight = height + spacing;
-    const scale =
-      wholeHeight > scrollViewHeight ? scrollViewHeight / wholeHeight : 1;
-    setScale(scale);
-  }, [Math.round(scrollViewHeight), Math.round(height)]);
+    if (tabView === 'share') {
+      const wholeHeight = height + spacing;
+      const scale =
+        wholeHeight > scrollViewHeight ? scrollViewHeight / wholeHeight : 1;
+      // console.log({ height, scrollViewHeight, scale });
+
+      threadRef.current?.setNativeProps({
+        style: {
+          transform: [{ scale }],
+        },
+      });
+
+      // scroll to middle
+      scrollViewRef.current?.scrollTo({
+        x: 0,
+        y: (wholeHeight - wholeHeight * scale) / 2,
+        animated: false,
+      });
+    } else {
+      threadRef.current?.setNativeProps({
+        style: {
+          transform: [{ scale: 1 }],
+        },
+      });
+    }
+  }, [tabView, Math.round(scrollViewHeight), Math.round(height)]);
 
   return (
     <>
@@ -180,18 +201,6 @@ export default function ThreadScreen() {
               overflow: 'hidden',
               borderColor: colors.separator,
               borderWidth: 1,
-              transform: [
-                {
-                  scale: tabView === 'thread' ? 1 : scale,
-                },
-                {
-                  translateY:
-                    tabView === 'thread' || scale >= 1
-                      ? 0
-                      : (-(height + spacing - scrollViewHeight) / 2) *
-                        ((height + spacing) / scrollViewHeight),
-                },
-              ],
             }}
             onLayout={onLayout}
           >
