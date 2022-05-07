@@ -25,6 +25,7 @@
       },
       "infoPlist": {
         "NSPhotoLibraryAddUsageDescription": "Allow $(PRODUCT_NAME) to save photos."
+      }
     },
     "platforms": ["ios"],
     "web": {
