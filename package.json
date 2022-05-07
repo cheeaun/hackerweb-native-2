@@ -26,7 +26,7 @@
     "preeas-build-submit-ci-prod": "npm run envsubst-eas-json",
     "eas-build-submit-ci-prod": "eas build -p ios --non-interactive --auto-submit",
     "build-prod": "expo build:ios --release-channel production-`npm run current-version --silent`",
-    "latest-staging": "expo publish:history -p ios --count 1 -r -c staging-`npm run current-version --silent`",
+    "latest-staging": "expo publish:history -p ios --count 1 -r -c staging-`npm run current-v --silent`",
     "latest-publish-id": "npm run latest-staging --silent | jq '.queryResult[0].publicationId' -r",
     "publish": "expo publish --release-channel staging-`npm run current-v --silent`",
     "promote-prod": "expo publish:set --publish-id `npm run latest-publish-id --silent` --release-channel production-`npm run current-version --silent`",
