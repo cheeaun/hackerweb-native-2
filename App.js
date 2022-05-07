@@ -240,7 +240,7 @@ export default function App() {
                 options={{
                   headerLargeTitleShadowVisible: false,
                   headerLargeTitle: true,
-                  presentation: 'modal',
+                  presentation: 'formSheet',
                   headerLargeStyle: {
                     backgroundColor: colors.background2,
                   },
@@ -324,7 +324,7 @@ export default function App() {
                       </Text>
                     </TouchableOpacity>
                   ),
-                  presentation: 'modal',
+                  presentation: 'formSheet',
                   headerStyle: {
                     backgroundColor: colors.background2,
                   },
