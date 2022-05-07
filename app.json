@@ -17,12 +17,14 @@
     "ios": {
       "appStoreUrl": "https://apps.apple.com/app/id1084209377",
       "bundleIdentifier": "cheeaun.hackerweb",
-      "buildNumber": "33",
+      "buildNumber": "34",
       "supportsTablet": true,
       "requireFullScreen": false,
       "config": {
         "usesNonExemptEncryption": false
-      }
+      },
+      "infoPlist": {
+        "NSPhotoLibraryAddUsageDescription": "Allow $(PRODUCT_NAME) to save photos."
     },
     "platforms": ["ios"],
     "web": {
