@@ -15,7 +15,6 @@ import Constants from 'expo-constants';
 import { StatusBar } from 'expo-status-bar';
 
 import CommentsScreen from './screens/CommentsScreen';
-import DevTestScreen from './screens/DevTestScreen';
 import LogsScreen from './screens/LogsScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import StoriesScreen from './screens/StoriesScreen';
@@ -334,7 +333,14 @@ export default function App() {
                   },
                 }}
               />
-              <Stack.Screen name="DevTest" component={DevTestScreen} />
+              {__DEV__ && (
+                <Stack.Screen
+                  name="DevTest"
+                  getComponent={() => {
+                    return require('./screens/DevTestScreen').default;
+                  }}
+                />
+              )}
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaProvider>
