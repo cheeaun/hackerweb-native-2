@@ -7,15 +7,14 @@ jobs:
     name: Install and deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 16.x
       - uses: expo/expo-github-action@v7
         with:
           expo-version: 5.x
           eas-version: latest
-          username: cheeaun
           token: ${{ secrets.EXPO_TOKEN }}
           packager: npm
       - run: npm ci
@@ -24,4 +23,6 @@ jobs:
           EXPO_APPLE_TEAM_ID: ${{ secrets.EXPO_APPLE_TEAM_ID }}
           EXPO_ASC_APP_ID: ${{ secrets.EXPO_ASC_APP_ID }}
           EXPO_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.EXPO_APPLE_APP_SPECIFIC_PASSWORD }}
-        run: npm run deploy-production
+        run: |
+          rm ./node_modules/.bin/expo
+          npm run deploy-production
