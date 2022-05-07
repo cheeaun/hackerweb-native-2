@@ -11,10 +11,9 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 16.x
-      - uses: expo/expo-github-action@v6
+      - uses: expo/expo-github-action@v7
         with:
-          expo-version: 4.x
-          expo-cache: true
+          expo-version: 5.x
           eas-version: latest
           username: cheeaun
           token: ${{ secrets.EXPO_TOKEN }}
