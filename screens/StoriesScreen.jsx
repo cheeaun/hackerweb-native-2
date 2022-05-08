@@ -163,7 +163,7 @@ export default function StoriesScreen({ navigation }) {
           </>
         )
       }
-      contentContainerStyle={{ flexGrow: 1 }}
+      contentContainerStyle={{ flexGrow: 0.8 }}
       ListEmptyComponent={() => (
         <ListEmpty
           state={storiesLoading ? 'loading' : noStories ? 'error' : null}
