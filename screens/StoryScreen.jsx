@@ -85,7 +85,8 @@ function parseURL(url) {
 export default function StoryScreen({ route, navigation }) {
   const { isDark, colors } = useTheme();
 
-  const { id, tab } = route.params;
+  const { name: routeName, params } = route;
+  const { id, tab } = params;
 
   const story = useStore(
     useCallback(
@@ -511,6 +512,9 @@ export default function StoryScreen({ route, navigation }) {
     }, []),
   );
 
+  const scrollY = useRef(useStore.getState().storyScroll?.get?.(id) || 0);
+  const setStoryScroll = useStore((state) => state.setStoryScroll);
+
   const scrolledDown = useRef(false);
   const commentsNavOptions = useRef({
     title: '',
@@ -603,6 +607,18 @@ export default function StoryScreen({ route, navigation }) {
         ItemSeparatorComponent={Separator}
         contentInsetAdjustmentBehavior="automatic"
         onScroll={onScroll}
+        onScrollEndDrag={(e) => {
+          if (routeName === 'Story') {
+            const { y } = e.nativeEvent.contentOffset;
+            setStoryScroll(id, y);
+          }
+        }}
+        onMomentumScrollEnd={(e) => {
+          if (routeName === 'Story') {
+            const { y } = e.nativeEvent.contentOffset;
+            setStoryScroll(id, y);
+          }
+        }}
         removeClippedSubviews
         scrollIndicatorInsets={{
           top: 0,
@@ -612,6 +628,10 @@ export default function StoryScreen({ route, navigation }) {
         }}
         ListFooterComponent={() => <View style={{ height: toolbarHeight }} />}
         contentContainerStyle={{ flexGrow: 0.8 }}
+        contentOffset={{
+          x: 0,
+          y: routeName === 'Story' ? scrollY.current : 0,
+        }}
         // onViewableItemsChanged={useCallback(({ viewableItems }) => {
         //   const indices = viewableItems.map((item) => item.index);
         //   console.log({ indices });

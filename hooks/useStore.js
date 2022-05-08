@@ -229,6 +229,17 @@ const useStore = create((set, get) => ({
     userInfo.set(user, info);
     set({ userInfo });
   },
+  // Remember scroll Y for every story
+  storyScroll: new Map(),
+  setStoryScroll: (storyID, scrollY) => {
+    // console.log(`🥞 setStoryScroll ${storyID} ${scrollY}`);
+    const { storyScroll } = get();
+    if (!storyScroll.has(storyID)) {
+      storyScroll.clear();
+    }
+    storyScroll.set(storyID, scrollY || 0);
+    set({ storyScroll });
+  },
   settings: {
     interactions: false,
     syntaxHighlighting: false,
