@@ -234,7 +234,7 @@ export default function StoryScreen({ route, navigation }) {
         },
       },
       settingsInteractions && {
-        text: 'Upvote',
+        text: 'Upvote story on HN',
         action: () => {
           navigation.push('WebViewModal', {
             url: `https://news.ycombinator.com/vote?id=${id}&how=up&goto=${encodeURIComponent(
@@ -251,7 +251,7 @@ export default function StoryScreen({ route, navigation }) {
         },
       },
       settingsInteractions && {
-        text: 'View/Reply',
+        text: 'View or Reply story on HN',
         action: () => {
           navigation.push('WebViewModal', {
             url: hnURL,
@@ -259,7 +259,7 @@ export default function StoryScreen({ route, navigation }) {
         },
       },
       {
-        text: 'Share…',
+        text: 'Share story…',
         action: () => openShare({ url: hnURL }),
       },
       { text: 'Cancel', cancel: true },

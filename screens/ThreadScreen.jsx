@@ -90,7 +90,7 @@ export default function ThreadScreen() {
   const { isDark, colors } = useTheme();
   const navigation = useNavigation();
   const route = useRoute();
-  const { storyID, commentID } = route.params;
+  const { storyID, commentID, tab = 'thread' } = route.params;
   if (!storyID || !commentID) return null;
 
   const thread = extractThread(storyID, commentID);
@@ -113,7 +113,7 @@ export default function ThreadScreen() {
   }, [comments.length, commentsLimit]);
 
   const tabViews = ['thread', 'share'];
-  const [tabView, setTabView] = useState('thread');
+  const [tabView, setTabView] = useState(tab);
   const tabValues = [
     `Thread ${comments.length > 1 ? `(${comments.length})` : ''}`,
     'Share as Image',

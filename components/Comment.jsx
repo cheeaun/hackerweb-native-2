@@ -94,15 +94,6 @@ export default function Comment({
         navigation.push('User', user);
       },
     },
-    !disableViewThread && {
-      text: 'View thread',
-      action: () => {
-        navigation.push('ThreadModal', {
-          storyID,
-          commentID: id,
-        });
-      },
-    },
     !settingsInteractions && {
       text: 'View comment on HN web site',
       action: () => {
@@ -110,7 +101,7 @@ export default function Comment({
       },
     },
     settingsInteractions && {
-      text: 'Upvote',
+      text: 'Upvote comment on HN',
       action: () => {
         navigation.push('WebViewModal', {
           url: `https://news.ycombinator.com/vote?id=${id}&how=up&goto=${encodeURIComponent(
@@ -127,12 +118,31 @@ export default function Comment({
       },
     },
     settingsInteractions && {
-      text: 'View/Reply',
+      text: 'View or Reply comment on HN',
       action: () => {
         navigation.push('WebViewModal', {
           url: `https://news.ycombinator.com/reply?id=${id}&goto=${encodeURIComponent(
             `item?id=${id}`,
           )}`,
+        });
+      },
+    },
+    !disableViewThread && {
+      text: "View comment's thread",
+      action: () => {
+        navigation.push('ThreadModal', {
+          storyID,
+          commentID: id,
+        });
+      },
+    },
+    !disableViewThread && {
+      text: 'Share as Image',
+      action: () => {
+        navigation.push('ThreadModal', {
+          storyID,
+          commentID: id,
+          tab: 'share',
         });
       },
     },
