@@ -336,7 +336,7 @@ function dom2elements(nodes, { parentName, level = 0, fontSize }) {
           </Link>
         );
       }
-      if (tagName === 'p') {
+      breakP: if (tagName === 'p') {
         const firstChildNode = childNodes?.[0];
         const isPrevBlockquote = nodeStates[i - 1] === 'blockquote';
         const blockquoteCollapsedStyle = isPrevBlockquote && {
@@ -366,8 +366,24 @@ function dom2elements(nodes, { parentName, level = 0, fontSize }) {
         const firstText = firstChild?.nodeName === '#text' && firstChild?.value;
         const [_, prefix, __, rest] =
           (firstText || '').match(
-            /^((>{1,5}|-{1,2}|\+|\*|[a-z]\)|[a-z]\.\s|\d+\.\s|\(?\d+\)|\[\d+\]:?)\s?)([^<>\-\*]{0,1}.*)$/is,
+            /^((>{1,5}|-{1,2}|\+\s|•\s|\*|[a-z]\)|[a-z]\.\s|\d+\.\s|\(?\d+\)|\[\d+\]:?)\s?)([^<>\-\*]{0,1}.*)$/is,
           ) || [];
+
+        if (/\[\d+\]/.test(prefix)) {
+          const childText = childNodes
+            .filter((n) => n.nodeName === '#text')
+            .map((n) => n.value)
+            .join('');
+          const matches = childText.match(/\[\d+\]/g);
+          // This is a paragraph with two or more link references
+          // "[1]: <link> [2]: <link>"
+          // Usually the commenter should add new lines but forgot to.
+          // So we don't need to indent these.
+          if (matches?.length > 1) {
+            break breakP;
+          }
+        }
+
         if (firstText && prefix) {
           firstChild.value = rest || '';
           // Refresh elements
