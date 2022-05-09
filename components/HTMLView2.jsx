@@ -18,7 +18,7 @@ import a11yLight from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-light'
 import * as Haptics from 'expo-haptics';
 
 import * as entities from 'entities';
-import hljs from 'highlight.js';
+import hljs from 'highlight.js/lib/core';
 import { parseFragment } from 'parse5';
 import stripIndent from 'strip-indent';
 import urlRegexSafe from 'url-regex-safe';
