@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import MaskedView from '@react-native-masked-view/masked-view';
+import { useFocusEffect } from '@react-navigation/native';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -38,13 +39,14 @@ import repliesCount2MaxWeight from '../utils/repliesCount2MaxWeight';
 
 import CloseIcon from '../assets/xmark.svg';
 
-function FadedContent({ maxHeight, children, ...props }) {
+function FadedContent({ maxHeight, children, onPress, ...props }) {
   const [expanded, setExpanded] = useState(false);
   return (
     <Pressable
       onPress={() => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setExpanded(!expanded);
+        onPress?.();
       }}
     >
       <MaskedView
@@ -104,6 +106,7 @@ export default function CommentsScreen({ route, navigation }) {
   //   );
   // }, []);
 
+  const listRef = useRef(null);
   const windowHeight = useWindowDimensions().height;
   const listHeaderHeight = useRef(0);
   const ListHeaderComponent = useMemo(
@@ -112,6 +115,9 @@ export default function CommentsScreen({ route, navigation }) {
         <ReadableWidthContainer>
           <FadedContent
             maxHeight={windowHeight / 6}
+            onPress={() => {
+              listRef.current?.flashScrollIndicators();
+            }}
             onLayout={(e) => {
               console.log('📐 MaskedView onLayout', e.nativeEvent.layout);
               listHeaderHeight.current = e.nativeEvent.layout.height;
@@ -153,7 +159,7 @@ export default function CommentsScreen({ route, navigation }) {
         <Separator />
       </>
     ),
-    [windowHeight, content],
+    [windowHeight, content, listRef.current],
   );
 
   const renderItem = useCallback(
@@ -219,6 +225,12 @@ export default function CommentsScreen({ route, navigation }) {
     setScrolledDown(scrolled);
   }, []);
 
+  useFocusEffect(() => {
+    setTimeout(() => {
+      listRef.current?.flashScrollIndicators();
+    }, 300);
+  });
+
   return (
     <>
       {!isDark && <StatusBar style="inverted" animated />}
@@ -275,6 +287,7 @@ export default function CommentsScreen({ route, navigation }) {
         </SafeAreaView>
       </View>
       <FlatList
+        ref={listRef}
         key={`comments-${item.id}`}
         ListHeaderComponent={ListHeaderComponent}
         data={comments}

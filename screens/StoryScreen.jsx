@@ -595,9 +595,28 @@ export default function StoryScreen({ route, navigation }) {
 
   const toolbarPadding = underViewableHeight ? 8 : 15;
 
+  const listRef = useRef(null);
+  useEffect(() => {
+    if (tabView === 'comments' && !storyLoading) {
+      setTimeout(() => {
+        listRef.current?.flashScrollIndicators();
+      }, 300);
+    }
+  }, [tabView, storyLoading]);
+  useFocusEffect(
+    useCallback(() => {
+      if (tabView === 'comments') {
+        setTimeout(() => {
+          listRef.current?.flashScrollIndicators();
+        }, 300);
+      }
+    }, [tabView]),
+  );
+
   return (
     <>
       <FlatList
+        ref={listRef}
         pointerEvents={tabView === 'comments' ? 'auto' : 'none'}
         ListHeaderComponent={ListHeaderComponent}
         data={comments}

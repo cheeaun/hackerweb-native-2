@@ -128,8 +128,21 @@ export default function StoriesScreen({ navigation }) {
     });
   }, [exceedsReadableWidth]);
 
+  const listRef = useRef(null);
+  useFocusEffect(() => {
+    setTimeout(() => {
+      listRef.current?.flashScrollIndicators();
+    }, 300);
+  });
+  useEffect(() => {
+    if (showMoreStories) {
+      listRef.current?.flashScrollIndicators();
+    }
+  }, [showMoreStories]);
+
   return (
     <FlatList
+      ref={listRef}
       pointerEvents={storiesLoading ? 'none' : 'auto'}
       contentInsetAdjustmentBehavior="automatic"
       data={showMoreStories ? stories : stories.slice(0, 30)}
