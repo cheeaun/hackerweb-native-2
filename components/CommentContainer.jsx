@@ -56,7 +56,7 @@ function RepliesCommentsButton({
             flexGrow: 1,
             marginRight: 15,
             borderWidth: StyleSheet.hairlineWidth,
-            borderColor: colors.separator,
+            borderColor: colors.opaqueBackground3,
           },
           pressed && { backgroundColor: colors.opaqueBackground2 },
           style,
