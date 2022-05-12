@@ -274,7 +274,9 @@ export default function CommentContainer({ item, maxWeight = 5, storyID }) {
   const { repliesCount, totalComments } = getCommentsMetadata(item);
   const totalWeight =
     calcCommentWeight(item) + calcCommentsWeight(item.comments);
-  const hasPreviews = item.content?.length <= 140 * 4;
+  const hasPreviews =
+    !!item.content &&
+    getHTMLText(item.content, { singleLine: true }).length <= 140 * 4;
 
   return (
     <ReadableWidthContainer>
