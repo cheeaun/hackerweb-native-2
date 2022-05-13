@@ -32,7 +32,8 @@
     "promote-prod": "expo publish:set --publish-id `npm run latest-publish-id --silent` --release-channel production-`npm run current-version --silent`",
     "viz": "npx --yes react-native-bundle-visualizer",
     "deploy-staging": "if [ $(npm run last-prod-release --silent) = $(npm run current-prod-release --silent) ]; then if [ $(npm run last-eas-build --silent) = $(npm run current-eas-build --silent) ]; then npm run publish; else npm run eas-build-submit-ci; fi; fi",
-    "deploy-production": "npm run eas-build-submit-ci-prod"
+    "deploy-production": "npm run eas-build-submit-ci-prod",
+    "expo-version": "expo --version"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "~1.17.3",
