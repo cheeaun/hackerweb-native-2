@@ -225,11 +225,13 @@ export default function CommentsScreen({ route, navigation }) {
     setScrolledDown(scrolled);
   }, []);
 
-  useFocusEffect(() => {
-    setTimeout(() => {
-      listRef.current?.flashScrollIndicators();
-    }, 300);
-  });
+  useFocusEffect(
+    useCallback(() => {
+      setTimeout(() => {
+        listRef.current?.flashScrollIndicators();
+      }, 300);
+    }, []),
+  );
 
   return (
     <>

@@ -129,11 +129,13 @@ export default function StoriesScreen({ navigation }) {
   }, [exceedsReadableWidth]);
 
   const listRef = useRef(null);
-  useFocusEffect(() => {
-    setTimeout(() => {
-      listRef.current?.flashScrollIndicators();
-    }, 300);
-  });
+  useFocusEffect(
+    useCallback(() => {
+      setTimeout(() => {
+        listRef.current?.flashScrollIndicators();
+      }, 300);
+    }, []),
+  );
   useEffect(() => {
     if (showMoreStories) {
       listRef.current?.flashScrollIndicators();
