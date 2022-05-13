@@ -17,6 +17,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import Svg, { Path } from 'react-native-svg';
 import { captureRef } from 'react-native-view-shot';
 
+import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
 
 import Button from '../components/Button';
@@ -178,6 +179,8 @@ export default function ThreadScreen() {
       });
     }
   }, [tabView, Math.round(scrollViewHeight), Math.round(height)]);
+
+  const lastComment = comments[comments.length - 1];
 
   return (
     <>
@@ -393,6 +396,9 @@ export default function ThreadScreen() {
                       </TableItem>
                     </>
                   )}
+                  <Text type="insignificant" size="caption2" center>
+                    Comment's URL will be copied to clipboard when sharing
+                  </Text>
                 </View>
                 <Button
                   style={{
@@ -409,6 +415,10 @@ export default function ThreadScreen() {
                       setLoadingShare(true);
                       const result = await captureRef(threadRef);
                       console.log(result);
+                      // "context" link can work for HN stories with multi-page comments
+                      await Clipboard.setUrlAsync(
+                        `https://news.ycombinator.com/context?id=${lastComment.id}`,
+                      );
                       await openShare({ url: result });
                     } catch (e) {
                       Alert('Error', 'Something went wrong.');
