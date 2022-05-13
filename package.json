@@ -51,6 +51,7 @@
     "expiry-map": "~2.0.0",
     "expo": "^45.0.2",
     "expo-blur": "~11.1.0",
+    "expo-clipboard": "~3.0.1",
     "expo-constants": "~13.1.1",
     "expo-device": "~4.2.0",
     "expo-haptics": "~11.2.0",
@@ -83,12 +84,12 @@
     "stream": "~0.0.2",
     "strip-indent": "~4.0.0",
     "url-regex-safe": "~3.0.0",
-    "zustand": "~3.7.2",
-    "expo-clipboard": "~3.0.1"
+    "zustand": "~3.7.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@trivago/prettier-plugin-sort-imports": "~3.2.0",
+    "metro-minify-terser": "~0.70.3",
     "react-native-svg-transformer": "~1.0.0"
   }
 }
