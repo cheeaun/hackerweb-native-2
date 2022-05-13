@@ -191,13 +191,10 @@ function InnerCommentContainer({
   const nextLevel = level + 1;
   const comments = item.comments.filter((c) => !c.dead && !c.deleted);
 
-  // Set content length limit based on level
-  // level 1 = 140x3, level 2 = 140x2, level 3 = 140
-  // level 4 = 140 <- this is the min
-  const contentLengthLimit = Math.max(140, 140 * (4 - level));
-
   const hasOneCommentAndIsShort =
-    comments.length === 1 && comments[0].content.length <= contentLengthLimit;
+    comments.length === 1 &&
+    !comments[0].comments?.length &&
+    comments[0].content.length <= 140;
 
   return (
     <View style={styles.innerComment} key={item.id}>
@@ -205,8 +202,7 @@ function InnerCommentContainer({
       <View style={{ flex: 1, marginTop: 2 }}>
         <Comment item={item} storyID={storyID} />
         {!!repliesCount &&
-          (totalWeight < maxWeight &&
-          (level < 3 || (hasOneCommentAndIsShort && level < 5)) ? (
+          (totalWeight < maxWeight && (level < 3 || hasOneCommentAndIsShort) ? (
             comments.map((comment, i) => (
               <InnerCommentContainer
                 key={comment.id}
@@ -242,7 +238,7 @@ function InnerCommentContainer({
 function calcCommentWeight(comment) {
   // TODO: smarter "weight" math
   if (!comment.content) return 0;
-  return getHTMLText(comment.content, { singleLine: true }).length / 140;
+  return getHTMLText(comment.content).length / 140;
 }
 
 function calcCommentsWeight(comments = []) {
@@ -275,27 +271,30 @@ export default function CommentContainer({ item, maxWeight = 5, storyID }) {
   const totalWeight =
     calcCommentWeight(item) + calcCommentsWeight(item.comments);
   const hasPreviews =
-    !!item.content &&
-    getHTMLText(item.content, { singleLine: true }).length <= 140 * 4;
+    !!item.content && getHTMLText(item.content).length <= 140 * 4;
+
+  const comments = item.comments.filter((c) => !c.dead && !c.deleted);
+  const hasOneCommentAndIsShort =
+    comments.length === 1 &&
+    !comments[0].comments?.length &&
+    comments[0].content.length <= 140;
 
   return (
     <ReadableWidthContainer>
       <View key={item.id} style={styles.comment}>
         <Comment item={item} storyID={storyID} />
         {!!repliesCount &&
-          (totalWeight < maxWeight ? (
-            item.comments
-              .filter((c) => !c.dead && !c.deleted)
-              .map((comment, i) => (
-                <InnerCommentContainer
-                  key={comment.id}
-                  last={i === repliesCount - 1}
-                  item={comment}
-                  accWeight={totalWeight}
-                  maxWeight={maxWeight}
-                  storyID={storyID}
-                />
-              ))
+          (totalWeight < maxWeight || hasOneCommentAndIsShort ? (
+            comments.map((comment, i) => (
+              <InnerCommentContainer
+                key={comment.id}
+                last={i === repliesCount - 1}
+                item={comment}
+                accWeight={totalWeight}
+                maxWeight={maxWeight}
+                storyID={storyID}
+              />
+            ))
           ) : (
             <RepliesCommentsButton
               replies={repliesCount}
