@@ -228,9 +228,7 @@ export default function UserScreen({ route, navigation }) {
               <View style={styles.metadataBox}>
                 <Label center>Submitted</Label>
                 <Text size="title2" bold center>
-                  {typeof submitted === 'number'
-                    ? submitted.length.toLocaleString('en-US')
-                    : ' '}
+                  {submitted ? submitted.length.toLocaleString('en-US') : ' '}
                 </Text>
               </View>
             </View>
