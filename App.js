@@ -14,14 +14,7 @@ import * as Updates from 'expo-updates';
 import Constants from 'expo-constants';
 import { StatusBar } from 'expo-status-bar';
 
-import CommentsScreen from './screens/CommentsScreen';
-import LogsScreen from './screens/LogsScreen';
-import SettingsScreen from './screens/SettingsScreen';
 import StoriesScreen from './screens/StoriesScreen';
-import StoryScreen from './screens/StoryScreen';
-import ThreadScreen from './screens/ThreadScreen';
-import UserScreen from './screens/UserScreen';
-import WebViewScreen from './screens/WebViewScreen';
 
 import Text from './components/Text';
 
@@ -170,7 +163,7 @@ export default function App() {
               />
               <Stack.Screen
                 name="Story"
-                component={StoryScreen}
+                getComponent={() => require('./screens/StoryScreen').default}
                 options={{
                   headerBackTitle: 'News',
                   title: '',
@@ -183,7 +176,7 @@ export default function App() {
               />
               <Stack.Screen
                 name="StoryModal"
-                component={StoryScreen}
+                getComponent={() => require('./screens/StoryScreen').default}
                 options={{
                   headerLeft: () => (
                     <TouchableOpacity
@@ -213,7 +206,7 @@ export default function App() {
               />
               <Stack.Screen
                 name="Comments"
-                component={CommentsScreen}
+                getComponent={() => require('./screens/CommentsScreen').default}
                 options={{
                   headerShown: false,
                   presentation: 'modal',
@@ -224,7 +217,7 @@ export default function App() {
               />
               <Stack.Screen
                 name="User"
-                component={UserScreen}
+                getComponent={() => require('./screens/UserScreen').default}
                 options={{
                   headerShown: false,
                   presentation: 'transparentModal',
@@ -236,7 +229,7 @@ export default function App() {
               />
               <Stack.Screen
                 name="Settings"
-                component={SettingsScreen}
+                getComponent={() => require('./screens/SettingsScreen').default}
                 options={{
                   headerLargeTitleShadowVisible: false,
                   headerLargeTitle: true,
@@ -268,7 +261,7 @@ export default function App() {
               />
               <Stack.Screen
                 name="Logs"
-                component={LogsScreen}
+                getComponent={() => require('./screens/LogsScreen').default}
                 options={{
                   headerShown: false,
                   presentation: 'modal',
@@ -276,7 +269,7 @@ export default function App() {
               />
               <Stack.Screen
                 name="WebViewModal"
-                component={WebViewScreen}
+                getComponent={() => require('./screens/WebViewScreen').default}
                 options={{
                   title: '',
                   headerLeft: () => (
@@ -304,7 +297,7 @@ export default function App() {
               />
               <Stack.Screen
                 name="ThreadModal"
-                component={ThreadScreen}
+                getComponent={() => require('./screens/ThreadScreen').default}
                 options={{
                   title: 'Thread',
                   headerRight: () => (
@@ -336,9 +329,9 @@ export default function App() {
               {__DEV__ && (
                 <Stack.Screen
                   name="DevTest"
-                  getComponent={() => {
-                    return require('./screens/DevTestScreen').default;
-                  }}
+                  getComponent={() =>
+                    require('./screens/DevTestScreen').default
+                  }
                 />
               )}
             </Stack.Navigator>

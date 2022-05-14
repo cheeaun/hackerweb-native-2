@@ -15,7 +15,6 @@ import useStore from '../hooks/useStore';
 import openBrowser from '../utils/openBrowser';
 import openShare from '../utils/openShare';
 
-import CodeBlock from './CodeBlock';
 import Text from './Text';
 import nodeStyles from './nodeStyles';
 
@@ -85,6 +84,7 @@ function Pre({ elements, childNodes, ...props }) {
     (state) => state.settings.syntaxHighlighting,
   );
   if (settingsSyntaxHighlighting) {
+    const CodeBlock = require('./CodeBlock').default;
     return <CodeBlock {...props}>{childNodes}</CodeBlock>;
   } else {
     return <PreView {...props}>{elements}</PreView>;
