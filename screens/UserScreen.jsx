@@ -219,14 +219,18 @@ export default function UserScreen({ route, navigation }) {
               <View style={styles.metadataBox}>
                 <Label center>Karma</Label>
                 <Text size="title2" bold center>
-                  {karma ? karma.toLocaleString('en-US') : ' '}
+                  {typeof karma === 'number'
+                    ? karma.toLocaleString('en-US')
+                    : ' '}
                 </Text>
               </View>
               <Separator vertical />
               <View style={styles.metadataBox}>
                 <Label center>Submitted</Label>
                 <Text size="title2" bold center>
-                  {submitted ? submitted.length.toLocaleString('en-US') : ' '}
+                  {typeof submitted === 'number'
+                    ? submitted.length.toLocaleString('en-US')
+                    : ' '}
                 </Text>
               </View>
             </View>
