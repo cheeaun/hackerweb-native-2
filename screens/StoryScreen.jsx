@@ -742,6 +742,17 @@ export default function StoryScreen({ route, navigation }) {
                     loading,
                   });
                 }}
+                // No choice but to use this workaround for now
+                // `allowsInlineMediaPlayback` ONLY works for videos with playsinline
+                // `mediaPlaybackRequiresUserAction` works but videos don't autoplay
+                // TODO: Revisit this again when this bug is fixed in react-native-webview
+                onMessage={() => {}} // Required for injectedJavaScript to work
+                injectedJavaScript={`
+                  try {
+                    document.querySelectorAll('video[autoplay]').forEach(v => v.playsInline = true)
+                  } catch (e) {}
+                  true; // note: this is required, or you'll sometimes get silent failures
+                `}
               />
             )}
           </Animated.View>
