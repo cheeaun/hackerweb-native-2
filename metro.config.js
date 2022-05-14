@@ -9,9 +9,4 @@ config.resolver.assetExts = config.resolver.assetExts.filter(
 );
 config.resolver.sourceExts.push('svg');
 
-config.transformer.minifierPath = require.resolve('metro-minify-esbuild');
-config.transformer.minifierConfig = {
-  // ESBuild options...
-};
-
 module.exports = config;
