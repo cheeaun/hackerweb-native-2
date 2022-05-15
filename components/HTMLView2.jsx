@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
@@ -24,12 +24,15 @@ function Link({ style, url, ...props }) {
   const navigation = useNavigation();
   const fetchMinimalItem = useStore((state) => state.fetchMinimalItem);
   const [loading, setLoading] = useState(false);
+  const addLink = useStore((state) => state.addLink);
+  const visited = useStore(useCallback((state) => state.visited(url), [url]));
 
   return (
     <Text
       {...props}
       style={[
         nodeStyles.a,
+        visited && nodeStyles.aVisited,
         style,
         {
           opacity: loading ? 0.5 : 1,
@@ -70,6 +73,7 @@ function Link({ style, url, ...props }) {
         } else {
           openBrowser(url);
         }
+        addLink(url);
       }}
       onLongPress={() => {
         Haptics.selectionAsync();

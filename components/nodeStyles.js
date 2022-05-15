@@ -42,6 +42,10 @@ const nodeStyles = StyleSheet.create({
     textDecorationLine: 'underline',
     textDecorationColor: '#1e90ff66',
   },
+  aVisited: {
+    color: PlatformColor('systemIndigo'),
+    textDecorationColor: '#5856d566',
+  },
   i: {
     fontStyle: 'italic',
   },
