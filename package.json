@@ -89,6 +89,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@trivago/prettier-plugin-sort-imports": "~3.2.0",
+    "metro-minify-terser": "~0.70.3",
     "react-native-svg-transformer": "~1.0.0"
   }
 }
