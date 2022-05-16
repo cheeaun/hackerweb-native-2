@@ -97,6 +97,8 @@ export default function CodeBlock({ style, children }) {
     },
   ];
 
+  const scrollViewRef = useRef(null);
+
   return (
     <SyntaxHighlighter
       CodeTag={EmptyTag}
@@ -105,6 +107,7 @@ export default function CodeBlock({ style, children }) {
       language={autoHighlightResult.language || 'plaintext'}
       renderer={({ rows }) => (
         <ScrollView
+          ref={scrollViewRef}
           automaticallyAdjustContentInsets={false}
           automaticallyAdjustsScrollIndicatorInsets={false}
           scrollsToTop={false}
@@ -114,6 +117,9 @@ export default function CodeBlock({ style, children }) {
           <Pressable
             ref={codeblockRef}
             style={nodeStyles.preInner}
+            onPressIn={() => {
+              scrollViewRef.current?.flashScrollIndicators();
+            }}
             onLongPress={() => {
               Haptics.selectionAsync();
               ActionSheetIOS.showActionSheetWithOptions(

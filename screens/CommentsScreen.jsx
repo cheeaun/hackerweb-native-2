@@ -10,6 +10,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 
+import { useAppState } from '@react-native-community/hooks';
 import MaskedView from '@react-native-masked-view/masked-view';
 import { useFocusEffect } from '@react-navigation/native';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
@@ -232,6 +233,12 @@ export default function CommentsScreen({ route, navigation }) {
       }, 300);
     }, []),
   );
+  const currentAppState = useAppState();
+  useEffect(() => {
+    if (currentAppState === 'active') {
+      listRef.current?.flashScrollIndicators();
+    }
+  }, [currentAppState === 'active']);
 
   return (
     <>

@@ -18,6 +18,7 @@ import {
   findNodeHandle,
 } from 'react-native';
 
+import { useAppState } from '@react-native-community/hooks';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { useFocusEffect } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -596,13 +597,18 @@ export default function StoryScreen({ route, navigation }) {
   const toolbarPadding = underViewableHeight ? 8 : 15;
 
   const listRef = useRef(null);
+  const currentAppState = useAppState();
   useEffect(() => {
-    if (tabView === 'comments' && !storyLoading) {
+    if (
+      tabView === 'comments' &&
+      !storyLoading &&
+      currentAppState === 'active'
+    ) {
       setTimeout(() => {
         listRef.current?.flashScrollIndicators();
       }, 300);
     }
-  }, [tabView, storyLoading]);
+  }, [tabView, storyLoading, currentAppState === 'active']);
   useFocusEffect(
     useCallback(() => {
       if (tabView === 'comments') {

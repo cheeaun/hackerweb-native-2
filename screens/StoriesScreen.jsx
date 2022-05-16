@@ -13,6 +13,7 @@ import {
   View,
 } from 'react-native';
 
+import { useAppState } from '@react-native-community/hooks';
 import { useFocusEffect } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -136,11 +137,12 @@ export default function StoriesScreen({ navigation }) {
       }, 300);
     }, []),
   );
+  const currentAppState = useAppState();
   useEffect(() => {
-    if (showMoreStories) {
+    if (showMoreStories || currentAppState === 'active') {
       listRef.current?.flashScrollIndicators();
     }
-  }, [showMoreStories]);
+  }, [showMoreStories, currentAppState === 'active']);
 
   return (
     <FlatList

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
@@ -97,8 +97,10 @@ function Pre({ elements, childNodes, ...props }) {
 
 function PreView({ children, style, ...props }) {
   const windowHeight = useWindowDimensions().height;
+  const scrollViewRef = useRef(null);
   return (
     <ScrollView
+      ref={scrollViewRef}
       automaticallyAdjustContentInsets={false}
       automaticallyAdjustsScrollIndicatorInsets={false}
       scrollsToTop={false}
@@ -112,9 +114,14 @@ function PreView({ children, style, ...props }) {
       decelerationRate={0} // Easier to read the code
       {...props}
     >
-      <View style={nodeStyles.preInner} onStartShouldSetResponder={() => true}>
+      <Pressable
+        style={nodeStyles.preInner}
+        onPressIn={() => {
+          scrollViewRef.current?.flashScrollIndicators();
+        }}
+      >
         {children}
-      </View>
+      </Pressable>
     </ScrollView>
   );
 }

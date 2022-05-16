@@ -26,6 +26,15 @@ export default function DevTestScreen() {
             tagName?: string;
             type: string;
             value?: string;
+        };
+        type Node = {
+          children?: Node[];
+          properties?: {
+              className: string[];
+          };
+          tagName?: string;
+          type: string;
+          value?: string;
         };</code></pre>`}
       />
       <HTMLView2
