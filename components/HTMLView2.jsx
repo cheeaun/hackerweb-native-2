@@ -308,7 +308,13 @@ function dom2elements(nodes, { parentName, level = 0, fontSize }) {
       }
 
       return (
-        <Text key={key} style={[style, { fontSize }]}>
+        <Text
+          key={key}
+          style={[
+            style,
+            { fontSize: parentName === 'code' ? fontSize - 2 : fontSize },
+          ]}
+        >
           {text}
         </Text>
       );
