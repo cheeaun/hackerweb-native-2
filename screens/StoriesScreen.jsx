@@ -139,10 +139,10 @@ export default function StoriesScreen({ navigation }) {
   );
   const currentAppState = useAppState();
   useEffect(() => {
-    if (showMoreStories || currentAppState === 'active') {
+    if (showMoreStories || stories || currentAppState === 'active') {
       listRef.current?.flashScrollIndicators();
     }
-  }, [showMoreStories, currentAppState === 'active']);
+  }, [showMoreStories, stories, currentAppState === 'active']);
 
   return (
     <FlatList
