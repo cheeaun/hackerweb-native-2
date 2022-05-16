@@ -19,6 +19,7 @@ const nodeStyles = StyleSheet.create({
       light: 'rgba(0,0,0,.05)',
     }),
     padding: 8,
+    opacity: 0.9,
   },
   blockquoteWithQuotes: {
     flexDirection: 'row',
