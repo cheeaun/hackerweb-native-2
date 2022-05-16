@@ -73,7 +73,9 @@ function Link({ style, url, ...props }) {
         } else {
           openBrowser(url);
         }
-        addLink(url);
+        setTimeout(() => {
+          addLink(url);
+        }, 300);
       }}
       onLongPress={() => {
         Haptics.selectionAsync();
