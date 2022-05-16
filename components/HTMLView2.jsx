@@ -129,7 +129,11 @@ function dom2elements(nodes, { parentName, level = 0, fontSize }) {
     const key = i + '-' + level;
     if (tagName) {
       const style = nodeStyles[tagName || 'default'];
-      let elements = dom2elements(childNodes, { tagName, level: level + 1 });
+      let elements = dom2elements(childNodes, {
+        parentName: tagName,
+        level: level + 1,
+        fontSize,
+      });
       if (!elements) return null;
       if (tagName === 'pre') {
         return (
@@ -203,7 +207,11 @@ function dom2elements(nodes, { parentName, level = 0, fontSize }) {
         if (firstText && prefix) {
           firstChild.value = rest || '';
           // Refresh elements
-          elements = dom2elements(childNodes, { tagName, level: level + 1 });
+          elements = dom2elements(childNodes, {
+            parentName: tagName,
+            level: level + 1,
+            fontSize,
+          });
 
           const isBlockquote = prefix.includes('>');
           if (isBlockquote) nodeStates[i] = 'blockquote';
