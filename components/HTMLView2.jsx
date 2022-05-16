@@ -270,7 +270,14 @@ function dom2elements(nodes, { parentName, level = 0, fontSize }) {
               // if code
               if (/^(`)[^`]+\1$/.test(chunk)) {
                 return (
-                  <Text key={`c-${i}`} style={[nodeStyles.code, { fontSize }]}>
+                  <Text
+                    key={`c-${i}`}
+                    style={[
+                      nodeStyles.code,
+                      nodeStyles.inlineCode,
+                      { fontSize: fontSize - 2 },
+                    ]}
+                  >
                     {chunk}
                   </Text>
                 );

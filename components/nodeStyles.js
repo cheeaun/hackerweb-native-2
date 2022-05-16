@@ -37,6 +37,12 @@ const nodeStyles = StyleSheet.create({
   code: {
     fontFamily: 'Menlo',
   },
+  inlineCode: {
+    backgroundColor: DynamicColorIOS({
+      dark: 'rgba(255,255,255,.05)',
+      light: 'rgba(0,0,0,.05)',
+    }),
+  },
   a: {
     color: PlatformColor('link'),
     textDecorationLine: 'underline',
