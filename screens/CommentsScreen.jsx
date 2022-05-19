@@ -377,23 +377,31 @@ export default function CommentsScreen({ route, navigation }) {
               <Text type="link" bolder>
                 Close thread
               </Text>
+              {zIndex > 0 && (
+                <View
+                  style={{
+                    borderRadius: 100,
+                    backgroundColor: colors.separator,
+                    width: 24,
+                    height: 24,
+                    marginLeft: 8,
+                    overflow: 'hidden',
+                  }}
+                >
+                  <Text
+                    bold
+                    center
+                    style={{
+                      color: colors.white,
+                      lineHeight: 24,
+                      fontSize: 14,
+                    }}
+                  >
+                    {zIndex}
+                  </Text>
+                </View>
+              )}
             </View>
-            {zIndex > 0 && (
-              <Text center style={{ position: 'absolute', bottom: 0 }}>
-                {[...Array(zIndex + 1)].map((_, i) => {
-                  const notLast = i < zIndex;
-                  return (
-                    <Text
-                      key={i}
-                      type={notLast ? 'insignificant' : 'link'}
-                      style={{ opacity: notLast ? 0.3 : 0.7 }}
-                    >
-                      &bull;
-                    </Text>
-                  );
-                })}
-              </Text>
-            )}
           </TouchableOpacity>
         </BlurView>
       </Animated.View>
