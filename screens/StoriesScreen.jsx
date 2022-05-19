@@ -139,11 +139,13 @@ export default function StoriesScreen({ navigation }) {
   );
   const currentAppState = useAppState();
   useEffect(() => {
+    let timeout;
     if (showMoreStories || stories || currentAppState === 'active') {
-      setTimeout(() => {
+      timeout = setTimeout(() => {
         listRef.current?.flashScrollIndicators();
       }, 300);
     }
+    return () => clearTimeout(timeout);
   }, [showMoreStories, stories, currentAppState === 'active']);
 
   return (

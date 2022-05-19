@@ -599,15 +599,17 @@ export default function StoryScreen({ route, navigation }) {
   const listRef = useRef(null);
   const currentAppState = useAppState();
   useEffect(() => {
+    let timeout;
     if (
       tabView === 'comments' &&
       !storyLoading &&
       currentAppState === 'active'
     ) {
-      setTimeout(() => {
+      timeout = setTimeout(() => {
         listRef.current?.flashScrollIndicators();
       }, 300);
     }
+    return () => clearTimeout(timeout);
   }, [tabView, storyLoading, currentAppState === 'active']);
   useFocusEffect(
     useCallback(() => {
