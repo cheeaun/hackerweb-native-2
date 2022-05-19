@@ -38,7 +38,7 @@ import getCommentsMetadata from '../utils/getCommentsMetadata';
 import getHTMLText from '../utils/getHTMLText';
 import repliesCount2MaxWeight from '../utils/repliesCount2MaxWeight';
 
-import CloseIcon from '../assets/xmark.svg';
+import CloseIcon from '../assets/xmark.circle.svg';
 
 function FadedContent({ maxHeight, children, onPress, ...props }) {
   const [expanded, setExpanded] = useState(false);
@@ -351,7 +351,7 @@ export default function CommentsScreen({ route, navigation }) {
             }}
             style={{
               paddingVertical: 15,
-              paddingHorizontal: 20,
+              paddingHorizontal: 15,
               backgroundColor: isDark ? colors.opaqueBackground : 'transparent',
               alignItems: 'center',
             }}
@@ -369,8 +369,8 @@ export default function CommentsScreen({ route, navigation }) {
               }}
             >
               <CloseIcon
-                width={11}
-                height={11}
+                width={20}
+                height={20}
                 color={colors.link}
                 style={{ marginRight: 8 }}
               />
