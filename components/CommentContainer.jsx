@@ -202,7 +202,7 @@ function InnerCommentContainer({
       <View style={{ flex: 1, marginTop: 2 }}>
         <Comment item={item} storyID={storyID} />
         {!!repliesCount &&
-          (totalWeight < maxWeight && (level < 3 || hasOneCommentAndIsShort) ? (
+          ((totalWeight < maxWeight && level < 3) || hasOneCommentAndIsShort ? (
             comments.map((comment, i) => (
               <InnerCommentContainer
                 key={comment.id}
@@ -220,7 +220,7 @@ function InnerCommentContainer({
               style={{ marginBottom: 15 }}
               replies={repliesCount}
               comments={totalComments}
-              suffix={suffixText(item.comments, repliesCount)}
+              suffix={suffixText(comments, repliesCount)}
               onPress={() => {
                 navigation.push('Comments', {
                   item,
@@ -250,7 +250,7 @@ function calcCommentsWeight(comments = []) {
 
 function suffixText(comments, repliesCount) {
   const [firstComment, secondComment] = comments;
-  return firstComment.user
+  return firstComment?.user
     ? `by ${firstComment.user}${
         repliesCount === 2
           ? ` & ${secondComment.user}`
@@ -299,7 +299,7 @@ export default function CommentContainer({ item, maxWeight = 5, storyID }) {
             <RepliesCommentsButton
               replies={repliesCount}
               comments={totalComments}
-              suffix={suffixText(item.comments, repliesCount)}
+              suffix={suffixText(comments, repliesCount)}
               previews={hasPreviews ? item.comments.slice(0, 2) : []}
               onPress={() => {
                 navigation.push('Comments', {
