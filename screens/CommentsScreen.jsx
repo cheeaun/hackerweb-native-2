@@ -196,6 +196,8 @@ export default function CommentsScreen({ route, navigation }) {
       Animated.spring(appearAnim, {
         toValue: 1,
         delay: 300,
+        speed: 4,
+        bounciness: 10,
         useNativeDriver: true,
       }).start();
     }
