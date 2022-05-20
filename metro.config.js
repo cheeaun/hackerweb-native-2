@@ -10,7 +10,7 @@ config.resolver.assetExts = config.resolver.assetExts.filter(
 config.resolver.sourceExts.push('svg');
 
 config.transformer.minifierPath = 'metro-minify-terser';
-config.transformer.minifierConfig.compress.drop_console = true;
+// config.transformer.minifierConfig.compress.drop_console = true;
 config.transformer.minifierConfig.output.comments = false;
 
 module.exports = config;
