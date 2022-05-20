@@ -107,39 +107,29 @@ function RepliesCommentsButton({
             />
           </>
         )}
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
-        >
-          <CommentIcon
-            width={16}
-            height={16}
-            color={colors.primary}
-            style={{ marginRight: 6 }}
-          />
-          <Text numberOfLines={1}>
-            <Text size="subhead" type="link" bold>
-              {replies.toLocaleString('en-US')}{' '}
-              {replies !== 1 ? 'replies' : 'reply'}
+        <Text numberOfLines={1}>
+          <View style={{ marginRight: 6 }}>
+            <CommentIcon width={15} height={15} color={colors.primary} />
+          </View>
+          <Text size="subhead" type="link" bold>
+            {replies.toLocaleString('en-US')}{' '}
+            {replies !== 1 ? 'replies' : 'reply'}
+          </Text>
+          {countDiffer ? (
+            <Text size="footnote" type="insignificant">
+              {' '}
+              &bull; {comments.toLocaleString('en-US')}{' '}
+              {comments !== 1 ? 'comments' : 'comment'}
             </Text>
-            {countDiffer ? (
+          ) : (
+            suffix && (
               <Text size="footnote" type="insignificant">
                 {' '}
-                &bull; {comments.toLocaleString('en-US')}{' '}
-                {comments !== 1 ? 'comments' : 'comment'}
+                {suffix}
               </Text>
-            ) : (
-              suffix && (
-                <Text size="footnote" type="insignificant">
-                  {' '}
-                  {suffix}
-                </Text>
-              )
-            )}
-          </Text>
-        </View>
+            )
+          )}
+        </Text>
       </Button>
     </View>
   );
