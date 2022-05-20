@@ -334,7 +334,7 @@ export default function CommentsScreen({ route, navigation }) {
         }}
       >
         <BlurView
-          intensity={99}
+          intensity={75}
           tint={isDark ? 'dark' : 'light'}
           style={{ borderRadius: 30, overflow: 'hidden' }}
           onLayout={({ nativeEvent }) => {
@@ -352,9 +352,8 @@ export default function CommentsScreen({ route, navigation }) {
               navigation.pop();
             }}
             style={{
-              paddingVertical: 15,
-              paddingHorizontal: 15,
-              backgroundColor: isDark ? colors.opaqueBackground : 'transparent',
+              paddingVertical: 12,
+              paddingHorizontal: 12,
               alignItems: 'center',
             }}
             hitSlop={{
@@ -371,19 +370,19 @@ export default function CommentsScreen({ route, navigation }) {
               }}
             >
               <CloseIcon
-                width={20}
-                height={20}
+                width={18}
+                height={18}
                 color={colors.link}
                 style={{ marginRight: 8 }}
               />
-              <Text type="link" bolder>
+              <Text type="link" bold>
                 Close thread
               </Text>
               {zIndex > 0 && (
                 <View
                   style={{
                     borderRadius: 100,
-                    backgroundColor: colors.separator,
+                    backgroundColor: colors.opaqueSeparator,
                     width: 24,
                     height: 24,
                     marginLeft: 8,
@@ -394,7 +393,7 @@ export default function CommentsScreen({ route, navigation }) {
                     bold
                     center
                     style={{
-                      color: colors.white,
+                      color: colors.secondaryText,
                       lineHeight: 24,
                       fontSize: 14,
                     }}
