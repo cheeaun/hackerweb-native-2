@@ -10,6 +10,8 @@ import useTheme from '../hooks/useTheme';
 import getCommentsMetadata from '../utils/getCommentsMetadata';
 import getHTMLText from '../utils/getHTMLText';
 
+import CommentIcon from '../assets/bubble.left.svg';
+
 import Button from './Button';
 import Comment from './Comment';
 import ReadableWidthContainer from './ReadableWidthContainer';
@@ -105,26 +107,39 @@ function RepliesCommentsButton({
             />
           </>
         )}
-        <Text numberOfLines={1}>
-          <Text size="subhead" type="link" bold>
-            {replies.toLocaleString('en-US')}{' '}
-            {replies !== 1 ? 'replies' : 'reply'}
-          </Text>
-          {countDiffer ? (
-            <Text size="footnote" type="insignificant">
-              {' '}
-              &bull; {comments.toLocaleString('en-US')}{' '}
-              {comments !== 1 ? 'comments' : 'comment'}
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
+          <CommentIcon
+            width={16}
+            height={16}
+            color={colors.primary}
+            style={{ marginRight: 6 }}
+          />
+          <Text numberOfLines={1}>
+            <Text size="subhead" type="link" bold>
+              {replies.toLocaleString('en-US')}{' '}
+              {replies !== 1 ? 'replies' : 'reply'}
             </Text>
-          ) : (
-            suffix && (
+            {countDiffer ? (
               <Text size="footnote" type="insignificant">
                 {' '}
-                {suffix}
+                &bull; {comments.toLocaleString('en-US')}{' '}
+                {comments !== 1 ? 'comments' : 'comment'}
               </Text>
-            )
-          )}
-        </Text>
+            ) : (
+              suffix && (
+                <Text size="footnote" type="insignificant">
+                  {' '}
+                  {suffix}
+                </Text>
+              )
+            )}
+          </Text>
+        </View>
       </Button>
     </View>
   );
