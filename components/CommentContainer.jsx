@@ -108,7 +108,7 @@ function RepliesCommentsButton({
           </>
         )}
         <Text numberOfLines={1}>
-          <View style={{ marginRight: 6 }}>
+          <View style={{ marginRight: 6, marginBottom: -2 }}>
             <CommentIcon width={15} height={15} color={colors.primary} />
           </View>
           <Text size="subhead" type="link" bold>
