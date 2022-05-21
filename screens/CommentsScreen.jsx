@@ -172,11 +172,11 @@ export default function CommentsScreen({ route, navigation }) {
         <CommentContainer
           storyID={storyID}
           item={item}
-          maxWeight={repliesCount2MaxWeight(repliesCount)}
+          maxWeight={repliesCount2MaxWeight(repliesCount) + zIndex}
         />
       </>
     ),
-    [storyID, repliesCount],
+    [storyID, repliesCount, zIndex],
   );
 
   const keyExtractor = useCallback((item) => '' + item.id, []);
