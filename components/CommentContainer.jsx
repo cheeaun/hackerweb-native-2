@@ -227,6 +227,11 @@ function InnerCommentContainer({
               comments={totalComments}
               suffix={suffixText(comments, repliesCount)}
               onPress={() => {
+                if (zIndex > 0) {
+                  navigation.setParams({
+                    showZIndex: true,
+                  });
+                }
                 navigation.push('Comments', {
                   item,
                   zIndex: zIndex + 1,
@@ -307,6 +312,11 @@ export default function CommentContainer({ item, maxWeight = 5, storyID }) {
               suffix={suffixText(comments, repliesCount)}
               previews={hasPreviews ? item.comments.slice(0, 2) : []}
               onPress={() => {
+                if (zIndex > 0) {
+                  navigation.setParams({
+                    showZIndex: true,
+                  });
+                }
                 navigation.push('Comments', {
                   item,
                   zIndex: zIndex + 1,

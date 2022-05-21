@@ -87,7 +87,7 @@ function FadedContent({ maxHeight, children, onPress, ...props }) {
 
 export default function CommentsScreen({ route, navigation }) {
   const { isDark, colors } = useTheme();
-  const { item, zIndex, storyID } = route.params;
+  const { item, zIndex, storyID, showZIndex = false } = route.params;
   const { comments = [], content } = item;
   const { repliesCount, totalComments } = getCommentsMetadata(item);
   const countDiffer = repliesCount !== totalComments;
@@ -378,7 +378,7 @@ export default function CommentsScreen({ route, navigation }) {
               <Text type="link" bold>
                 Close thread
               </Text>
-              {zIndex > 0 && (
+              {(zIndex > 1 || showZIndex) && (
                 <View
                   style={{
                     borderRadius: 100,
