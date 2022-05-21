@@ -329,14 +329,20 @@ export default function CommentsScreen({ route, navigation }) {
             },
           ],
           shadowRadius: 5,
-          shadowOpacity: 0.2,
+          shadowOpacity: isDark ? 0.2 : 0.1,
           shadowOffset: { width: 0, height: 3 },
+          shadowColor: isDark ? colors.primary : undefined,
         }}
       >
         <BlurView
           intensity={75}
           tint={isDark ? 'dark' : 'light'}
-          style={{ borderRadius: 30, overflow: 'hidden' }}
+          style={{
+            borderRadius: 30,
+            borderWidth: StyleSheet.hairlineWidth,
+            borderColor: colors.opaqueSeparator,
+            overflow: 'hidden',
+          }}
           onLayout={({ nativeEvent }) => {
             console.log('📐 BlurView onLayout', nativeEvent.layout);
             footerRef.current?.setNativeProps({
@@ -352,8 +358,8 @@ export default function CommentsScreen({ route, navigation }) {
               navigation.pop();
             }}
             style={{
-              paddingVertical: 12,
-              paddingHorizontal: 12,
+              paddingVertical: 14,
+              paddingHorizontal: 14,
               alignItems: 'center',
             }}
             hitSlop={{
