@@ -140,21 +140,16 @@ export default function StoriesScreen({ navigation }) {
   const currentAppState = useAppState();
   useEffect(() => {
     let timeout;
-    if (currentAppState === 'active' && (showMoreStories || stories)) {
-      console.log('🚨', {
-        currentAppState,
-        showMoreStories,
-        storiesLen: stories.length,
-      });
-      timeout = setTimeout(
-        () => {
-          listRef.current?.flashScrollIndicators();
-        },
-        showMoreStories ? 300 : 1000,
-      );
+    if (
+      currentAppState === 'active' &&
+      (showMoreStories || stories?.length > 0)
+    ) {
+      timeout = setTimeout(() => {
+        listRef.current?.flashScrollIndicators();
+      }, 300);
     }
     return () => clearTimeout(timeout);
-  }, [showMoreStories, stories, currentAppState === 'active']);
+  }, [showMoreStories, stories?.length > 0, currentAppState === 'active']);
 
   return (
     <FlatList
