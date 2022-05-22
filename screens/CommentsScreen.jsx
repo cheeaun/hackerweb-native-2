@@ -51,7 +51,7 @@ function FadedContent({ maxHeight, children, onPress, ...props }) {
       }}
     >
       <MaskedView
-        pointerEvents="none"
+        pointerEvents={expanded ? 'auto' : 'none'}
         style={{
           padding: 15,
           paddingTop: 1,
