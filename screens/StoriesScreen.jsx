@@ -142,6 +142,7 @@ export default function StoriesScreen({ navigation }) {
     let timeout;
     if (
       currentAppState === 'active' &&
+      !storiesLoading &&
       (showMoreStories || stories?.length > 0)
     ) {
       timeout = setTimeout(() => {
@@ -149,7 +150,12 @@ export default function StoriesScreen({ navigation }) {
       }, 300);
     }
     return () => clearTimeout(timeout);
-  }, [showMoreStories, stories?.length > 0, currentAppState === 'active']);
+  }, [
+    showMoreStories,
+    stories?.length > 0,
+    currentAppState === 'active',
+    storiesLoading,
+  ]);
 
   return (
     <FlatList
