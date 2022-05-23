@@ -14,6 +14,7 @@ import {
   Linking,
   ScrollView,
   StyleSheet,
+  TouchableOpacity,
   View,
   findNodeHandle,
 } from 'react-native';
@@ -21,7 +22,7 @@ import {
 import { useAppState } from '@react-native-community/hooks';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { useFocusEffect } from '@react-navigation/native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+// import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { URL } from 'react-native-url-polyfill';
 import { WebView } from 'react-native-webview';
