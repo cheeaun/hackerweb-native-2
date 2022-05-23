@@ -757,7 +757,12 @@ export default function StoryScreen({ route, navigation }) {
                 onMessage={() => {}} // Required for injectedJavaScript to work
                 injectedJavaScript={`
                   try {
-                    document.querySelectorAll('video[autoplay]').forEach(v => v.playsInline = true)
+                    document.querySelectorAll('video[autoplay]').forEach(v => v.playsInline = true);
+
+                    var observer = new MutationObserver(function(mutations) {
+                      document.querySelectorAll('video[autoplay]').forEach(v => v.playsInline = true);
+                    });
+                    observer.observe(document, {attributes: false, childList: true, characterData: false, subtree: true});
                   } catch (e) {}
                   true; // note: this is required, or you'll sometimes get silent failures
                 `}
