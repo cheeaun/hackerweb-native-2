@@ -188,12 +188,12 @@ export default function StoryScreen({ route, navigation }) {
 
   const webButtonRef = useRef(null);
   const webHeaderRight = useCallback(() => {
+    const pageURL = navState.url || url;
     return (
       <TouchableOpacity
         ref={webButtonRef}
         onPress={() => {
           const pageTitle = navState.title || title;
-          const pageURL = navState.url || url;
           ActionSheetIOS.showActionSheetWithOptions(
             {
               title: pageTitle,
@@ -212,6 +212,10 @@ export default function StoryScreen({ route, navigation }) {
               }
             },
           );
+        }}
+        onLongPress={() => {
+          Haptics.selectionAsync();
+          openShare({ url: pageURL });
         }}
         hitSlop={{
           top: 44,
