@@ -132,6 +132,7 @@ export default function StoriesScreen({ navigation }) {
   const listRef = useRef(null);
   useFocusEffect(
     useCallback(() => {
+      console.log('🚨 focus effect');
       setTimeout(() => {
         listRef.current?.flashScrollIndicators();
       }, 300);
@@ -145,6 +146,12 @@ export default function StoriesScreen({ navigation }) {
       !storiesLoading &&
       (showMoreStories || stories?.length > 0)
     ) {
+      console.log('🚨', {
+        currentAppState,
+        storiesLoading,
+        showMoreStories,
+        storiesLen: stories?.length,
+      });
       timeout = setTimeout(() => {
         listRef.current?.flashScrollIndicators();
       }, 300);
