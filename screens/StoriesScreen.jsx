@@ -130,17 +130,20 @@ export default function StoriesScreen({ navigation }) {
   }, [exceedsReadableWidth]);
 
   const listRef = useRef(null);
+  const flashTimeout = useRef(null);
   useFocusEffect(
     useCallback(() => {
       console.log('🚨 focus effect');
-      setTimeout(() => {
-        listRef.current?.flashScrollIndicators();
+      clearTimeout(flashTimeout.current);
+      flashTimeout.current = setTimeout(() => {
+        if (!storiesLoading) {
+          listRef.current?.flashScrollIndicators();
+        }
       }, 300);
-    }, []),
+    }, [storiesLoading]),
   );
   const currentAppState = useAppState();
   useEffect(() => {
-    let timeout;
     if (
       currentAppState === 'active' &&
       !storiesLoading &&
@@ -152,11 +155,11 @@ export default function StoriesScreen({ navigation }) {
         showMoreStories,
         storiesLen: stories?.length,
       });
-      timeout = setTimeout(() => {
+      flashTimeout.current = setTimeout(() => {
         listRef.current?.flashScrollIndicators();
       }, 300);
     }
-    return () => clearTimeout(timeout);
+    return () => clearTimeout(flashTimeout.current);
   }, [
     showMoreStories,
     stories?.length > 0,
