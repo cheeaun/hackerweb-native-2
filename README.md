@@ -35,9 +35,9 @@ Also a complete rewrite of the first version launched in 2016.
 
 ## Download
 
-[![Download on the App Store](https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg)](https://apps.apple.com/us/app/id1084209377) [<img src="https://askyourself.app/assets/testflight.png" height="40">](https://testflight.apple.com/join/PHcLooxC)
+[![Download on the App Store](https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg)](https://apps.apple.com/app/id1084209377) [<img src="https://askyourself.app/assets/testflight.png" height="40">](https://testflight.apple.com/join/PHcLooxC)
 
-- App Store: https://apps.apple.com/us/app/id1084209377
+- App Store: https://apps.apple.com/app/id1084209377
 - TestFlight: https://testflight.apple.com/join/PHcLooxC
 
 ## Preview
