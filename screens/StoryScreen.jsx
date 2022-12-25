@@ -130,9 +130,12 @@ export default function StoryScreen({ route, navigation }) {
       }
       fetchPromise
         .catch((e) => {
-          Alert.alert({
-            title: 'Error loading story',
-          });
+          console.error(e);
+          // FIXME: this crashes Expo Go
+          //
+          // Alert.alert({
+          //   title: 'Error loading story',
+          // });
         })
         .finally(() => {
           if (ignore) return;
