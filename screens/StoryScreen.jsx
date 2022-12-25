@@ -201,7 +201,7 @@ export default function StoryScreen({ route, navigation }) {
             {
               title: pageTitle,
               message: pageURL,
-              options: ['Reload page', 'Open in browser…', 'Share…', 'Cancel'],
+              options: ['Reload page', 'Open in browser', 'Share…', 'Cancel'],
               cancelButtonIndex: 3,
               anchor: findNodeHandle(webButtonRef.current),
             },
