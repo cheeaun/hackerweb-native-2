@@ -100,16 +100,16 @@ export default function App() {
     }
   }, [currentAppState === 'active']);
 
+  // Use the new useUpdates hook to monitor update availability
+  const { isUpdateAvailable: hasNewUpdate, isUpdatePending } =
+    Updates.useUpdates();
+
   useEffect(() => {
-    Updates.addListener((updateEvent) => {
-      console.log(
-        `🔥 Update Event: ${updateEvent.type} - ${updateEvent.message}`,
-      );
-      if (updateEvent.type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
-        setUpdateIsAvailable(true);
-      }
-    });
-  }, []);
+    if (hasNewUpdate || isUpdatePending) {
+      console.log(`🔥 Update available or pending`);
+      setUpdateIsAvailable(true);
+    }
+  }, [hasNewUpdate, isUpdatePending, setUpdateIsAvailable]);
 
   const { isDark, colors } = useTheme();
 
@@ -148,7 +148,7 @@ export default function App() {
                 name="Home"
                 component={StoriesScreen}
                 options={{
-                  title: Constants.manifest.name,
+                  title: Constants.expoConfig.name,
                   headerLargeTitleShadowVisible: false,
                   headerLargeTitle: true,
                   headerLargeStyle: {

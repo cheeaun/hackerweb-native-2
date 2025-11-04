@@ -13,7 +13,9 @@
     "updates": {
       "fallbackToCacheTimeout": 1000
     },
-    "assetBundlePatterns": ["assets/*"],
+    "assetBundlePatterns": [
+      "assets/*"
+    ],
     "ios": {
       "appStoreUrl": "https://apps.apple.com/app/id1084209377",
       "bundleIdentifier": "cheeaun.hackerweb",
@@ -27,31 +29,21 @@
         "NSPhotoLibraryAddUsageDescription": "Allow $(PRODUCT_NAME) to save photos."
       }
     },
-    "platforms": ["ios"],
+    "platforms": [
+      "ios"
+    ],
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "userInterfaceStyle": "automatic",
-    "packagerOpts": {
-      "config": "metro.config.js",
-      "sourceExts": [
-        "expo.ts",
-        "expo.tsx",
-        "expo.js",
-        "expo.jsx",
-        "ts",
-        "tsx",
-        "js",
-        "jsx",
-        "json",
-        "wasm",
-        "svg"
-      ]
-    },
     "extra": {
       "eas": {
         "projectId": "63293369-c949-446c-adce-388ffff7675d"
       }
-    }
+    },
+    "plugins": [
+      "expo-mail-composer",
+      "expo-web-browser"
+    ]
   }
 }

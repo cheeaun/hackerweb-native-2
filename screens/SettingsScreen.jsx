@@ -216,7 +216,7 @@ export default function SettingsScreen({ navigation }) {
                   }
                 }}
               >
-                <Text type="link">Rate {Constants.manifest.name}…</Text>
+                <Text type="link">Rate {Constants.expoConfig.name}…</Text>
               </ListItem>
               <ListItemSeparator />
             </>
