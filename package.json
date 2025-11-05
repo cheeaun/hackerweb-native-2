@@ -40,9 +40,9 @@
     "@react-native-community/hooks": "~2.8.1",
     "@react-native-masked-view/masked-view": "0.3.2",
     "@react-native-segmented-control/segmented-control": "2.5.7",
-    "@react-navigation/native": "~6.0.10",
-    "@react-navigation/native-stack": "~6.6.1",
-    "@react-navigation/stack": "~6.2.1",
+    "@react-navigation/native": "^7.1.19",
+    "@react-navigation/native-stack": "^7.6.2",
+    "@react-navigation/stack": "^7.6.2",
     "@sindresorhus/safe-stringify": "~0.1.1",
     "array-move": "~4.0.0",
     "buffer": "~6.0.3",
@@ -51,16 +51,17 @@
     "expiry-map": "~2.0.0",
     "expo": "~54.0.0",
     "expo-application": "~7.0.7",
-    "expo-blur": "~15.0.7",
     "expo-clipboard": "~8.0.7",
     "expo-constants": "~18.0.10",
     "expo-device": "~8.0.9",
+    "expo-glass-effect": "~0.1.6",
     "expo-haptics": "~15.0.7",
     "expo-linear-gradient": "~15.0.7",
     "expo-linking": "~8.0.8",
     "expo-mail-composer": "~15.0.7",
     "expo-status-bar": "~3.0.8",
     "expo-store-review": "~9.0.8",
+    "expo-symbols": "~1.0.7",
     "expo-updates": "~29.0.12",
     "expo-web-browser": "~15.0.9",
     "htmlparser2": "~7.2.0",
@@ -90,8 +91,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
-    "@trivago/prettier-plugin-sort-imports": "~3.2.0",
-    "metro-minify-terser": "~0.70.3",
-    "react-native-svg-transformer": "^1.5.1"
-  }
+    "@trivago/prettier-plugin-sort-imports": "~3.2.0"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

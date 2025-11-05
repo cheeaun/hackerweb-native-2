@@ -29,7 +29,8 @@ import { WebView } from 'react-native-webview';
 
 import * as Application from 'expo-application';
 import * as Haptics from 'expo-haptics';
-import { BlurView } from 'expo-blur';
+import { GlassView } from 'expo-glass-effect';
+import { SymbolView } from 'expo-symbols';
 
 import format from 'date-fns/format';
 
@@ -55,10 +56,6 @@ import proxyItem from '../utils/proxyItem';
 import repliesCount2MaxWeight from '../utils/repliesCount2MaxWeight';
 import shortenNumber from '../utils/shortenNumber';
 import { isHTTPLink } from '../utils/url';
-
-import BackIcon from '../assets/chevron.backward.svg';
-import MoreIcon from '../assets/ellipsis.circle.svg';
-import ShareIcon from '../assets/square.and.arrow.up.svg';
 
 const styles = StyleSheet.create({
   storyInfo: {
@@ -223,8 +220,12 @@ export default function StoryScreen({ route, navigation }) {
           bottom: 44,
           left: 44,
         }}
+        style={{
+          width: 36,
+          alignItems: 'center',
+        }}
       >
-        <MoreIcon width={20} height={20} color={colors.primary} />
+        <SymbolView name="ellipsis.circle" />
       </TouchableOpacity>
     );
   }, [title, navState.title, url, navState.url, webViewRef.current]);
@@ -301,8 +302,12 @@ export default function StoryScreen({ route, navigation }) {
           bottom: 44,
           left: 44,
         }}
+        style={{
+          width: 36,
+          alignItems: 'center',
+        }}
       >
-        <ShareIcon width={20} height={20} color={colors.primary} />
+        <SymbolView name="square.and.arrow.up" />
       </TouchableOpacity>
     );
   }, [id, url, hnURL, settingsInteractions]);
@@ -524,29 +529,29 @@ export default function StoryScreen({ route, navigation }) {
   const scrolledDown = useRef(false);
   const commentsNavOptions = useRef({
     title: '',
-    headerShadowVisible: false,
-    headerStyle: {
-      backgroundColor: colors.background,
-    },
+    // headerShadowVisible: false,
+    // headerStyle: {
+    //   backgroundColor: colors.background,
+    // },
   });
   const onScroll = useCallback(
     (e) => {
       if (tabView !== 'comments') return;
       const { y } = e.nativeEvent.contentOffset;
       const scrolled = y > 16;
-      if (scrolled && scrolled === scrolledDown.current) return;
+      if (scrolled === scrolledDown.current) return;
       scrolledDown.current = scrolled;
       const options = {
         title: scrolled ? title : '',
-        headerShadowVisible: scrolled,
-        headerBlurEffect: scrolled ? 'prominent' : '',
-        headerStyle: scrolled
-          ? {
-              backgroundColor: colors.opaqueHeader,
-            }
-          : {
-              backgroundColor: colors.background,
-            },
+        // headerShadowVisible: scrolled,
+        // headerBlurEffect: scrolled ? 'prominent' : '',
+        // headerStyle: scrolled
+        //   ? {
+        //       backgroundColor: colors.opaqueHeader,
+        //     }
+        //   : {
+        //       backgroundColor: colors.background,
+        //     },
       };
       navigation.setOptions(options);
       commentsNavOptions.current = options;
@@ -569,17 +574,17 @@ export default function StoryScreen({ route, navigation }) {
         tabView === 'web'
           ? {
               title: parseURL(navState.url || url).domain || '',
-              headerShadowVisible: true,
-              headerBlurEffect: 'prominent',
-              headerStyle: {
-                backgroundColor: colors.opaqueHeader,
-              },
-              fullScreenGestureEnabled: false,
+              // headerShadowVisible: true,
+              // headerBlurEffect: 'prominent',
+              // headerStyle: {
+              //   backgroundColor: colors.opaqueHeader,
+              // },
+              // fullScreenGestureEnabled: false,
               headerRight: webHeaderRight,
             }
           : {
               ...commentsNavOptions.current,
-              fullScreenGestureEnabled: true,
+              // fullScreenGestureEnabled: true,
               headerRight: commentsHeaderRight,
             },
       );
@@ -775,7 +780,7 @@ export default function StoryScreen({ route, navigation }) {
             )}
           </Animated.View>
           <Separator opaque style={{ marginTop: -1 }} />
-          <BlurView intensity={100} tint={isDark ? 'dark' : 'light'}>
+          <GlassView>
             <View
               onLayout={(e) => {
                 console.log(
@@ -809,7 +814,7 @@ export default function StoryScreen({ route, navigation }) {
                       left: 22,
                     }}
                   >
-                    <BackIcon width={18} height={18} color={colors.primary} />
+                    <SymbolView name="chevron.backward" size={18} />
                   </TouchableOpacity>
                 )}
               </View>
@@ -827,7 +832,7 @@ export default function StoryScreen({ route, navigation }) {
               />
               <View style={{ width: 60 }} />
             </View>
-          </BlurView>
+          </GlassView>
           <ScrollView
             pointerEvents="none"
             removeClippedSubviews

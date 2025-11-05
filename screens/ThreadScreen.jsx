@@ -4,7 +4,6 @@ import {
   Alert,
   LayoutAnimation,
   PlatformColor,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Switch,
@@ -14,6 +13,7 @@ import {
 import { useLayout } from '@react-native-community/hooks';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 import { captureRef } from 'react-native-view-shot';
 

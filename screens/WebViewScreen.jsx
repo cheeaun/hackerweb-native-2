@@ -6,12 +6,11 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { WebView } from 'react-native-webview';
 
 import * as Application from 'expo-application';
+import { SymbolView } from 'expo-symbols';
 
 import Text from '../components/Text';
 
 import useTheme from '../hooks/useTheme';
-
-import MoreIcon from '../assets/ellipsis.circle.svg';
 
 export default function WebViewScreen() {
   const { colors } = useTheme();
@@ -85,7 +84,7 @@ export default function WebViewScreen() {
             left: 44,
           }}
         >
-          <MoreIcon width={20} height={20} color={colors.primary} />
+          <SymbolView name="ellipsis.circle" />
         </TouchableOpacity>
       ),
       headerTitle: () => (

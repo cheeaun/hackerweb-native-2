@@ -17,6 +17,8 @@ import { useAppState } from '@react-native-community/hooks';
 import { useFocusEffect } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+import { SymbolView } from 'expo-symbols';
+
 import ListEmpty from '../components/ListEmpty';
 import ReadableWidthContainer from '../components/ReadableWidthContainer';
 import Separator from '../components/Separator';
@@ -26,8 +28,6 @@ import Text from '../components/Text';
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
 import useViewport from '../hooks/useViewport';
-
-import GearIcon from '../assets/gearshape.svg';
 
 const ItemSeparatorComponent = () => (
   <ReadableWidthContainer>
@@ -58,8 +58,12 @@ export default function StoriesScreen({ navigation }) {
             bottom: 44,
             left: 44,
           }}
+          style={{
+            width: 36,
+            alignItems: 'center',
+          }}
         >
-          <GearIcon width={20} height={20} color={colors.blue} />
+          <SymbolView name="gearshape" />
         </TouchableOpacity>
       ),
     });
@@ -113,11 +117,12 @@ export default function StoriesScreen({ navigation }) {
 
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <ActivityIndicator animating={!noStories && storiesLoading} />
-      ),
+      headerRight:
+        !noStories && storiesLoading
+          ? () => <ActivityIndicator style={{ width: 36 }} />
+          : undefined,
     });
-  }, [noStories, storiesLoading]);
+  }, [noStories, storiesLoading, colors.text]);
 
   const [showMore, setShowMore] = useState(false);
   const [showMoreStories, setShowMoreStories] = useState(false);

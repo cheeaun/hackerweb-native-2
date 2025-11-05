@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { LayoutAnimation, View } from 'react-native';
 
 import { useAppState } from '@react-native-community/hooks';
-import { NavigationContainer } from '@react-navigation/native';
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
   GestureHandlerRootView,
@@ -13,6 +13,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Updates from 'expo-updates';
 import Constants from 'expo-constants';
 import { StatusBar } from 'expo-status-bar';
+import { SymbolView } from 'expo-symbols';
 
 import StoriesScreen from './screens/StoriesScreen';
 
@@ -123,6 +124,7 @@ export default function App() {
       border: colors.separator,
       notification: colors.primary,
     },
+    fonts: DefaultTheme.fonts,
   };
 
   const setViewport = useViewportStore((state) => state.setViewport);
@@ -151,9 +153,10 @@ export default function App() {
                   title: Constants.expoConfig.name,
                   headerLargeTitleShadowVisible: false,
                   headerLargeTitle: true,
-                  headerLargeStyle: {
-                    backgroundColor: colors.background,
-                  },
+                  // headerLargeStyle: {
+                  //   backgroundColor: colors.background,
+                  // },
+                  headerTransparent: true,
                   // headerStyle: {
                   //   backgroundColor: colors.opaqueHeader,
                   // },
@@ -166,7 +169,9 @@ export default function App() {
                 getComponent={() => require('./screens/StoryScreen').default}
                 options={{
                   headerBackTitle: 'News',
+                  headerBackButtonDisplayMode: 'minimal',
                   title: '',
+                  headerTransparent: true,
                   // headerShadowVisible: false,
                   // headerStyle: {
                   //   backgroundColor: colors.background,
@@ -231,12 +236,14 @@ export default function App() {
                 name="Settings"
                 getComponent={() => require('./screens/SettingsScreen').default}
                 options={{
+                  title: 'Settings',
                   headerLargeTitleShadowVisible: false,
                   headerLargeTitle: true,
                   presentation: 'formSheet',
-                  headerLargeStyle: {
-                    backgroundColor: colors.background2,
-                  },
+                  // headerLargeStyle: {
+                  //   backgroundColor: colors.background2,
+                  // },
+                  headerTransparent: true,
                   contentStyle: {
                     backgroundColor: colors.background2,
                   },
@@ -251,10 +258,15 @@ export default function App() {
                         bottom: 44,
                         left: 44,
                       }}
+                      style={{
+                        width: 36,
+                        alignItems: 'center',
+                      }}
                     >
-                      <Text type="link" bolder>
+                      {/* <Text type="link" bolder>
                         Done
-                      </Text>
+                      </Text> */}
+                      <SymbolView name="checkmark" />
                     </TouchableOpacity>
                   ),
                 }}

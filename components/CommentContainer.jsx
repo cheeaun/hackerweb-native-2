@@ -5,12 +5,12 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
 import Svg, { Path } from 'react-native-svg';
 
+import { SymbolView } from 'expo-symbols';
+
 import useTheme from '../hooks/useTheme';
 
 import getCommentsMetadata from '../utils/getCommentsMetadata';
 import getHTMLText from '../utils/getHTMLText';
-
-import CommentIcon from '../assets/bubble.left.svg';
 
 import Button from './Button';
 import Comment from './Comment';
@@ -108,10 +108,20 @@ function RepliesCommentsButton({
           </>
         )}
         <Text numberOfLines={1}>
-          <View style={{ marginRight: 6, marginBottom: -2 }}>
-            <CommentIcon width={15} height={15} color={colors.primary} />
-          </View>
+          <SymbolView
+            name="bubble"
+            size={15}
+            weight="bold"
+            style={{
+              transform: [
+                {
+                  translateY: 2,
+                },
+              ],
+            }}
+          />
           <Text size="subhead" type="link" bold>
+            {' '}
             {replies.toLocaleString('en-US')}{' '}
             {replies !== 1 ? 'replies' : 'reply'}
           </Text>

@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import * as Haptics from 'expo-haptics';
+import { SymbolView } from 'expo-symbols';
 
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
@@ -12,8 +13,6 @@ import openBrowser from '../utils/openBrowser';
 import openShare from '../utils/openShare';
 import shortenNumber from '../utils/shortenNumber';
 import { isHTTPLink } from '../utils/url';
-
-import CommentIcon from '../assets/bubble.left.svg';
 
 import PrettyURL from './PrettyURL';
 import Text from './Text';
@@ -178,7 +177,7 @@ export default function StoryItem({ id, position }) {
             }}
             style={[styles.storyComments, pressed2 && { opacity: 0.5 }]}
           >
-            <CommentIcon width={18} height={18} color={colors.primary} />
+            <SymbolView name="bubble" size={22} weight="medium" />
             {comments_count > 0 && (
               <Text
                 style={{

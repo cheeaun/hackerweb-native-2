@@ -3,7 +3,6 @@ import {
   Animated,
   LayoutAnimation,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
@@ -14,12 +13,16 @@ import { useAppState } from '@react-native-community/hooks';
 import MaskedView from '@react-native-masked-view/masked-view';
 import { useFocusEffect } from '@react-navigation/native';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 import * as Haptics from 'expo-haptics';
-import { BlurView } from 'expo-blur';
+import { GlassView } from 'expo-glass-effect';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
+import { SymbolView } from 'expo-symbols';
 
 import CommentContainer from '../components/CommentContainer';
 import CommentPage from '../components/CommentPage';
@@ -38,8 +41,6 @@ import getCommentsMetadata from '../utils/getCommentsMetadata';
 import getHTMLText from '../utils/getHTMLText';
 import repliesCount2MaxWeight from '../utils/repliesCount2MaxWeight';
 
-import CloseIcon from '../assets/xmark.circle.svg';
-
 function FadedContent({ maxHeight, children, onPress, ...props }) {
   const [expanded, setExpanded] = useState(false);
   return (
@@ -53,8 +54,6 @@ function FadedContent({ maxHeight, children, onPress, ...props }) {
       <MaskedView
         pointerEvents={expanded ? 'auto' : 'none'}
         style={{
-          padding: 15,
-          paddingTop: 1,
           maxHeight: expanded ? undefined : maxHeight,
         }}
         maskElement={
@@ -77,6 +76,7 @@ function FadedContent({ maxHeight, children, onPress, ...props }) {
           automaticallyAdjustContentInsets={false}
           removeClippedSubviews
           scrollEnabled={false}
+          contentContainerStyle={{ padding: 15, paddingTop: 1 }}
         >
           {children}
         </ScrollView>
@@ -334,9 +334,7 @@ export default function CommentsScreen({ route, navigation }) {
           shadowColor: isDark ? colors.primary : undefined,
         }}
       >
-        <BlurView
-          intensity={75}
-          tint={isDark ? 'dark' : 'light'}
+        <GlassView
           style={{
             borderRadius: 30,
             borderWidth: StyleSheet.hairlineWidth,
@@ -344,7 +342,7 @@ export default function CommentsScreen({ route, navigation }) {
             overflow: 'hidden',
           }}
           onLayout={({ nativeEvent }) => {
-            console.log('📐 BlurView onLayout', nativeEvent.layout);
+            console.log('📐 GlassView onLayout', nativeEvent.layout);
             footerRef.current?.setNativeProps({
               style: {
                 height: nativeEvent.layout.height + 30,
@@ -375,10 +373,10 @@ export default function CommentsScreen({ route, navigation }) {
                 alignItems: 'center',
               }}
             >
-              <CloseIcon
-                width={18}
-                height={18}
-                color={colors.link}
+              <SymbolView
+                name="xmark.circle"
+                size={22}
+                weight="medium"
                 style={{ marginRight: 8 }}
               />
               <Text type="link" bold>
@@ -410,7 +408,7 @@ export default function CommentsScreen({ route, navigation }) {
               )}
             </View>
           </TouchableOpacity>
-        </BlurView>
+        </GlassView>
       </Animated.View>
     </>
   );
