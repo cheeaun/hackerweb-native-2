@@ -82,7 +82,7 @@ const ListItemSeparator = () => (
 
 export default function SettingsScreen({ navigation }) {
   const { isDark } = useTheme();
-  const { releaseChannel, updateId, reloadAsync } = Updates;
+  const { channel, updateId, reloadAsync } = Updates;
 
   const [canRate, setCanRate] = useState(false);
   useEffect(() => {
@@ -232,7 +232,7 @@ export default function SettingsScreen({ navigation }) {
                 Application.nativeApplicationVersion
               } (${Application.nativeBuildVersion})
               Update: ${updateId || '—'}
-              Channel: ${releaseChannel || '—'}
+              Channel: ${channel || '—'}
               Expo ${Constants.expoVersion || '-'}
               ${Device.modelName} (${Device.osName} ${Device.osVersion})
               `;
@@ -401,9 +401,9 @@ export default function SettingsScreen({ navigation }) {
               Update: {updateId}
             </Text>
           )}
-          {releaseChannel && (
+          {channel && (
             <Text size="footnote" type="insignificant">
-              Channel: {releaseChannel}
+              Channel: {channel}
             </Text>
           )}
           {Constants.expoVersion && (
