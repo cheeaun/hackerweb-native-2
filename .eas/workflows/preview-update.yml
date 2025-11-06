@@ -1,0 +1,13 @@
+name: Preview Update
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  publish_update:
+    type: update
+    params:
+      channel: preview
+      message: "Preview update"
+

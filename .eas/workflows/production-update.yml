@@ -1,0 +1,9 @@
+name: Production Update
+
+jobs:
+  publish_update:
+    type: update
+    params:
+      channel: production
+      message: "Production update"
+
