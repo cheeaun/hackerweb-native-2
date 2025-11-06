@@ -337,6 +337,7 @@ export default function CommentsScreen({ route, navigation }) {
         <GlassView
           style={{
             borderRadius: 30,
+            borderCurve: 'continuous',
             borderWidth: StyleSheet.hairlineWidth,
             borderColor: colors.opaqueSeparator,
             overflow: 'hidden',
@@ -377,6 +378,7 @@ export default function CommentsScreen({ route, navigation }) {
                 name="xmark.circle"
                 size={22}
                 weight="medium"
+                tintColor={colors.text}
                 style={{ marginRight: 8 }}
               />
               <Text type="link" bold>

@@ -103,7 +103,10 @@ function RepliesCommentsButton({
               );
             })}
             <Separator
-              style={{ marginRight: -12, marginBottom: 12, marginTop: 8 }}
+              style={{
+                marginBottom: 12,
+                marginTop: 8,
+              }}
             />
           </>
         )}

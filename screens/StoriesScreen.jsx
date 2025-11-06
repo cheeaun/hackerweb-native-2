@@ -32,7 +32,11 @@ import useViewport from '../hooks/useViewport';
 const ItemSeparatorComponent = () => (
   <ReadableWidthContainer>
     <Separator
-      style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }}
+      style={{
+        marginLeft: 15 + 22 + 10,
+        marginRight: 15,
+        marginTop: -StyleSheet.hairlineWidth,
+      }}
     />
   </ReadableWidthContainer>
 );
@@ -63,7 +67,7 @@ export default function StoriesScreen({ navigation }) {
             alignItems: 'center',
           }}
         >
-          <SymbolView name="gearshape" />
+          <SymbolView name="gearshape" tintColor={colors.text} />
         </TouchableOpacity>
       ),
     });

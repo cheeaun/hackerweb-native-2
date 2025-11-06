@@ -36,7 +36,12 @@ function ListMenu(props) {
     <ReadableWidthContainer>
       <View
         {...props}
-        style={{ marginHorizontal: 15, borderRadius: 12, overflow: 'hidden' }}
+        style={{
+          marginHorizontal: 15,
+          borderRadius: 24,
+          borderCurve: 'continuous',
+          overflow: 'hidden',
+        }}
       />
     </ReadableWidthContainer>
   );
@@ -77,7 +82,13 @@ function ListItem({ style = {}, ...props }) {
 }
 
 const ListItemSeparator = () => (
-  <Separator style={{ marginLeft: 15, marginTop: -StyleSheet.hairlineWidth }} />
+  <Separator
+    style={{
+      marginLeft: 15,
+      marginRight: 15,
+      marginTop: -StyleSheet.hairlineWidth,
+    }}
+  />
 );
 
 export default function SettingsScreen({ navigation }) {

@@ -266,7 +266,7 @@ export default function App() {
                       {/* <Text type="link" bolder>
                         Done
                       </Text> */}
-                      <SymbolView name="checkmark" />
+                      <SymbolView name="checkmark" tintColor={colors.text} />
                     </TouchableOpacity>
                   ),
                 }}

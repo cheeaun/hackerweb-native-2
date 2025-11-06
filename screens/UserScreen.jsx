@@ -327,6 +327,9 @@ export default function UserScreen({ route, navigation }) {
       }}
       modalStyle={{
         backgroundColor: colors.background,
+        borderTopLeftRadius: 24,
+        borderTopRightRadius: 24,
+        borderCurve: 'continuous',
       }}
       overlayStyle={{
         backgroundColor: colors.overlay,

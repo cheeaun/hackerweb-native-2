@@ -84,7 +84,7 @@ export default function WebViewScreen() {
             left: 44,
           }}
         >
-          <SymbolView name="ellipsis.circle" />
+          <SymbolView name="ellipsis" tintColor={colors.text} />
         </TouchableOpacity>
       ),
       headerTitle: () => (

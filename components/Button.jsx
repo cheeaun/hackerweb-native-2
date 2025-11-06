@@ -5,6 +5,7 @@ const styles = StyleSheet.create({
   button: {
     padding: 12,
     borderRadius: 15,
+    borderCurve: 'continuous',
   },
 });
 

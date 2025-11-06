@@ -225,7 +225,7 @@ export default function StoryScreen({ route, navigation }) {
           alignItems: 'center',
         }}
       >
-        <SymbolView name="ellipsis.circle" />
+        <SymbolView name="ellipsis" tintColor={colors.text} />
       </TouchableOpacity>
     );
   }, [title, navState.title, url, navState.url, webViewRef.current]);
@@ -307,7 +307,7 @@ export default function StoryScreen({ route, navigation }) {
           alignItems: 'center',
         }}
       >
-        <SymbolView name="square.and.arrow.up" />
+        <SymbolView name="square.and.arrow.up" tintColor={colors.text} />
       </TouchableOpacity>
     );
   }, [id, url, hnURL, settingsInteractions]);
@@ -779,7 +779,6 @@ export default function StoryScreen({ route, navigation }) {
               />
             )}
           </Animated.View>
-          <Separator opaque style={{ marginTop: -1 }} />
           <GlassView>
             <View
               onLayout={(e) => {
@@ -794,7 +793,7 @@ export default function StoryScreen({ route, navigation }) {
               }}
               style={{
                 paddingTop: toolbarPadding,
-                paddingBottom: Math.max(toolbarPadding, insets.bottom + 4),
+                paddingBottom: Math.max(toolbarPadding, insets.bottom),
                 flexShrink: 0,
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -814,7 +813,11 @@ export default function StoryScreen({ route, navigation }) {
                       left: 22,
                     }}
                   >
-                    <SymbolView name="chevron.backward" size={18} />
+                    <SymbolView
+                      name="chevron.backward"
+                      size={18}
+                      tintColor={colors.text}
+                    />
                   </TouchableOpacity>
                 )}
               </View>
