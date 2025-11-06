@@ -13,7 +13,8 @@
       }
     },
     "updates": {
-      "fallbackToCacheTimeout": 1000
+      "fallbackToCacheTimeout": 1000,
+      "url": "https://u.expo.dev/63293369-c949-446c-adce-388ffff7675d"
     },
     "assetBundlePatterns": [
       "assets/*"
@@ -46,6 +47,10 @@
     "plugins": [
       "expo-mail-composer",
       "expo-web-browser"
-    ]
+    ],
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "android": {}
   }
 }

@@ -1,22 +1,16 @@
 {
   "cli": {
-    "requireCommit": false
+    "requireCommit": false,
+    "appVersionSource": "remote"
   },
   "build": {
-    "production": {
-      "ios": {
-        "releaseChannel": "production-2.1.0"
-      }
-    },
     "preview": {
-      "ios": {
-        "releaseChannel": "staging-2.1.1-45"
-      }
+      "distribution": "internal",
+      "channel": "preview"
     },
-    "simulator": {
-      "ios": {
-        "simulator": true
-      }
+    "production": {
+      "autoIncrement": true,
+      "channel": "production"
     }
   },
   "submit": {
