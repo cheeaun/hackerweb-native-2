@@ -16,15 +16,20 @@
       "fallbackToCacheTimeout": 1000,
       "url": "https://u.expo.dev/63293369-c949-446c-adce-388ffff7675d"
     },
-    "assetBundlePatterns": [
-      "assets/*"
-    ],
+    "assetBundlePatterns": ["assets/*"],
     "ios": {
       "appStoreUrl": "https://apps.apple.com/app/id1084209377",
       "bundleIdentifier": "cheeaun.hackerweb",
       "buildNumber": "44",
       "supportsTablet": true,
       "requireFullScreen": false,
+      "splash": {
+        "image": "./assets/splash.png",
+        "backgroundColor": "#ffffff",
+        "dark": {
+          "backgroundColor": "#1c1c1e"
+        }
+      },
       "config": {
         "usesNonExemptEncryption": false
       },
@@ -32,9 +37,7 @@
         "NSPhotoLibraryAddUsageDescription": "Allow $(PRODUCT_NAME) to save photos."
       }
     },
-    "platforms": [
-      "ios"
-    ],
+    "platforms": ["ios"],
     "userInterfaceStyle": "automatic",
     "extra": {
       "eas": {
