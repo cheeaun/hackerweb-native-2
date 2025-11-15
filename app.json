@@ -35,9 +35,6 @@
     "platforms": [
       "ios"
     ],
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
     "userInterfaceStyle": "automatic",
     "extra": {
       "eas": {
@@ -46,7 +43,15 @@
     },
     "plugins": [
       "expo-mail-composer",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "26.0"
+          }
+        }
+      ]
     ],
     "runtimeVersion": {
       "policy": "appVersion"
