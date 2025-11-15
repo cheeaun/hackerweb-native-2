@@ -17,7 +17,6 @@ import * as MailComposer from 'expo-mail-composer';
 import * as StoreReview from 'expo-store-review';
 import * as Updates from 'expo-updates';
 import Constants from 'expo-constants';
-import { StatusBar } from 'expo-status-bar';
 
 import OuterSpacer from '../components/OuterSpacer';
 import ReadableWidthContainer from '../components/ReadableWidthContainer';
@@ -119,7 +118,6 @@ export default function SettingsScreen({ navigation }) {
 
   return (
     <>
-      {!isDark && <StatusBar style="inverted" animated />}
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <OuterSpacer />
         <ListMenu>
@@ -179,18 +177,12 @@ export default function SettingsScreen({ navigation }) {
           </ListItem>
         </ListMenu> */}
         <OuterSpacer innerStyle={{ paddingHorizontal: 30 }}>
-          <Text
-            size="footnote"
-            type="insignificant"
-            style={{
-              textTransform: 'uppercase',
-            }}
-          >
+          <Text type="insignificant" bold>
             About
           </Text>
         </OuterSpacer>
         <ListMenu>
-          <ListItem onPress={() => openBrowser('https://twitter.com/cheeaun')}>
+          <ListItem onPress={() => openBrowser('https://github.com/cheeaun')}>
             <Text type="link">Made by @cheeaun</Text>
           </ListItem>
           <ListItemSeparator />
@@ -282,13 +274,7 @@ export default function SettingsScreen({ navigation }) {
           </Text>
         </OuterSpacer>
         <OuterSpacer innerStyle={{ paddingHorizontal: 30 }}>
-          <Text
-            size="footnote"
-            type="insignificant"
-            style={{
-              textTransform: 'uppercase',
-            }}
-          >
+          <Text type="insignificant" bold>
             Debugging
           </Text>
         </OuterSpacer>

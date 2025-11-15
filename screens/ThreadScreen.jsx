@@ -291,7 +291,7 @@ export default function ThreadScreen() {
       <SafeAreaView>
         <View
           style={{
-            paddingVertical: 8,
+            paddingVertical: 15,
             paddingHorizontal: 15,
             borderColor: colors.separator,
             borderTopWidth: StyleSheet.hairlineWidth,
@@ -300,7 +300,7 @@ export default function ThreadScreen() {
           <ReadableWidthContainer>
             <SegmentedControl
               disabled={loadingShare}
-              style={{ marginHorizontal: 15, marginTop: 8 }}
+              style={{ marginHorizontal: 15 }}
               appearance={isDark ? 'dark' : 'light'}
               values={tabValues}
               selectedIndex={tabViews.findIndex((v) => v === tabView)}

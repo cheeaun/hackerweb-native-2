@@ -18,6 +18,7 @@ import format from 'date-fns/format';
 
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
+import useViewport from '../hooks/useViewport';
 
 import openBrowser from '../utils/openBrowser';
 import openShare from '../utils/openShare';
@@ -53,6 +54,7 @@ export default function Comment({
 }) {
   const navigation = useNavigation();
   const { colors } = useTheme();
+  const { exceedsReadableWidth } = useViewport();
   const { id, user, time, content, deleted, dead, comments } = item;
   const datetime = new Date(time * 1000);
   const currentOP = useStore(
@@ -171,7 +173,9 @@ export default function Comment({
         message: `${format(datetime, 'EEEE, d LLLL yyyy, h:mm a')}\n${hnURL}`,
         options: options.map((o) => o.text),
         cancelButtonIndex: options.findIndex((o) => o.cancel),
-        anchor: findNodeHandle(commentRef.current),
+        anchor: exceedsReadableWidth
+          ? findNodeHandle(commentRef.current)
+          : undefined,
       },
       (index) => {
         options[index].action?.();

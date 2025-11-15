@@ -28,7 +28,7 @@ export default function ({
         <View
           style={[
             {
-              paddingVertical: 8,
+              paddingVertical: 12,
               paddingHorizontal: 15,
             },
             innerStyle,

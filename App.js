@@ -213,7 +213,28 @@ export default function App() {
                 name="Comments"
                 getComponent={() => require('./screens/CommentsScreen').default}
                 options={{
-                  headerShown: false,
+                  // headerShown: false,
+                  headerTransparent: true,
+                  title: '',
+                  headerRight: () => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigationRef.current?.goBack();
+                      }}
+                      hitSlop={{
+                        top: 44,
+                        right: 44,
+                        bottom: 44,
+                        left: 44,
+                      }}
+                      style={{
+                        width: 36,
+                        alignItems: 'center',
+                      }}
+                    >
+                      <SymbolView name="checkmark" tintColor={colors.text} />
+                    </TouchableOpacity>
+                  ),
                   presentation: 'modal',
                   contentStyle: {
                     backgroundColor: colors.modalBackground,
@@ -223,13 +244,48 @@ export default function App() {
               <Stack.Screen
                 name="User"
                 getComponent={() => require('./screens/UserScreen').default}
-                options={{
-                  headerShown: false,
-                  presentation: 'transparentModal',
-                  animation: 'none',
-                  contentStyle: {
-                    flexGrow: 1,
-                  },
+                options={({ route }) => {
+                  return {
+                    headerTitle: () => (
+                      <View style={{ width: '100%' }}>
+                        <Text bold size="title3">
+                          {route.params || ''}
+                        </Text>
+                      </View>
+                    ),
+                    headerTitleStyle: {
+                      fontSize: 20,
+                    },
+                    headerStyle: {
+                      backgroundColor: 'transparent',
+                    },
+                    headerRight: () => (
+                      <TouchableOpacity
+                        onPress={() => {
+                          navigationRef.current?.goBack();
+                        }}
+                        hitSlop={{
+                          top: 44,
+                          right: 44,
+                          bottom: 44,
+                          left: 44,
+                        }}
+                        style={{
+                          width: 36,
+                          alignItems: 'center',
+                        }}
+                      >
+                        <SymbolView name="xmark" tintColor={colors.text} />
+                      </TouchableOpacity>
+                    ),
+                    presentation: 'formSheet',
+                    sheetAllowedDetents: 'fitToContents',
+                    // headerShown: false,
+                    // animation: 'none',
+                    // contentStyle: {
+                    //   flexGrow: 1,
+                    // },
+                  };
                 }}
               />
               <Stack.Screen
@@ -237,9 +293,9 @@ export default function App() {
                 getComponent={() => require('./screens/SettingsScreen').default}
                 options={{
                   title: 'Settings',
-                  headerLargeTitleShadowVisible: false,
-                  headerLargeTitle: true,
-                  presentation: 'formSheet',
+                  // headerLargeTitleShadowVisible: false,
+                  // headerLargeTitle: true,
+                  presentation: 'modal',
                   // headerLargeStyle: {
                   //   backgroundColor: colors.background2,
                   // },
@@ -323,13 +379,18 @@ export default function App() {
                         bottom: 44,
                         left: 44,
                       }}
+                      style={{
+                        width: 36,
+                        alignItems: 'center',
+                      }}
                     >
-                      <Text type="link" bolder>
+                      {/* <Text type="link" bolder>
                         Done
-                      </Text>
+                      </Text> */}
+                      <SymbolView name="checkmark" tintColor={colors.text} />
                     </TouchableOpacity>
                   ),
-                  presentation: 'formSheet',
+                  presentation: 'modal',
                   headerStyle: {
                     backgroundColor: colors.background2,
                   },

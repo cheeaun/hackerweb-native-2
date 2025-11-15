@@ -21,7 +21,6 @@ import {
 import * as Haptics from 'expo-haptics';
 import { GlassView } from 'expo-glass-effect';
 import { LinearGradient } from 'expo-linear-gradient';
-import { StatusBar } from 'expo-status-bar';
 import { SymbolView } from 'expo-symbols';
 
 import CommentContainer from '../components/CommentContainer';
@@ -218,12 +217,12 @@ export default function CommentsScreen({ route, navigation }) {
     if (scrolled && scrolled === scrolledRef.current) return;
     scrolledRef.current = scrolled;
 
-    headerRef.current?.setNativeProps({
-      style: {
-        ...headerStyles,
-        borderBottomColor: scrolled ? colors.separator : 'transparent',
-      },
-    });
+    // headerRef.current?.setNativeProps({
+    //   style: {
+    //     ...headerStyles,
+    //     borderBottomColor: scrolled ? colors.separator : 'transparent',
+    //   },
+    // });
 
     setScrolledDown(scrolled);
   }, []);
@@ -242,10 +241,47 @@ export default function CommentsScreen({ route, navigation }) {
     }
   }, [currentAppState === 'active']);
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => {
+        return (
+          <ReadableWidthContainer>
+            <View
+              style={{
+                paddingHorizontal: 15,
+              }}
+            >
+              <Text numberOfLines={1}>
+                <Text
+                  bold
+                  style={{ color: colors.red }}
+                  onPress={() => {
+                    navigation.push('User', item.user);
+                  }}
+                >
+                  {item.user}
+                </Text>
+                <Text type="insignificant"> &bull; </Text>
+                {scrolledDown ? (
+                  <Text size="subhead" type="insignificant">
+                    {getHTMLText(content)}
+                  </Text>
+                ) : (
+                  <Text type="insignificant">
+                    <TimeAgo time={new Date(item.time * 1000)} />
+                  </Text>
+                )}
+              </Text>
+            </View>
+          </ReadableWidthContainer>
+        );
+      },
+    });
+  }, [scrolledDown, item.user, item.time, content]);
+
   return (
     <>
-      {!isDark && <StatusBar style="inverted" animated />}
-      <View ref={headerRef} style={headerStyles}>
+      {/* <View ref={headerRef} style={headerStyles}>
         <SafeAreaView>
           <View
             style={{
@@ -253,6 +289,7 @@ export default function CommentsScreen({ route, navigation }) {
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
+              marginRight: 64,
             }}
           >
             <View style={{ paddingLeft: 15, flexShrink: 1 }}>
@@ -296,7 +333,7 @@ export default function CommentsScreen({ route, navigation }) {
             </TouchableOpacity>
           </View>
         </SafeAreaView>
-      </View>
+      </View> */}
       <FlatList
         ref={listRef}
         key={`comments-${item.id}`}
@@ -378,7 +415,6 @@ export default function CommentsScreen({ route, navigation }) {
                 name="xmark.circle"
                 size={22}
                 weight="medium"
-                tintColor={colors.text}
                 style={{ marginRight: 8 }}
               />
               <Text type="link" bold>
