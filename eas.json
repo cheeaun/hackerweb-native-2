@@ -4,8 +4,12 @@
     "appVersionSource": "remote"
   },
   "build": {
-    "preview": {
+    "development": {
       "distribution": "internal",
+      "channel": "preview"
+    },
+    "preview": {
+      "autoIncrement": true,
       "channel": "preview"
     },
     "production": {
