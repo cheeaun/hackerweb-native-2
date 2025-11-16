@@ -6,14 +6,16 @@
   "build": {
     "preview": {
       "distribution": "internal",
-      "channel": "preview",
-      "ios": {
-        "simulator": true
-      }
+      "channel": "preview"
     },
     "production": {
       "autoIncrement": true,
       "channel": "production"
+    },
+    "simulator": {
+      "ios": {
+        "simulator": true
+      }
     }
   },
   "submit": {
