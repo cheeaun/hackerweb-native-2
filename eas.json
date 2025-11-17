@@ -25,16 +25,14 @@
   "submit": {
     "production": {
       "ios": {
-        "appleId": "${EXPO_APPLE_ID}",
-        "appleTeamId": "${EXPO_APPLE_TEAM_ID}",
-        "ascAppId": "${EXPO_ASC_APP_ID}"
+        "appleTeamId": "7WDVUPXAPH",
+        "ascAppId": "1084209377"
       }
     },
     "preview": {
       "ios": {
-        "appleId": "${EXPO_APPLE_ID}",
-        "appleTeamId": "${EXPO_APPLE_TEAM_ID}",
-        "ascAppId": "${EXPO_ASC_APP_ID}"
+        "appleTeamId": "7WDVUPXAPH",
+        "ascAppId": "1084209377"
       }
     }
   }
