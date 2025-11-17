@@ -15,3 +15,4 @@ web-build/
 # Custom
 .env
 __build-artifact__
+credentials.json
