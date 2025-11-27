@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import safeStringify from '@sindresorhus/safe-stringify';
+import safeStringify from 'safe-stringify';
 
 import Text from '../components/Text';
 

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { LayoutAnimation, StyleSheet, View } from 'react-native';
 
-import format from 'date-fns/format';
+import { format } from 'date-fns/format';
 import ky from 'ky';
 
 import ActivityIndicator from '../components/ActivityIndicator';

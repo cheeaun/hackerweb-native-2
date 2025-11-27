@@ -5,7 +5,7 @@ import ExpiryMap from 'expiry-map';
 import ky from 'ky';
 import pDebounce from 'p-debounce';
 import pMemoize from 'p-memoize';
-import create from 'zustand';
+import { create } from 'zustand';
 
 const STORIES_TTL = 10 * 60 * 1000; // 10 mins
 const cache = new ExpiryMap(60 * 1000);

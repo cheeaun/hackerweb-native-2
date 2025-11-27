@@ -1,7 +1,7 @@
-import differenceInSeconds from 'date-fns/differenceInSeconds';
-import format from 'date-fns/format';
-import isSameYear from 'date-fns/isSameYear';
-import isValid from 'date-fns/isValid';
+import { differenceInSeconds } from 'date-fns/differenceInSeconds';
+import { format } from 'date-fns/format';
+import { isSameYear } from 'date-fns/isSameYear';
+import { isValid } from 'date-fns/isValid';
 
 const SECONDS_IN_MINUTE = 60;
 const MINUTES_IN_DAY = 1440;

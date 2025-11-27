@@ -14,7 +14,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import * as Haptics from 'expo-haptics';
 
-import format from 'date-fns/format';
+import { format } from 'date-fns/format';
 
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';

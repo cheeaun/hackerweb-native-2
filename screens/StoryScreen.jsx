@@ -32,7 +32,7 @@ import * as Haptics from 'expo-haptics';
 import { GlassView } from 'expo-glass-effect';
 import { SymbolView } from 'expo-symbols';
 
-import format from 'date-fns/format';
+import { format } from 'date-fns/format';
 
 import CommentContainer from '../components/CommentContainer';
 import CommentPage from '../components/CommentPage';

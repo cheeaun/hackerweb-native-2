@@ -5,7 +5,7 @@ import * as entities from 'entities';
 // Now, focusing on getting short textual snippet from HTML content.
 
 export default function (html, opts = {}) {
-  let txt = entities.decode(html).trim();
+  let txt = entities.decodeHTML(html).trim();
   const pres = [];
   if (opts.removePre) {
     txt = txt.replace(/<pre[^<>\/]*>.*<\/pre>/gi, '').trim();
