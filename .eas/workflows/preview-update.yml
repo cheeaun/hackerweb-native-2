@@ -1,8 +1,8 @@
 name: Preview Update
 
-on:
-  push:
-    branches: ['main']
+# on:
+#   push:
+#     branches: ['main']
 
 jobs:
   publish_update:
