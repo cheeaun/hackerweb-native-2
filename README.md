@@ -52,11 +52,7 @@ Also a complete rewrite of the first version launched in 2016.
 
 ## Development
 
-This is built with [Expo](https://expo.io/) under the **Managed Workflow**. Currently using **SDK 54** and **targeted only for iOS** (for now).
-
-```
-npm install -g expo-cli
-```
+This is built with [Expo](https://expo.dev/) under the **Managed Workflow**. Currently using **SDK 54** and **targeted only for iOS** (for now).
 
 After cloning this repository:
 
