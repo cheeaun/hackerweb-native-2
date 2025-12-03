@@ -42,13 +42,13 @@ Also a complete rewrite of the first version launched in 2016.
 
 ## Preview
 
-### Light
+### iPhone
 
-<img src="screenshots/hackerweb-stories-light.png" width="250"> <img src="screenshots/hackerweb-story-light.png" width="250">
+<img src="screenshots/2025/hw-iphone-1.jpg" width="250"> <img src="screenshots/2025/hw-iphone-2.jpg" width="250">
 
-### Dark
+### iPad
 
-<img src="screenshots/hackerweb-stories-dark.png" width="250"> <img src="screenshots/hackerweb-story-dark.png" width="250">
+<img src="screenshots/2025/hw-ipad-1.png" width="350"> <img src="screenshots/2025/hw-ipad-2.png" width="350">
 
 ## Development
 
