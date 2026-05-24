@@ -5,13 +5,6 @@
     "version": "3.0.1",
     "description": "A read-only Hacker News client.",
     "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "backgroundColor": "#ffffff",
-      "dark": {
-        "backgroundColor": "#1c1c1e"
-      }
-    },
     "updates": {
       "fallbackToCacheTimeout": 1000,
       "url": "https://u.expo.dev/63293369-c949-446c-adce-388ffff7675d"
@@ -23,13 +16,6 @@
       "buildNumber": "44",
       "supportsTablet": true,
       "requireFullScreen": false,
-      "splash": {
-        "image": "./assets/splash.png",
-        "backgroundColor": "#ffffff",
-        "dark": {
-          "backgroundColor": "#1c1c1e"
-        }
-      },
       "config": {
         "usesNonExemptEncryption": false
       },
@@ -37,7 +23,9 @@
         "NSPhotoLibraryAddUsageDescription": "Allow $(PRODUCT_NAME) to save photos."
       }
     },
-    "platforms": ["ios"],
+    "platforms": [
+      "ios"
+    ],
     "userInterfaceStyle": "automatic",
     "extra": {
       "eas": {
@@ -54,8 +42,25 @@
             "deploymentTarget": "26.0"
           }
         }
+      ],
+      "expo-status-bar",
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash.png",
+          "backgroundColor": "#ffffff",
+          "resizeMode": "contain",
+          "dark": {
+            "backgroundColor": "#1c1c1e"
+          },
+          "imageWidth": 100
+        }
       ]
     ],
+    "experiments": {
+      "reactCompiler": true
+    },
     "runtimeVersion": {
       "policy": "appVersion"
     },
