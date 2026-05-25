@@ -35,6 +35,11 @@
     "deploy-production": "npm run eas-build-submit-ci-prod",
     "expo-version": "expo --version"
   },
+  "expo": {
+    "install": {
+      "exclude": ["react-native-view-shot"]
+    }
+  },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-community/hooks": "~100.1.0",
