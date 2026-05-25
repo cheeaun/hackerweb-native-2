@@ -58,10 +58,15 @@ const get = (target, prop) => {
   }
 };
 
+const proxyCache = new WeakMap();
+
 function proxyItem(item) {
   if (!item) return;
   if (item.__isItem) return item;
-  return new Proxy(item, { get });
+  if (proxyCache.has(item)) return proxyCache.get(item);
+  const proxy = new Proxy(item, { get });
+  proxyCache.set(item, proxy);
+  return proxy;
 }
 
 export default proxyItem;

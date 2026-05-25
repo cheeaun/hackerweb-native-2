@@ -72,6 +72,8 @@ const styles = StyleSheet.create({
   },
 });
 
+const EMPTY_OBJECT = {};
+
 function parseURL(url) {
   if (!url) return {};
   const link = new URL(url);
@@ -94,7 +96,7 @@ export default function StoryScreen({ route, navigation }) {
           stories.find((s) => s.id === id) ||
           proxyItem(items.get(id)) ||
           proxyItem(minimalItems.get(id)) ||
-          {}
+          EMPTY_OBJECT
         );
       },
       [id],
