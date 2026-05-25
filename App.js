@@ -194,19 +194,18 @@ export default function App() {
                         bottom: 44,
                         left: 44,
                       }}
+                      style={{
+                        width: 36,
+                        alignItems: 'center',
+                      }}
                     >
-                      <Text type="link" bold>
-                        Close
-                      </Text>
+                      <SymbolView name="xmark" tintColor={colors.text} />
                     </TouchableOpacity>
                   ),
                   title: '',
                   presentation: 'modal',
-                  // headerShadowVisible: false,
-                  // headerStyle: {
-                  //   backgroundColor: colors.background,
-                  // },
-                  // headerTransparent: true,
+                  headerTransparent: true,
+                  headerShadowVisible: false,
                 }}
               />
               <Stack.Screen
@@ -331,8 +330,38 @@ export default function App() {
                 name="Logs"
                 getComponent={() => require('./screens/LogsScreen').default}
                 options={{
-                  headerShown: false,
                   presentation: 'modal',
+                  headerTransparent: true,
+                  headerShadowVisible: false,
+                  headerTitle: () => (
+                    <View>
+                      <Text bold size="title3">
+                        Logs
+                      </Text>
+                      <Text size="caption2" type="insignificant">
+                        In-memory, not stored anywhere. Don't worry.
+                      </Text>
+                    </View>
+                  ),
+                  headerRight: () => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigationRef.current?.goBack();
+                      }}
+                      hitSlop={{
+                        top: 44,
+                        right: 44,
+                        bottom: 44,
+                        left: 44,
+                      }}
+                      style={{
+                        width: 36,
+                        alignItems: 'center',
+                      }}
+                    >
+                      <SymbolView name="checkmark" tintColor={colors.text} />
+                    </TouchableOpacity>
+                  ),
                 }}
               />
               <Stack.Screen

@@ -1,13 +1,8 @@
-import { FlatList, StyleSheet, View } from 'react-native';
-
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { FlatList, View } from 'react-native';
 
 import safeStringify from 'safe-stringify';
 
 import Text from '../components/Text';
-
-import useTheme from '../hooks/useTheme';
 
 const renderItem = ({ item }) => {
   const { ts, log } = item;
@@ -48,54 +43,14 @@ const renderItem = ({ item }) => {
   );
 };
 
-export default function LogsScreen({ navigation }) {
-  const { colors } = useTheme();
+export default function LogsScreen() {
   _consolelog('LOGS', DEBUG_LOGS);
   return (
-    <>
-      <View
-        style={{
-          borderBottomColor: colors.separator,
-          borderBottomWidth: StyleSheet.hairlineWidth,
-        }}
-      >
-        <SafeAreaView
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <View style={{ paddingHorizontal: 15, paddingVertical: 8 }}>
-            <Text bold>Logs</Text>
-            <Text size="caption2" type="insignificant">
-              In-memory, not stored anywhere. Don't worry.
-            </Text>
-          </View>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.pop();
-            }}
-            style={{ paddingHorizontal: 15 }}
-            hitSlop={{
-              top: 44,
-              right: 44,
-              bottom: 44,
-              left: 44,
-            }}
-          >
-            <Text type="link" bold>
-              Close
-            </Text>
-          </TouchableOpacity>
-        </SafeAreaView>
-      </View>
-      <FlatList
-        contentInsetAdjustmentBehavior="always"
-        data={DEBUG_LOGS}
-        keyExtractor={(item) => '' + item.ts.getTime() + Math.random()}
-        renderItem={renderItem}
-      />
-    </>
+    <FlatList
+      contentInsetAdjustmentBehavior="always"
+      data={DEBUG_LOGS}
+      keyExtractor={(item) => '' + item.ts.getTime() + Math.random()}
+      renderItem={renderItem}
+    />
   );
 }
