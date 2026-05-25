@@ -1,0 +1,21 @@
+name: Deploy Preview
+on:
+  push:
+    branches: [preview]
+
+jobs:
+  update:
+    name: Publish OTA update
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+          packager: npm
+      - run: npm ci
+      - run: eas update --branch preview --message "${{ github.event.head_commit.message }}"
