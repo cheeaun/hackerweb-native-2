@@ -52,7 +52,7 @@ Also a complete rewrite of the first version launched in 2016.
 
 ## Development
 
-This is built with [Expo](https://expo.dev/) under the **Managed Workflow**. Currently using **SDK 54** and **targeted only for iOS** (for now).
+This is built with [Expo](https://expo.dev/) under the **Managed Workflow**. Currently using **SDK 56** and **targeted only for iOS 26+**.
 
 After cloning this repository:
 
