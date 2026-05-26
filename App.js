@@ -153,15 +153,7 @@ export default function App() {
                   title: Constants.expoConfig.name,
                   headerLargeTitleShadowVisible: false,
                   headerLargeTitle: true,
-                  // headerLargeStyle: {
-                  //   backgroundColor: colors.background,
-                  // },
                   headerTransparent: true,
-                  // headerStyle: {
-                  //   backgroundColor: colors.opaqueHeader,
-                  // },
-                  // headerBlurEffect: 'prominent',
-                  // headerTransparent: true,
                 }}
               />
               <Stack.Screen
@@ -172,11 +164,7 @@ export default function App() {
                   headerBackButtonDisplayMode: 'minimal',
                   title: '',
                   headerTransparent: true,
-                  // headerShadowVisible: false,
-                  // headerStyle: {
-                  //   backgroundColor: colors.background,
-                  // },
-                  // headerTransparent: true,
+                  scrollEdgeEffects: { top: 'automatic' },
                 }}
               />
               <Stack.Screen
@@ -206,6 +194,7 @@ export default function App() {
                   presentation: 'modal',
                   headerTransparent: true,
                   headerShadowVisible: false,
+                  scrollEdgeEffects: { top: 'automatic' },
                 }}
               />
               <Stack.Screen
@@ -214,6 +203,7 @@ export default function App() {
                 options={{
                   // headerShown: false,
                   headerTransparent: true,
+                  scrollEdgeEffects: { top: 'automatic' },
                   title: '',
                   headerRight: () => (
                     <TouchableOpacity
@@ -299,6 +289,7 @@ export default function App() {
                   //   backgroundColor: colors.background2,
                   // },
                   headerTransparent: true,
+                  scrollEdgeEffects: { top: 'automatic' },
                   contentStyle: {
                     backgroundColor: colors.background2,
                   },
@@ -332,7 +323,7 @@ export default function App() {
                 options={{
                   presentation: 'modal',
                   headerTransparent: true,
-                  headerShadowVisible: false,
+                  scrollEdgeEffects: { top: 'automatic' },
                   headerTitle: () => (
                     <View>
                       <Text bold size="title3">
