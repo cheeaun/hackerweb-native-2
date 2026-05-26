@@ -531,6 +531,10 @@ export default function StoryScreen({ route, navigation }) {
   const scrolledDown = useRef(false);
   const commentsNavOptions = useRef({
     title: '',
+    // headerShadowVisible: false,
+    // headerStyle: {
+    //   backgroundColor: colors.background,
+    // },
   });
   const onScroll = useCallback(
     (e) => {
@@ -541,6 +545,15 @@ export default function StoryScreen({ route, navigation }) {
       scrolledDown.current = scrolled;
       const options = {
         title: scrolled ? title : '',
+        // headerShadowVisible: scrolled,
+        // headerBlurEffect: scrolled ? 'prominent' : '',
+        // headerStyle: scrolled
+        //   ? {
+        //       backgroundColor: colors.opaqueHeader,
+        //     }
+        //   : {
+        //       backgroundColor: colors.background,
+        //     },
       };
       navigation.setOptions(options);
       commentsNavOptions.current = options;
@@ -563,10 +576,17 @@ export default function StoryScreen({ route, navigation }) {
         tabView === 'web'
           ? {
               title: parseURL(navState.url || url).domain || '',
+              // headerShadowVisible: true,
+              // headerBlurEffect: 'prominent',
+              // headerStyle: {
+              //   backgroundColor: colors.opaqueHeader,
+              // },
+              // fullScreenGestureEnabled: false,
               headerRight: webHeaderRight,
             }
           : {
               ...commentsNavOptions.current,
+              // fullScreenGestureEnabled: true,
               headerRight: commentsHeaderRight,
             },
       );
