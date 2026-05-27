@@ -119,6 +119,7 @@ export default function RootLayout() {
           <Stack
             key={reloadKey}
             screenOptions={{
+              contentStyle: { backgroundColor: colors.background },
               headerTransparent: true,
               headerShadowVisible: false,
               headerBackButtonDisplayMode: 'minimal',
@@ -165,7 +166,7 @@ export default function RootLayout() {
                 presentation: 'formSheet',
                 sheetAllowedDetents: 'fitToContents',
                 headerTransparent: false,
-                headerStyle: { backgroundColor: 'transparent' },
+                headerStyle: { backgroundColor: colors.background },
               }}
             />
             <Stack.Screen

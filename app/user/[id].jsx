@@ -1,7 +1,8 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Stack, router, useLocalSearchParams } from 'expo-router';
 
+import Text from '../../components/Text';
 import UserScreen from '../../screens/UserScreen';
 
 export default function User() {
