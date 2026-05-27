@@ -11,12 +11,18 @@ import {
 
 import { useAppState } from '@react-native-community/hooks';
 import MaskedView from '@react-native-masked-view/masked-view';
-import { useFocusEffect } from '@react-navigation/native';
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+  useFocusEffect,
+  useRouter,
+  useLocalSearchParams,
+  useNavigation,
+} from 'expo-router';
+import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import useStore from '../hooks/useStore';
+import useTheme from '../hooks/useTheme';
+import useViewport from '../hooks/useViewport';
 
 import * as Haptics from 'expo-haptics';
 import { GlassView } from 'expo-glass-effect';
@@ -31,10 +37,6 @@ import ReadableWidthContainer from '../components/ReadableWidthContainer';
 import Separator from '../components/Separator';
 import Text from '../components/Text';
 import TimeAgo from '../components/TimeAgo';
-
-import useBottomSheetHeaderHeight from '../hooks/useBottomSheetHeaderHeight';
-import useTheme from '../hooks/useTheme';
-import useViewport from '../hooks/useViewport';
 
 import getCommentsMetadata from '../utils/getCommentsMetadata';
 import getHTMLText from '../utils/getHTMLText';
@@ -84,27 +86,26 @@ function FadedContent({ maxHeight, children, onPress, ...props }) {
   );
 }
 
-export default function CommentsScreen({ route, navigation }) {
+export default function CommentsScreen() {
   const { isDark, colors } = useTheme();
-  const { item, zIndex, storyID, showZIndex = false } = route.params;
+  const router = useRouter();
+  const navigation = useNavigation();
+
+  // Get params - item comes from routeItemCache
+  const {
+    storyID,
+    commentID,
+    zIndex,
+    showZIndex = false,
+  } = useLocalSearchParams();
+  const routeItemCache = useStore((state) => state.routeItemCache);
+
+  // Get item from cache using compound key (storyID-commentID)
+  const cacheKey = `${storyID}-${commentID}`;
+  const item = routeItemCache.get(cacheKey) || { comments: [], content: '' };
   const { comments = [], content } = item;
   const { repliesCount, totalComments } = getCommentsMetadata(item);
   const countDiffer = repliesCount !== totalComments;
-
-  // useEffect(() => {
-  //   const commentsScreenCount = navigation
-  //     .getState()
-  //     .routes.filter((r) => r.name.toLowerCase() === 'comments').length;
-  //   Haptics.impactAsync(
-  //     Haptics.ImpactFeedbackStyle[
-  //       commentsScreenCount === 1
-  //         ? 'Light'
-  //         : commentsScreenCount === 2
-  //         ? 'Medium'
-  //         : 'Heavy'
-  //     ],
-  //   );
-  // }, []);
 
   const listRef = useRef(null);
   const windowHeight = useWindowDimensions().height;
@@ -171,7 +172,9 @@ export default function CommentsScreen({ route, navigation }) {
         <CommentContainer
           storyID={storyID}
           item={item}
-          maxWeight={repliesCount2MaxWeight(repliesCount) + zIndex}
+          maxWeight={
+            repliesCount2MaxWeight(repliesCount) + (parseInt(zIndex) || 0)
+          }
         />
       </>
     ),
@@ -203,11 +206,6 @@ export default function CommentsScreen({ route, navigation }) {
   }, [underViewableHeight]);
 
   const headerRef = useRef(null);
-  const headerHeight = useBottomSheetHeaderHeight();
-  const headerStyles = {
-    borderBottomColor: 'transparent',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  };
   const insets = useSafeAreaInsets();
   const [scrolledDown, setScrolledDown] = useState(false);
   const scrolledRef = useRef(false);
@@ -216,14 +214,6 @@ export default function CommentsScreen({ route, navigation }) {
     const scrolled = y >= listHeaderHeight.current;
     if (scrolled && scrolled === scrolledRef.current) return;
     scrolledRef.current = scrolled;
-
-    // headerRef.current?.setNativeProps({
-    //   style: {
-    //     ...headerStyles,
-    //     borderBottomColor: scrolled ? colors.separator : 'transparent',
-    //   },
-    // });
-
     setScrolledDown(scrolled);
   }, []);
 
@@ -256,7 +246,7 @@ export default function CommentsScreen({ route, navigation }) {
                   bold
                   style={{ color: colors.red }}
                   onPress={() => {
-                    navigation.push('User', item.user);
+                    router.push(`/user/${item.user}`);
                   }}
                 >
                   {item.user}
@@ -281,62 +271,9 @@ export default function CommentsScreen({ route, navigation }) {
 
   return (
     <>
-      {/* <View ref={headerRef} style={headerStyles}>
-        <SafeAreaView>
-          <View
-            style={{
-              height: headerHeight,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginRight: 64,
-            }}
-          >
-            <View style={{ paddingLeft: 15, flexShrink: 1 }}>
-              <Text numberOfLines={1}>
-                <Text
-                  bold
-                  style={{ color: colors.red }}
-                  onPress={() => {
-                    navigation.push('User', item.user);
-                  }}
-                >
-                  {item.user}
-                </Text>
-                <Text type="insignificant"> &bull; </Text>
-                {scrolledDown ? (
-                  <Text size="subhead" type="insignificant">
-                    {getHTMLText(content)}
-                  </Text>
-                ) : (
-                  <Text type="insignificant">
-                    <TimeAgo time={new Date(item.time * 1000)} />
-                  </Text>
-                )}
-              </Text>
-            </View>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.pop();
-              }}
-              style={{ paddingHorizontal: 15 }}
-              hitSlop={{
-                top: 44,
-                right: 44,
-                bottom: 44,
-                left: 44,
-              }}
-            >
-              <Text type="link" bolder>
-                Done
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
-      </View> */}
       <FlatList
         ref={listRef}
-        key={`comments-${item.id}`}
+        key={`comments-${storyID}`}
         ListHeaderComponent={ListHeaderComponent}
         data={comments}
         renderItem={renderItem}
@@ -349,7 +286,7 @@ export default function CommentsScreen({ route, navigation }) {
         scrollIndicatorInsets={{ top: -1 }}
       />
       <Animated.View
-        key={`bottombar-${item.id}`}
+        key={`bottombar-${storyID}`}
         pointerEvents="box-none"
         style={{
           position: 'absolute',
@@ -391,7 +328,7 @@ export default function CommentsScreen({ route, navigation }) {
           <TouchableOpacity
             disallowInterruption
             onPress={() => {
-              navigation.pop();
+              router.back();
             }}
             style={{
               paddingVertical: 14,
@@ -420,7 +357,7 @@ export default function CommentsScreen({ route, navigation }) {
               <Text type="link" bold>
                 Close thread
               </Text>
-              {(zIndex > 1 || showZIndex) && (
+              {(parseInt(zIndex) > 1 || showZIndex === 'true') && (
                 <View
                   style={{
                     borderRadius: 100,
@@ -440,7 +377,7 @@ export default function CommentsScreen({ route, navigation }) {
                       fontSize: 14,
                     }}
                   >
-                    {zIndex}
+                    {parseInt(zIndex)}
                   </Text>
                 </View>
               )}

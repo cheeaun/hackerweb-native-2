@@ -17,5 +17,8 @@
   ],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
-  "importOrderGroupNamespaceSpecifiers": true
+  "importOrderGroupNamespaceSpecifiers": true,
+  "printWidth": 80,
+  "sortPackageJson": false,
+  "ignorePatterns": []
 }

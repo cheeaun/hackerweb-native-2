@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react';
 import {
-  ActionSheetIOS,
+  Alert,
   Animated,
   FlatList,
   LayoutAnimation,
@@ -16,13 +16,17 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-  findNodeHandle,
 } from 'react-native';
 
+import {
+  Stack,
+  useFocusEffect,
+  useRouter,
+  useNavigation,
+  useLocalSearchParams,
+} from 'expo-router';
 import { useAppState } from '@react-native-community/hooks';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
-import { useFocusEffect } from '@react-navigation/native';
-// import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { URL } from 'react-native-url-polyfill';
 import { WebView } from 'react-native-webview';
@@ -31,8 +35,6 @@ import * as Application from 'expo-application';
 import * as Haptics from 'expo-haptics';
 import { GlassView } from 'expo-glass-effect';
 import { SymbolView } from 'expo-symbols';
-
-import { format } from 'date-fns/format';
 
 import CommentContainer from '../components/CommentContainer';
 import CommentPage from '../components/CommentPage';
@@ -83,19 +85,21 @@ function parseURL(url) {
   };
 }
 
-export default function StoryScreen({ route, navigation }) {
+export default function StoryScreen() {
   const { isDark, colors } = useTheme();
+  const router = useRouter();
+  const navigation = useNavigation();
 
-  const { name: routeName, params } = route;
-  const { id, tab } = params;
+  const { id, tab } = useLocalSearchParams();
 
   const story = useStore(
     useCallback(
       ({ stories, items, minimalItems }) => {
+        const numericId = parseInt(id, 10);
         return (
-          stories.find((s) => s.id === id) ||
-          proxyItem(items.get(id)) ||
-          proxyItem(minimalItems.get(id)) ||
+          stories.find((s) => s.id === numericId) ||
+          proxyItem(items.get(numericId)) ||
+          proxyItem(minimalItems.get(numericId)) ||
           EMPTY_OBJECT
         );
       },
@@ -112,26 +116,24 @@ export default function StoryScreen({ route, navigation }) {
     });
     return unsubscribe;
   }, [navigation]);
+
   useFocusEffect(
     useCallback(() => {
       console.log('👀 StoryScreen is focused');
-      // Fortunately this `comments` key can be used to indicate
-      // if this story's comments are already fetched
-      if (story.comments) return;
+      if (story.comments?.length) return;
 
       let ignore = false;
       setStoryLoading(true);
       let fetchPromise;
+      const numericId = parseInt(id, 10);
       if (!story.__isItem) {
-        fetchPromise = fetchStory(id);
+        fetchPromise = fetchStory(numericId);
       } else {
-        fetchPromise = fetchItem(id);
+        fetchPromise = fetchItem(numericId);
       }
       fetchPromise
         .catch((e) => {
-          Alert.alert({
-            title: 'Error loading story',
-          });
+          Alert.alert('Error loading story');
         })
         .finally(() => {
           if (ignore) return;
@@ -146,7 +148,7 @@ export default function StoryScreen({ route, navigation }) {
       return () => {
         ignore = true;
       };
-    }, [!!story.comments, !!story.__isItem]),
+    }, [id, story.comments?.length, !!story.__isItem]),
   );
 
   const {
@@ -185,143 +187,16 @@ export default function StoryScreen({ route, navigation }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const webViewRef = useRef(null);
 
-  const webButtonRef = useRef(null);
-  const webHeaderRight = useCallback(() => {
-    const pageURL = navState.url || url;
-    return (
-      <TouchableOpacity
-        ref={webButtonRef}
-        onPress={() => {
-          const pageTitle = navState.title || title;
-          ActionSheetIOS.showActionSheetWithOptions(
-            {
-              title: pageTitle,
-              message: pageURL,
-              options: ['Reload page', 'Open in browser…', 'Share…', 'Cancel'],
-              cancelButtonIndex: 3,
-              anchor: findNodeHandle(webButtonRef.current),
-            },
-            (index) => {
-              if (index === 0) {
-                webViewRef.current?.reload();
-              } else if (index === 1) {
-                Linking.openURL(pageURL);
-              } else if (index === 2) {
-                openShare({ url: pageURL });
-              }
-            },
-          );
-        }}
-        onLongPress={() => {
-          Haptics.selectionAsync();
-          openShare({ url: pageURL });
-        }}
-        hitSlop={{
-          top: 44,
-          right: 44,
-          bottom: 44,
-          left: 44,
-        }}
-        style={{
-          width: 36,
-          alignItems: 'center',
-        }}
-      >
-        <SymbolView name="ellipsis" tintColor={colors.text} />
-      </TouchableOpacity>
-    );
-  }, [title, navState.title, url, navState.url, webViewRef.current]);
-
   const settingsInteractions = useStore((state) => state.settings.interactions);
-  const commentsButtonRef = useRef(null);
-  const commentsHeaderRight = useCallback(() => {
-    const options = [
-      !settingsInteractions && {
-        text: 'View on HN web site',
-        action: () => {
-          openBrowser(hnURL);
-        },
-      },
-      settingsInteractions && {
-        text: 'Upvote story on HN',
-        action: () => {
-          navigation.push('WebViewModal', {
-            url: `https://news.ycombinator.com/vote?id=${id}&how=up&goto=${encodeURIComponent(
-              `item?id=${id}`,
-            )}`,
-            // Once logged in, Vote URL won't work anymore
-            injectedJavaScript: `
-              try {
-                document.getElementById('up_${id}').click();
-              } catch (e) {}
-              true; // note: this is required, or you'll sometimes get silent failures
-            `,
-          });
-        },
-      },
-      settingsInteractions && {
-        text: 'View or Reply story on HN',
-        action: () => {
-          navigation.push('WebViewModal', {
-            url: hnURL,
-          });
-        },
-      },
-      {
-        text: 'Share story…',
-        action: () => openShare({ url: hnURL }),
-      },
-      { text: 'Cancel', cancel: true },
-    ].filter(Boolean);
-
-    return (
-      <TouchableOpacity
-        ref={commentsButtonRef}
-        onPress={() => {
-          ActionSheetIOS.showActionSheetWithOptions(
-            {
-              title,
-              message: `${format(
-                datetime,
-                'EEEE, d LLLL yyyy, h:mm a',
-              )}\n${hnURL}`,
-              options: options.map((o) => o.text),
-              cancelButtonIndex: options.findIndex((o) => o.cancel),
-              anchor: findNodeHandle(commentsButtonRef.current),
-            },
-            (index) => {
-              options[index].action?.();
-            },
-          );
-        }}
-        onLongPress={() => {
-          Haptics.selectionAsync();
-          openShare({ url: hnURL });
-        }}
-        hitSlop={{
-          top: 44,
-          right: 44,
-          bottom: 44,
-          left: 44,
-        }}
-        style={{
-          width: 36,
-          alignItems: 'center',
-        }}
-      >
-        <SymbolView name="square.and.arrow.up" tintColor={colors.text} />
-      </TouchableOpacity>
-    );
-  }, [id, url, hnURL, settingsInteractions]);
 
   const titleLength = (title || '').length;
   const titleSize = underViewableHeight
     ? 'title3'
     : titleLength < 50
-    ? 'title1'
-    : titleLength < 100
-    ? 'title2'
-    : 'title3';
+      ? 'title1'
+      : titleLength < 100
+        ? 'title2'
+        : 'title3';
 
   const TitleComponent = useMemo(
     () => (
@@ -348,8 +223,6 @@ export default function StoryScreen({ route, navigation }) {
               {httpLink ? (
                 <TouchableHighlight
                   onPress={() => {
-                    // openBrowser(url);
-                    // Haptics.selectionAsync();
                     setTabView('web');
                   }}
                   onLongPress={() => {
@@ -389,7 +262,7 @@ export default function StoryScreen({ route, navigation }) {
                         bold
                         style={{ color: colors.red }}
                         onPress={() => {
-                          navigation.push('User', user);
+                          router.push(`/user/${user}`);
                         }}
                       >
                         {user}
@@ -531,10 +404,6 @@ export default function StoryScreen({ route, navigation }) {
   const scrolledDown = useRef(false);
   const commentsNavOptions = useRef({
     title: '',
-    // headerShadowVisible: false,
-    // headerStyle: {
-    //   backgroundColor: colors.background,
-    // },
   });
   const onScroll = useCallback(
     (e) => {
@@ -545,15 +414,6 @@ export default function StoryScreen({ route, navigation }) {
       scrolledDown.current = scrolled;
       const options = {
         title: scrolled ? title : '',
-        // headerShadowVisible: scrolled,
-        // headerBlurEffect: scrolled ? 'prominent' : '',
-        // headerStyle: scrolled
-        //   ? {
-        //       backgroundColor: colors.opaqueHeader,
-        //     }
-        //   : {
-        //       backgroundColor: colors.background,
-        //     },
       };
       navigation.setOptions(options);
       commentsNavOptions.current = options;
@@ -565,42 +425,28 @@ export default function StoryScreen({ route, navigation }) {
     if (tabView === 'web') {
       navigation.setOptions({
         title: parseURL(navState.url || url).domain || '',
-        headerRight: webHeaderRight,
       });
     }
-  }, [url, navState]);
+  }, [url, navState.url, navState.title]);
 
   useLayoutEffect(
     useCallback(() => {
-      navigation.setOptions(
-        tabView === 'web'
-          ? {
-              title: parseURL(navState.url || url).domain || '',
-              // headerShadowVisible: true,
-              // headerBlurEffect: 'prominent',
-              // headerStyle: {
-              //   backgroundColor: colors.opaqueHeader,
-              // },
-              // fullScreenGestureEnabled: false,
-              headerRight: webHeaderRight,
-            }
-          : {
-              ...commentsNavOptions.current,
-              // fullScreenGestureEnabled: true,
-              headerRight: commentsHeaderRight,
-            },
-      );
+      navigation.setOptions({
+        title:
+          tabView === 'web'
+            ? parseURL(navState.url || url).domain || ''
+            : commentsNavOptions.current.title,
+      });
 
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       Animated.timing(fadeAnim, {
         toValue: tabView === 'web' ? 1 : 0,
         duration: isDark ? 300 : 150,
-        // Slower for dark mode because non-dark-mode web pages can be quite blinding
         useNativeDriver: true,
       }).start();
 
       if (tabView === 'web') setWebMounted(true);
-    }, [tabView, commentsHeaderRight, isDark]),
+    }, [tabView, isDark]),
     [tabView],
   );
 
@@ -635,6 +481,88 @@ export default function StoryScreen({ route, navigation }) {
 
   return (
     <>
+      {tabView === 'web' && (
+        <Stack.Toolbar placement="right">
+          <Stack.Toolbar.Menu icon="ellipsis">
+            <Stack.Toolbar.MenuAction
+              icon="arrow.clockwise"
+              onPress={() => webViewRef.current?.reload()}
+            >
+              Reload page
+            </Stack.Toolbar.MenuAction>
+            <Stack.Toolbar.MenuAction
+              icon="safari"
+              onPress={() => Linking.openURL(navState.url || url)}
+            >
+              Open in browser&hellip;
+            </Stack.Toolbar.MenuAction>
+            <Stack.Toolbar.MenuAction
+              icon="square.and.arrow.up"
+              onPress={() => openShare({ url: navState.url || url })}
+            >
+              Share&hellip;
+            </Stack.Toolbar.MenuAction>
+          </Stack.Toolbar.Menu>
+        </Stack.Toolbar>
+      )}
+      {tabView === 'comments' && (
+        <Stack.Toolbar placement="right">
+          <Stack.Toolbar.Menu icon="square.and.arrow.up">
+            {!settingsInteractions && (
+              <Stack.Toolbar.MenuAction onPress={() => openBrowser(hnURL)}>
+                View on HN web site
+              </Stack.Toolbar.MenuAction>
+            )}
+            {settingsInteractions && (
+              <Stack.Toolbar.MenuAction
+                icon="arrow.up"
+                onPress={() => {
+                  const jsKey = `web-view-${Date.now()}`;
+                  useStore.getState().setRouteInjectedJS(
+                    jsKey,
+                    `
+                    try {
+                      document.getElementById('up_${id}').click();
+                    } catch (e) {}
+                    true;
+                  `,
+                  );
+                  router.push({
+                    pathname: '/web-view',
+                    params: {
+                      url: `https://news.ycombinator.com/vote?id=${id}&how=up&goto=${encodeURIComponent(
+                        `item?id=${id}`,
+                      )}`,
+                      jsKey,
+                    },
+                  });
+                }}
+              >
+                Upvote story on HN
+              </Stack.Toolbar.MenuAction>
+            )}
+            {settingsInteractions && (
+              <Stack.Toolbar.MenuAction
+                icon="arrowshape.turn.up.left"
+                onPress={() =>
+                  router.push({
+                    pathname: '/web-view',
+                    params: { url: hnURL },
+                  })
+                }
+              >
+                View or Reply story on HN
+              </Stack.Toolbar.MenuAction>
+            )}
+            <Stack.Toolbar.MenuAction
+              icon="square.and.arrow.up"
+              onPress={() => openShare({ url: hnURL })}
+            >
+              Share story&hellip;
+            </Stack.Toolbar.MenuAction>
+          </Stack.Toolbar.Menu>
+        </Stack.Toolbar>
+      )}
       <FlatList
         ref={listRef}
         pointerEvents={tabView === 'comments' ? 'auto' : 'none'}
@@ -647,16 +575,12 @@ export default function StoryScreen({ route, navigation }) {
         contentInsetAdjustmentBehavior="automatic"
         onScroll={onScroll}
         onScrollEndDrag={(e) => {
-          if (routeName === 'Story') {
-            const { y } = e.nativeEvent.contentOffset;
-            setStoryScroll(id, y);
-          }
+          const { y } = e.nativeEvent.contentOffset;
+          setStoryScroll(id, y);
         }}
         onMomentumScrollEnd={(e) => {
-          if (routeName === 'Story') {
-            const { y } = e.nativeEvent.contentOffset;
-            setStoryScroll(id, y);
-          }
+          const { y } = e.nativeEvent.contentOffset;
+          setStoryScroll(id, y);
         }}
         removeClippedSubviews
         scrollIndicatorInsets={{
@@ -669,15 +593,8 @@ export default function StoryScreen({ route, navigation }) {
         contentContainerStyle={{ flexGrow: 0.8 }}
         contentOffset={{
           x: 0,
-          y: routeName === 'Story' ? scrollY.current : 0,
+          y: scrollY.current,
         }}
-        // onViewableItemsChanged={useCallback(({ viewableItems }) => {
-        //   const indices = viewableItems.map((item) => item.index);
-        //   console.log({ indices });
-        // }, [])}
-        // viewabilityConfig={{
-        //   itemVisiblePercentThreshold: 50,
-        // }}
       />
       {httpLink && (
         <View
@@ -762,21 +679,16 @@ export default function StoryScreen({ route, navigation }) {
                     loading,
                   });
                 }}
-                // No choice but to use this workaround for now
-                // `allowsInlineMediaPlayback` ONLY works for videos with playsinline
-                // `mediaPlaybackRequiresUserAction` works but videos don't autoplay
-                // TODO: Revisit this again when this bug is fixed in react-native-webview
-                onMessage={() => {}} // Required for injectedJavaScript to work
+                onMessage={() => {}}
                 injectedJavaScript={`
                   try {
                     document.querySelectorAll('video[autoplay]').forEach(v => v.playsInline = true);
-
                     var observer = new MutationObserver(function(mutations) {
                       document.querySelectorAll('video[autoplay]').forEach(v => v.playsInline = true);
                     });
                     observer.observe(document, {attributes: false, childList: true, characterData: false, subtree: true});
                   } catch (e) {}
-                  true; // note: this is required, or you'll sometimes get silent failures
+                  true;
                 `}
               />
             )}
@@ -784,12 +696,7 @@ export default function StoryScreen({ route, navigation }) {
           <GlassView>
             <View
               onLayout={(e) => {
-                console.log(
-                  '📐 StoryScreen tab bar onLayout',
-                  e.nativeEvent.layout,
-                );
                 const { height, width } = e.nativeEvent.layout;
-                // console.log({ height });
                 setToolbarWidth(width);
                 setToolbarHeight(height - insets.bottom);
               }}
@@ -827,7 +734,10 @@ export default function StoryScreen({ route, navigation }) {
                 style={{ flexGrow: 1, maxWidth: 480 }}
                 appearance={isDark ? 'dark' : 'light'}
                 values={tabValues}
-                selectedIndex={tabViews.findIndex((v) => v === tabView)}
+                selectedIndex={Math.max(
+                  0,
+                  tabViews.findIndex((v) => v === tabView),
+                )}
                 onChange={(e) => {
                   Haptics.selectionAsync();
                   const index = e.nativeEvent.selectedSegmentIndex;
@@ -851,26 +761,18 @@ export default function StoryScreen({ route, navigation }) {
               left: 0,
             }}
           >
-            <View
-              style={{
-                width: '100%',
-              }}
-            >
+            <View style={{ width: '100%' }}>
               <Animated.View
                 style={{
                   width: '100%',
                   backgroundColor: colors.primary,
                   height: 2,
                   shadowOpacity: 0.7,
-                  shadowOffset: {
-                    width: 0,
-                    height: 0,
-                  },
+                  shadowOffset: { width: 0, height: 0 },
                   shadowColor: colors.primary,
                   shadowRadius: 2,
                   transform: [
                     {
-                      // translateX: 0,
                       translateX:
                         0 ||
                         progressAnim.interpolate({
@@ -879,7 +781,6 @@ export default function StoryScreen({ route, navigation }) {
                         }),
                     },
                   ],
-                  // opacity: 1,
                   opacity: progressOpacityAnim,
                 }}
               />

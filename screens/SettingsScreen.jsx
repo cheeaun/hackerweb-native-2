@@ -11,6 +11,8 @@ import {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { useRouter } from 'expo-router';
+
 import * as Application from 'expo-application';
 import * as Device from 'expo-device';
 import * as MailComposer from 'expo-mail-composer';
@@ -90,7 +92,8 @@ const ListItemSeparator = () => (
   />
 );
 
-export default function SettingsScreen({ navigation }) {
+export default function SettingsScreen() {
+  const router = useRouter();
   const { isDark } = useTheme();
   const { channel, updateId, reloadAsync } = Updates;
 
@@ -171,11 +174,6 @@ export default function SettingsScreen({ navigation }) {
             app itself.
           </Text>
         </OuterSpacer>
-        {/* <ListMenu>
-          <ListItem>
-            <Text type="insignificant">No settings available yet</Text>
-          </ListItem>
-        </ListMenu> */}
         <OuterSpacer innerStyle={{ paddingHorizontal: 30 }}>
           <Text type="insignificant" bold>
             About
@@ -247,10 +245,7 @@ export default function SettingsScreen({ navigation }) {
                   body: body.replace(/\n/g, '<br>'),
                   isHtml: true,
                 });
-                // By right, should be isHTML: false, but somehow MailComposer munches all the spaces
-                // and new lines automagically. Thus, this faux HTML hack.
               } else {
-                // Actually Gmail collapse all new lines and spaces too 😅
                 Linking.openURL(
                   `mailto:${EMAIL}?subject=${encodeURIComponent(
                     subject,
@@ -313,7 +308,7 @@ export default function SettingsScreen({ navigation }) {
             <ListMenu>
               <ListItem
                 onPress={() => {
-                  navigation.push('Logs');
+                  router.push('/logs');
                 }}
               >
                 <Text>Logs</Text>
@@ -331,10 +326,7 @@ export default function SettingsScreen({ navigation }) {
                       fetchMinimalItem(+itemId)
                         .then((item) => {
                           if (item?.type === 'story' || item?.type === 'poll') {
-                            navigation.push('StoryModal', {
-                              id: item.id,
-                              tab: 'comments',
-                            });
+                            router.push(`/story-modal/${item.id}?tab=comments`);
                           } else {
                             Alert.alert(
                               'Not a story',

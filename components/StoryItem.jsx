@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
 import * as Haptics from 'expo-haptics';
 import { SymbolView } from 'expo-symbols';
@@ -59,7 +59,7 @@ export default function StoryItem({ id, position }) {
 
   const { colors } = useTheme();
 
-  const navigation = useNavigation();
+  const router = useRouter();
 
   const story = useStore(
     useCallback((state) => state.stories.find((s) => s.id === id) || {}, [id]),
@@ -97,10 +97,10 @@ export default function StoryItem({ id, position }) {
           if (isJob) {
             openBrowser(url);
           } else {
-            navigation.push('Story', { id, tab: 'web' });
+            router.push(`/story/${id}?tab=web`);
           }
         } else {
-          navigation.push('Story', { id, tab: 'comments' });
+          router.push(`/story/${id}?tab=comments`);
         }
       }}
       onLongPress={() => {
@@ -173,7 +173,7 @@ export default function StoryItem({ id, position }) {
               setPressed2(false);
             }}
             onPress={() => {
-              navigation.push('Story', { id, tab: 'comments' });
+              router.push(`/story/${id}?tab=comments`);
             }}
             style={[styles.storyComments, pressed2 && { opacity: 0.5 }]}
           >

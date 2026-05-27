@@ -155,9 +155,14 @@ const useStore = create((set, get) => ({
         const storyFetched = !!story?.comments?.length;
         if (!storyFetched) {
           story = await api(`item/${id}`).json();
-          stories[index] = story;
-          set({ stories });
-          updateItem('stories', stories, STORIES_TTL);
+          const newStories = [...stories];
+          if (index === -1) {
+            newStories.push(story);
+          } else {
+            newStories[index] = story;
+          }
+          set({ stories: newStories });
+          updateItem('stories', newStories, STORIES_TTL);
         }
       },
       { cache },
@@ -171,11 +176,16 @@ const useStore = create((set, get) => ({
     const index = stories.findIndex((s) => s.id === id);
     let story = stories[index];
     const storyFetched = !!story?.comments?.length;
-    if (story && !storyFetched) {
+    if (!storyFetched) {
       story = await api(`item/${id}`).json();
-      stories[index] = story;
-      set({ stories });
-      updateItem('stories', stories, STORIES_TTL);
+      const newStories = [...stories];
+      if (index === -1) {
+        newStories.push(story);
+      } else {
+        newStories[index] = story;
+      }
+      set({ stories: newStories });
+      updateItem('stories', newStories, STORIES_TTL);
     } else {
       if (items.has(id)) return;
       const item = await algoliaApi(`items/${id}`).json();
@@ -230,6 +240,18 @@ const useStore = create((set, get) => ({
     set({ userInfo });
   },
   // Remember scroll Y for every story
+  routeItemCache: new Map(),
+  setRouteItemCache: (key, item) => {
+    const { routeItemCache } = get();
+    routeItemCache.set(key, item);
+    set({ routeItemCache: new Map(routeItemCache) });
+  },
+  routeInjectedJS: new Map(),
+  setRouteInjectedJS: (key, js) => {
+    const { routeInjectedJS } = get();
+    routeInjectedJS.set(key, js);
+    set({ routeInjectedJS: new Map(routeInjectedJS) });
+  },
   storyScroll: new Map(),
   setStoryScroll: (storyID, scrollY) => {
     // console.log(`🥞 setStoryScroll ${storyID} ${scrollY}`);

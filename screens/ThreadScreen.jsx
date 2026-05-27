@@ -12,7 +12,7 @@ import {
 
 import { useLayout } from '@react-native-community/hooks';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 import { captureRef } from 'react-native-view-shot';
@@ -89,9 +89,11 @@ function TableItem(props) {
 
 export default function ThreadScreen() {
   const { isDark, colors } = useTheme();
-  const navigation = useNavigation();
-  const route = useRoute();
-  const { storyID, commentID, tab = 'thread' } = route.params;
+  const router = useRouter();
+  const { storyID, commentID, tab: tabParam } = useLocalSearchParams();
+
+  const [tabView, setTabView] = useState(tabParam || 'thread');
+
   if (!storyID || !commentID) return null;
 
   const thread = extractThread(storyID, commentID);
@@ -114,7 +116,6 @@ export default function ThreadScreen() {
   }, [comments.length, commentsLimit]);
 
   const tabViews = ['thread', 'share'];
-  const [tabView, setTabView] = useState(tab);
   const tabValues = [
     `Thread ${comments.length > 1 ? `(${comments.length})` : ''}`,
     'Share as Image',
@@ -136,6 +137,7 @@ export default function ThreadScreen() {
           scrollViewRef.current?.flashScrollIndicators();
           scrollViewRef.current?.scrollToEnd();
         }, 600);
+        break;
       }
     }
   }, [storyID, tabView]);
@@ -157,7 +159,6 @@ export default function ThreadScreen() {
       const wholeHeight = height + spacing;
       const scale =
         wholeHeight > scrollViewHeight ? scrollViewHeight / wholeHeight : 1;
-      // console.log({ height, scrollViewHeight, scale });
 
       threadRef.current?.setNativeProps({
         style: {
@@ -236,7 +237,7 @@ export default function ThreadScreen() {
                         bold
                         style={{ color: colors.red }}
                         onPress={() => {
-                          navigation.push('User', user);
+                          router.push(`/user/${user}`);
                         }}
                       >
                         {user}
@@ -415,13 +416,12 @@ export default function ThreadScreen() {
                       setLoadingShare(true);
                       const result = await captureRef(threadRef);
                       console.log(result);
-                      // "context" link can work for HN stories with multi-page comments
                       await Clipboard.setUrlAsync(
                         `https://news.ycombinator.com/context?id=${lastComment.id}`,
                       );
                       await openShare({ url: result });
                     } catch (e) {
-                      Alert('Error', 'Something went wrong.');
+                      Alert.alert('Error', 'Something went wrong.');
                     } finally {
                       setLoadingShare(false);
                     }

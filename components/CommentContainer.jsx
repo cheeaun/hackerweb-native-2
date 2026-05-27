@@ -1,13 +1,13 @@
 import { useCallback, useState } from 'react';
 import { PlatformColor, StyleSheet, View } from 'react-native';
 
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useRouter } from 'expo-router';
 import Svg, { Path } from 'react-native-svg';
 
 import { SymbolView } from 'expo-symbols';
 
 import useTheme from '../hooks/useTheme';
+import useStore from '../hooks/useStore';
 
 import getCommentsMetadata from '../utils/getCommentsMetadata';
 import getHTMLText from '../utils/getHTMLText';
@@ -201,8 +201,9 @@ function InnerCommentContainer({
 }) {
   if (item.dead || (item.deleted && !item.comments.length)) return null;
 
-  const navigation = useNavigation();
-  const { zIndex = 0 } = useRoute().params;
+  const { colors } = useTheme();
+  const router = useRouter();
+  const setRouteItemCache = useStore((state) => state.setRouteItemCache);
   const { repliesCount, totalComments } = getCommentsMetadata(item);
   const totalWeight =
     calcCommentWeight(item) + calcCommentsWeight(item.comments) + accWeight;
@@ -240,16 +241,11 @@ function InnerCommentContainer({
               comments={totalComments}
               suffix={suffixText(comments, repliesCount)}
               onPress={() => {
-                if (zIndex > 0) {
-                  navigation.setParams({
-                    showZIndex: true,
-                  });
-                }
-                navigation.push('Comments', {
-                  item,
-                  zIndex: zIndex + 1,
-                  storyID,
-                });
+                const cacheKey = `${storyID}-${item.id}`;
+                setRouteItemCache(cacheKey, item);
+                router.push(
+                  `/comments/${storyID}/${item.id}?zIndex=${level + 1}`,
+                );
               }}
             />
           ))}
@@ -259,14 +255,13 @@ function InnerCommentContainer({
 }
 
 function calcCommentWeight(comment) {
-  // TODO: smarter "weight" math
   if (!comment.content) return 0;
   return getHTMLText(comment.content).length / 140;
 }
 
 function calcCommentsWeight(comments = []) {
   if (comments.length === 1 && calcCommentWeight(comments[0]) < 3) {
-    return 0; // Special case
+    return 0;
   }
   return comments.reduce((acc, comment) => acc + calcCommentWeight(comment), 0);
 }
@@ -278,15 +273,15 @@ function suffixText(comments, repliesCount) {
         repliesCount === 2
           ? ` & ${secondComment.user}`
           : repliesCount > 1
-          ? ' & others'
-          : ''
+            ? ' & others'
+            : ''
       }`
     : '';
 }
 
 export default function CommentContainer({ item, maxWeight = 5, storyID }) {
-  const { zIndex = 0 } = useRoute().params;
-  const navigation = useNavigation();
+  const router = useRouter();
+  const setRouteItemCache = useStore((state) => state.setRouteItemCache);
 
   if (item.dead || (item.deleted && !item.comments.length)) return null;
 
@@ -325,16 +320,9 @@ export default function CommentContainer({ item, maxWeight = 5, storyID }) {
               suffix={suffixText(comments, repliesCount)}
               previews={hasPreviews ? item.comments.slice(0, 2) : []}
               onPress={() => {
-                if (zIndex > 0) {
-                  navigation.setParams({
-                    showZIndex: true,
-                  });
-                }
-                navigation.push('Comments', {
-                  item,
-                  zIndex: zIndex + 1,
-                  storyID,
-                });
+                const cacheKey = `${storyID}-${item.id}`;
+                setRouteItemCache?.(cacheKey, item);
+                router.push(`/comments/${storyID}/${item.id}?zIndex=1`);
               }}
             />
           ))}

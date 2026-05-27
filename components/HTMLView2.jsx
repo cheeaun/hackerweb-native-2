@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 import { Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
 import * as Haptics from 'expo-haptics';
 
@@ -21,7 +21,7 @@ import nodeStyles from './nodeStyles';
 function Link({ style, url, ...props }) {
   if (!url) return null;
 
-  const navigation = useNavigation();
+  const router = useRouter();
   const fetchMinimalItem = useStore((state) => state.fetchMinimalItem);
   const [loading, setLoading] = useState(false);
   const addLink = useStore((state) => state.addLink);
@@ -50,16 +50,17 @@ function Link({ style, url, ...props }) {
               // 4 types: story, comment, job, poll
               // Ignoring `poll` because Algolia API doesn't contain the poll content
               if (item?.type === 'story' || item?.type === 'poll') {
-                navigation.push('StoryModal', {
-                  id: item.id,
-                  tab: 'comments',
+                router.push({
+                  pathname: '/story-modal',
+                  params: {
+                    id: item.id,
+                    tab: 'comments',
+                  },
                 });
                 // TODO: Add this when Comments screen allow
                 // async loading of comments
                 // } else if (item?.type === 'comment') {
-                //   navigation.push('Comments', {
-                //     id: item.id,
-                //   });
+                //   router.push(`/comments/${item.id}`);
               } else {
                 openBrowser(url);
               }

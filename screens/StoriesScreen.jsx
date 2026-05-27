@@ -14,10 +14,8 @@ import {
 } from 'react-native';
 
 import { useAppState } from '@react-native-community/hooks';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from 'expo-router';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-
-import { SymbolView } from 'expo-symbols';
 
 import ListEmpty from '../components/ListEmpty';
 import ReadableWidthContainer from '../components/ReadableWidthContainer';
@@ -41,37 +39,26 @@ const ItemSeparatorComponent = () => (
   </ReadableWidthContainer>
 );
 
-export default function StoriesScreen({ navigation }) {
+export default function StoriesScreen() {
   const { colors } = useTheme();
+
+  const navigation = useNavigation();
+  const { exceedsReadableWidth } = useViewport();
 
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: () => (
-        <TouchableOpacity
-          onPress={() => {
-            navigation.push('Settings');
-          }}
-          onLongPress={() => {
-            if (__DEV__) {
-              navigation.push('DevTest');
-            }
-          }}
-          hitSlop={{
-            top: 44,
-            right: 44,
-            bottom: 44,
-            left: 44,
-          }}
-          style={{
-            width: 36,
-            alignItems: 'center',
-          }}
-        >
-          <SymbolView name="gearshape" tintColor={colors.text} />
-        </TouchableOpacity>
-      ),
+      headerLargeTitle: true,
+      headerLargeTitleShadowVisible: false,
+      headerBackTitle: undefined,
+      headerBackButtonDisplayMode: undefined,
     });
   }, []);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLargeTitle: !exceedsReadableWidth,
+    });
+  }, [exceedsReadableWidth]);
 
   const stories = useStore((state) => state.stories);
   const isStoriesExpired = useStore((state) => state.isStoriesExpired);
@@ -92,6 +79,7 @@ export default function StoriesScreen({ navigation }) {
       ignore = true;
     };
   }, []);
+
   const fetchIfExpired = useCallback(() => {
     console.log('🥏 fetchIfExpired');
     isStoriesExpired()
@@ -103,40 +91,24 @@ export default function StoriesScreen({ navigation }) {
       .catch(() => {});
   }, []);
 
-  const isMountedRef = useRef(false);
+  const focusCountRef = useRef(0);
   useFocusEffect(
     useCallback(() => {
+      focusCountRef.current += 1;
       console.log('👀 StoriesScreen is focused');
-      if (isMountedRef.current) {
+      if (focusCountRef.current > 1) {
         fetchIfExpired();
       }
     }, []),
   );
   useEffect(() => {
-    isMountedRef.current = true;
     return onFetchStories();
   }, []);
 
   const noStories = !stories.length;
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight:
-        !noStories && storiesLoading
-          ? () => <ActivityIndicator style={{ width: 36 }} />
-          : undefined,
-    });
-  }, [noStories, storiesLoading, colors.text]);
-
   const [showMore, setShowMore] = useState(false);
   const [showMoreStories, setShowMoreStories] = useState(false);
-
-  const { exceedsReadableWidth } = useViewport();
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerLargeTitle: !exceedsReadableWidth,
-    });
-  }, [exceedsReadableWidth]);
 
   const listRef = useRef(null);
   const flashTimeout = useRef(null);
@@ -212,7 +184,6 @@ export default function StoriesScreen({ navigation }) {
           </>
         )
       }
-      contentContainerStyle={{ flexGrow: 0.8 }}
       ListEmptyComponent={() => (
         <ListEmpty
           state={storiesLoading ? 'loading' : noStories ? 'error' : null}
@@ -230,6 +201,7 @@ export default function StoriesScreen({ navigation }) {
           )}
         />
       )}
+      contentContainerStyle={{ flexGrow: 0.8 }}
     />
   );
 }

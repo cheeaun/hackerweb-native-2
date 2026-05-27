@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { LayoutAnimation, StyleSheet, View } from 'react-native';
 
+import { useLocalSearchParams, useRouter } from 'expo-router';
+
 import { format } from 'date-fns/format';
 import ky from 'ky';
 
@@ -16,7 +18,8 @@ import openBrowser from '../utils/openBrowser';
 
 const styles = StyleSheet.create({
   container: {
-    padding: 15,
+    paddingHorizontal: 15,
+    paddingBottom: 15,
   },
   centeredContainer: {
     padding: 30,
@@ -48,8 +51,10 @@ function Label({ style, ...props }) {
   );
 }
 
-export default function UserScreen({ route }) {
-  const user = route.params;
+export default function UserScreen() {
+  const { id } = useLocalSearchParams();
+  const router = useRouter();
+  const user = id;
 
   const userInfo = useStore(
     useCallback((state) => state.userInfo.get(user) || null, [user]),
@@ -95,7 +100,7 @@ export default function UserScreen({ route }) {
   );
 
   return (
-    <View style={[styles.container, { paddingTop: 0 }]}>
+    <View style={styles.container}>
       <Separator />
       {fetchState === 'error' ? (
         <View style={styles.centeredContainer}>
@@ -156,7 +161,7 @@ export default function UserScreen({ route }) {
                 await openBrowser(
                   `https://news.ycombinator.com/user?id=${user}`,
                 );
-                onClose();
+                router.back();
               }}
               style={{ padding: 15 }}
             >

@@ -9,7 +9,7 @@ import {
   findNodeHandle,
 } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import * as Haptics from 'expo-haptics';
@@ -52,7 +52,7 @@ export default function Comment({
   disableViewThread,
   significant,
 }) {
-  const navigation = useNavigation();
+  const router = useRouter();
   const { colors } = useTheme();
   const { exceedsReadableWidth } = useViewport();
   const { id, user, time, content, deleted, dead, comments } = item;
@@ -93,7 +93,7 @@ export default function Comment({
     {
       text: 'View profile',
       action: () => {
-        navigation.push('User', user);
+        router.push(`/user/${user}`);
       },
     },
     !settingsInteractions && {
@@ -105,47 +105,50 @@ export default function Comment({
     settingsInteractions && {
       text: 'Upvote comment on HN',
       action: () => {
-        navigation.push('WebViewModal', {
-          url: `https://news.ycombinator.com/vote?id=${id}&how=up&goto=${encodeURIComponent(
-            `item?id=${id}`,
-          )}`,
-          // Once logged in, Vote URL won't work anymore
-          injectedJavaScript: `
-            try {
-              document.getElementById('up_${id}').click();
-            } catch (e) {}
-            true; // note: this is required, or you'll sometimes get silent failures
-          `,
+        const jsKey = `web-view-${Date.now()}`;
+        useStore.getState().setRouteInjectedJS(
+          jsKey,
+          `
+          try {
+            document.getElementById('up_${id}').click();
+          } catch (e) {}
+          true;
+        `,
+        );
+        router.push({
+          pathname: '/web-view',
+          params: {
+            url: `https://news.ycombinator.com/vote?id=${id}&how=up&goto=${encodeURIComponent(
+              `item?id=${id}`,
+            )}`,
+            jsKey,
+          },
         });
       },
     },
     settingsInteractions && {
       text: 'View or Reply comment on HN',
       action: () => {
-        navigation.push('WebViewModal', {
-          url: `https://news.ycombinator.com/reply?id=${id}&goto=${encodeURIComponent(
-            `item?id=${id}`,
-          )}`,
+        router.push({
+          pathname: '/web-view',
+          params: {
+            url: `https://news.ycombinator.com/reply?id=${id}&goto=${encodeURIComponent(
+              `item?id=${id}`,
+            )}`,
+          },
         });
       },
     },
     !disableViewThread && {
       text: "View comment's thread",
       action: () => {
-        navigation.push('ThreadModal', {
-          storyID,
-          commentID: id,
-        });
+        router.push(`/thread/${storyID}/${id}`);
       },
     },
     !disableViewThread && {
       text: 'Share as Image…',
       action: () => {
-        navigation.push('ThreadModal', {
-          storyID,
-          commentID: id,
-          tab: 'share',
-        });
+        router.push(`/thread/${storyID}/${id}?tab=share`);
       },
     },
     {
@@ -166,7 +169,7 @@ export default function Comment({
     },
   ].filter(Boolean);
 
-  const showActionSheet = useCallback(() => {
+  const onShowActionSheet = useCallback(() => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
         title: `Comment by ${user}`,
@@ -189,7 +192,7 @@ export default function Comment({
       onLongPress={() => {
         bobble();
         Haptics.selectionAsync();
-        showActionSheet();
+        onShowActionSheet();
       }}
     >
       <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
@@ -205,7 +208,7 @@ export default function Comment({
               }}
               numberOfLines={1}
               onPress={() => {
-                navigation.push('User', user);
+                router.push(`/user/${user}`);
               }}
             >
               {user}
@@ -245,7 +248,7 @@ export default function Comment({
               <Text
                 size={significant ? 'body' : 'subhead'}
                 type="insignificant"
-                onPress={showActionSheet}
+                onPress={onShowActionSheet}
               >
                 <TimeAgo time={datetime} />
               </Text>

@@ -9,7 +9,7 @@ A read-only Hacker News client for iOS, built with React Native and Expo.
 - **Expo SDK 56** (managed workflow)
 - **React Native 0.85.3**
 - **React 19.2.3**
-- **Navigation**: React Navigation (`@react-navigation/native-stack`) — NOT Expo Router
+- **Navigation**: Expo Router (file-based routing)
 - **Node.js**: >= 20.x
 - **iOS only** (platforms: `["ios"]`)
 - **Min iOS version**: 26.0
@@ -19,7 +19,7 @@ A read-only Hacker News client for iOS, built with React Native and Expo.
 
 | Package | Purpose |
 |---------|---------|
-| `@react-navigation/native-stack` | Native stack navigation |
+| `expo-router` | File-based routing |
 | `react-native-gesture-handler` | Gesture handling |
 | `react-native-reanimated` | Animations |
 | `react-native-safe-area-context` | Safe area insets |
@@ -53,7 +53,8 @@ GitHub Actions deploy on push to `main`:
 ## Project Structure
 
 ```
-App.js            — App entry, navigation setup
+App.js            — App entry, passes to Expo Router
+app/              — File-based routes (Expo Router)
 screens/           — Screen components
 components/        — Reusable UI components
 hooks/             — Custom hooks (useStore, useTheme, etc.)
@@ -65,5 +66,12 @@ assets/            — Icons, splash images
 
 - Use `SymbolView` from `expo-symbols` for icons (SF Symbols)
 - Theming via `useTheme` hook (dark mode aware)
-- Navigation uses React Navigation native stack — NOT Expo Router
-- All OTA update logic is in `App.js`
+- Navigation uses Expo Router native stack
+- **Formatting**: `oxfmt` (0.52.0), config in `.oxfmtrc.json`. Run `npx oxfmt --write <files>` or `npx oxfmt --write .` to format.
+
+## Navigation
+
+- **Expo Router** with file-based routing
+- Stack.Screen presentation: `modal` for overlays, `formSheet` for user screen
+- Use `useLocalSearchParams` for route params, `useRouter` for navigation
+- OTA update logic is in `app/_layout.jsx`
