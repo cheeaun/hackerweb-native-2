@@ -7,6 +7,7 @@ import { WebView } from 'react-native-webview';
 import * as Application from 'expo-application';
 
 import useStore from '../hooks/useStore';
+import useTheme from '../hooks/useTheme';
 
 export default function WebViewScreen() {
   const { url: paramUrl, jsKey } = useLocalSearchParams();
@@ -17,11 +18,15 @@ export default function WebViewScreen() {
 
   const [navState, setNavState] = useState({});
   const webViewRef = useRef(null);
+  const hasInjected = useRef(false);
+
+  const { colors } = useTheme();
 
   return (
     <>
       <WebView
         ref={webViewRef}
+        style={{ flex: 1, backgroundColor: colors.background }}
         applicationNameForUserAgent={`${Application.applicationName}/${Application.nativeApplicationVersion}`}
         source={{ uri: url }}
         originWhitelist={['http://*', 'https://*', 'data:*', 'about:*']}
@@ -31,8 +36,18 @@ export default function WebViewScreen() {
         onNavigationStateChange={(navState) => {
           setNavState(navState);
         }}
+        onLoadEnd={() => {
+          if (
+            jsKey &&
+            injectedJavaScript &&
+            !hasInjected.current &&
+            navState.url?.includes('item?id=')
+          ) {
+            webViewRef.current?.injectJavaScript(injectedJavaScript);
+            hasInjected.current = true;
+          }
+        }}
         onMessage={() => {}}
-        injectedJavaScript={injectedJavaScript}
       />
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Menu icon="ellipsis">
