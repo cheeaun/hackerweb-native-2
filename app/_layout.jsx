@@ -189,6 +189,7 @@ export default function RootLayout() {
               name="web-view"
               options={{
                 presentation: 'modal',
+                headerTransparent: false,
                 headerStyle: { backgroundColor: colors.background },
               }}
             />

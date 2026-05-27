@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { Linking } from 'react-native';
 
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, useNavigation } from 'expo-router';
 import { WebView } from 'react-native-webview';
 
 import * as Application from 'expo-application';
@@ -20,6 +20,7 @@ export default function WebViewScreen() {
   const webViewRef = useRef(null);
 
   const { colors } = useTheme();
+  const navigation = useNavigation();
 
   return (
     <>
@@ -30,10 +31,15 @@ export default function WebViewScreen() {
         source={{ uri: url }}
         originWhitelist={['http://*', 'https://*', 'data:*', 'about:*']}
         decelerationRate="normal"
+        contentInsetAdjustmentBehavior="automatic"
         startInLoadingState
         allowsBackForwardNavigationGestures
         onNavigationStateChange={(navState) => {
           setNavState(navState);
+          try {
+            const { hostname } = new URL(navState.url);
+            navigation.setOptions({ title: hostname });
+          } catch {}
         }}
         onMessage={() => {}}
         injectedJavaScript={injectedJavaScript}
