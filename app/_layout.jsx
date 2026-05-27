@@ -167,7 +167,10 @@ export default function RootLayout() {
               options={{
                 presentation: 'formSheet',
                 sheetAllowedDetents: 'fitToContents',
-                headerTransparent: false,
+                headerStyle: {
+                  backgroundColor: isDark ? '#1C1C1E' : '#F2F2F7',
+                },
+                headerTintColor: isDark ? '#FFF' : '#007AFF',
               }}
             />
             <Stack.Screen
@@ -191,7 +194,11 @@ export default function RootLayout() {
               name="web-view"
               options={{
                 presentation: 'modal',
-                headerTransparent: false,
+                headerStyle: {
+                  backgroundColor: isDark ? '#1C1C1E' : '#F2F2F7',
+                },
+                headerTintColor: isDark ? '#FFF' : '#007AFF',
+                headerTitleStyle: { color: isDark ? '#FFF' : '#000' },
               }}
             />
             <Stack.Screen

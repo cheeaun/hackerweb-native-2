@@ -3,10 +3,12 @@ import { View } from 'react-native';
 import { Stack, router, useLocalSearchParams } from 'expo-router';
 
 import Text from '../../components/Text';
+import useTheme from '../../hooks/useTheme';
 import UserScreen from '../../screens/UserScreen';
 
 export default function User() {
   const { id } = useLocalSearchParams();
+  const { isDark } = useTheme();
 
   return (
     <>
@@ -18,7 +20,11 @@ export default function User() {
               style={{ flex: 1, alignItems: 'flex-start', marginRight: 60 }}
             >
               <Text
-                style={{ fontSize: 17, fontWeight: '600' }}
+                style={{
+                  fontSize: 17,
+                  fontWeight: '600',
+                  color: isDark ? '#FFF' : '#000',
+                }}
                 numberOfLines={1}
               >
                 {id}
