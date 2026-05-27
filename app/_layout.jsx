@@ -167,10 +167,8 @@ export default function RootLayout() {
               options={{
                 presentation: 'formSheet',
                 sheetAllowedDetents: 'fitToContents',
-                headerStyle: {
-                  backgroundColor: isDark ? '#1C1C1E' : '#F2F2F7',
-                },
-                headerTintColor: isDark ? '#FFF' : '#007AFF',
+                headerTransparent: false,
+                headerStyle: { backgroundColor: 'transparent' },
               }}
             />
             <Stack.Screen
