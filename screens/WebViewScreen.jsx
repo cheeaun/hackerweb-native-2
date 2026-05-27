@@ -18,7 +18,6 @@ export default function WebViewScreen() {
 
   const [navState, setNavState] = useState({});
   const webViewRef = useRef(null);
-  const hasInjected = useRef(false);
 
   const { colors } = useTheme();
 
@@ -36,18 +35,8 @@ export default function WebViewScreen() {
         onNavigationStateChange={(navState) => {
           setNavState(navState);
         }}
-        onLoadEnd={() => {
-          if (
-            jsKey &&
-            injectedJavaScript &&
-            !hasInjected.current &&
-            navState.url?.includes('item?id=')
-          ) {
-            webViewRef.current?.injectJavaScript(injectedJavaScript);
-            hasInjected.current = true;
-          }
-        }}
         onMessage={() => {}}
+        injectedJavaScript={injectedJavaScript}
       />
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Menu icon="ellipsis">

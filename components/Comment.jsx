@@ -118,9 +118,7 @@ export default function Comment({
         router.push({
           pathname: '/web-view',
           params: {
-            url: `https://news.ycombinator.com/vote?id=${id}&how=up&goto=${encodeURIComponent(
-              `item?id=${id}`,
-            )}`,
+            url: hnURL,
             jsKey,
           },
         });
