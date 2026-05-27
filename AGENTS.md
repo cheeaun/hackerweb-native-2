@@ -62,6 +62,10 @@ utils/             — Utility functions
 assets/            — Icons, splash images
 ```
 
+## Rules
+
+- **Never commit or push without explicit permission.** Wait for the user to say "commit", "push", or similar before staging/committing/pushing.
+
 ## Conventions
 
 - Use `SymbolView` from `expo-symbols` for icons (SF Symbols)
