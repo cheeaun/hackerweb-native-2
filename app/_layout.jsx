@@ -133,8 +133,8 @@ export default function RootLayout() {
                 title: 'HackerWeb',
                 headerLargeTitle: true,
                 headerLargeTitleShadowVisible: false,
-                headerTransparent: false,
-                headerStyle: { backgroundColor: colors.background },
+                headerLargeTitleStyle: { color: colors.text },
+                headerTitleStyle: { color: colors.text },
                 headerBackTitle: undefined,
                 headerBackButtonDisplayMode: undefined,
               }}
@@ -168,7 +168,7 @@ export default function RootLayout() {
                 presentation: 'formSheet',
                 sheetAllowedDetents: 'fitToContents',
                 headerTransparent: false,
-                headerStyle: { backgroundColor: colors.background },
+                headerStyle: { backgroundColor: 'transparent' },
               }}
             />
             <Stack.Screen
@@ -176,8 +176,7 @@ export default function RootLayout() {
               options={{
                 title: 'Settings',
                 presentation: 'modal',
-                headerTransparent: false,
-                headerStyle: { backgroundColor: colors.background },
+                headerTitleStyle: { color: colors.text },
               }}
             />
             <Stack.Screen
@@ -202,7 +201,7 @@ export default function RootLayout() {
               options={{
                 title: 'Thread',
                 presentation: 'modal',
-                headerTransparent: false,
+                headerTitleStyle: { color: colors.text },
                 headerStyle: { backgroundColor: colors.background2 },
               }}
             />
@@ -211,8 +210,7 @@ export default function RootLayout() {
                 name="dev-test"
                 options={{
                   title: 'Dev Test',
-                  headerTransparent: false,
-                  headerStyle: { backgroundColor: colors.background },
+                  headerTitleStyle: { color: colors.text },
                 }}
               />
             )}
