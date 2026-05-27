@@ -133,6 +133,8 @@ export default function RootLayout() {
                 title: 'HackerWeb',
                 headerLargeTitle: true,
                 headerLargeTitleShadowVisible: false,
+                headerTransparent: false,
+                headerStyle: { backgroundColor: colors.background },
                 headerBackTitle: undefined,
                 headerBackButtonDisplayMode: undefined,
               }}
@@ -174,7 +176,8 @@ export default function RootLayout() {
               options={{
                 title: 'Settings',
                 presentation: 'modal',
-                headerTransparent: true,
+                headerTransparent: false,
+                headerStyle: { backgroundColor: colors.background },
               }}
             />
             <Stack.Screen
@@ -199,11 +202,19 @@ export default function RootLayout() {
               options={{
                 title: 'Thread',
                 presentation: 'modal',
+                headerTransparent: false,
                 headerStyle: { backgroundColor: colors.background2 },
               }}
             />
             {__DEV__ && (
-              <Stack.Screen name="dev-test" options={{ title: 'Dev Test' }} />
+              <Stack.Screen
+                name="dev-test"
+                options={{
+                  title: 'Dev Test',
+                  headerTransparent: false,
+                  headerStyle: { backgroundColor: colors.background },
+                }}
+              />
             )}
           </Stack>
         </SafeAreaProvider>
