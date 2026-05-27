@@ -168,7 +168,6 @@ export default function RootLayout() {
                 presentation: 'formSheet',
                 sheetAllowedDetents: 'fitToContents',
                 headerTransparent: false,
-                headerStyle: { backgroundColor: 'transparent' },
               }}
             />
             <Stack.Screen
@@ -193,7 +192,6 @@ export default function RootLayout() {
               options={{
                 presentation: 'modal',
                 headerTransparent: false,
-                headerStyle: { backgroundColor: colors.background },
               }}
             />
             <Stack.Screen
@@ -202,7 +200,6 @@ export default function RootLayout() {
                 title: 'Thread',
                 presentation: 'modal',
                 headerTitleStyle: { color: colors.text },
-                headerStyle: { backgroundColor: colors.background2 },
               }}
             />
             {__DEV__ && (
