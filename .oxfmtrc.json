@@ -1,4 +1,5 @@
 {
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
   "tabWidth": 2,
   "useTabs": false,
   "singleQuote": true,
@@ -20,5 +21,5 @@
   "importOrderGroupNamespaceSpecifiers": true,
   "printWidth": 80,
   "sortPackageJson": false,
-  "ignorePatterns": []
+  "ignorePatterns": ["*.md", "*.yml"]
 }
