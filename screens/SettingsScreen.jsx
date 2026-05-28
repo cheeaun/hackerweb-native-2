@@ -1,13 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  Alert,
-  Linking,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  View,
-} from 'react-native';
+import { Alert, Linking } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -20,10 +12,15 @@ import * as StoreReview from 'expo-store-review';
 import * as Updates from 'expo-updates';
 import Constants from 'expo-constants';
 
-import OuterSpacer from '../components/OuterSpacer';
-import ReadableWidthContainer from '../components/ReadableWidthContainer';
-import Separator from '../components/Separator';
-import Text from '../components/Text';
+import {
+  Host,
+  Form,
+  Section,
+  Toggle,
+  Button,
+  Text as SwiftUIText,
+} from '@expo/ui/swift-ui';
+import { buttonStyle } from '@expo/ui/swift-ui/modifiers';
 
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
@@ -31,66 +28,6 @@ import useTheme from '../hooks/useTheme';
 import openBrowser from '../utils/openBrowser';
 
 const EMAIL = 'cheeaun+hackerweb@gmail.com';
-
-function ListMenu(props) {
-  return (
-    <ReadableWidthContainer>
-      <View
-        {...props}
-        style={{
-          marginHorizontal: 15,
-          borderRadius: 24,
-          borderCurve: 'continuous',
-          overflow: 'hidden',
-        }}
-      />
-    </ReadableWidthContainer>
-  );
-}
-
-function ListItem({ style = {}, ...props }) {
-  const { colors } = useTheme();
-  const [pressed, setPressed] = useState(false);
-  const styles = {
-    paddingHorizontal: 15,
-    paddingVertical: 13,
-    backgroundColor: colors.background,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  };
-
-  return (
-    <Pressable
-      disabled={!props.onPress || props.disabled}
-      unstable_pressDelay={130}
-      onPressIn={() => {
-        setPressed(true);
-      }}
-      onPressOut={() => {
-        setPressed(false);
-      }}
-      style={[
-        styles,
-        pressed && {
-          backgroundColor: colors.fill,
-        },
-        style,
-      ]}
-      {...props}
-    />
-  );
-}
-
-const ListItemSeparator = () => (
-  <Separator
-    style={{
-      marginLeft: 15,
-      marginRight: 15,
-      marginTop: -StyleSheet.hairlineWidth,
-    }}
-  />
-);
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -121,92 +58,74 @@ export default function SettingsScreen() {
 
   return (
     <>
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <OuterSpacer />
-        <ListMenu>
-          <ListItem>
-            <Text>
-              <Text>Syntax highlighting (beta)</Text>
-            </Text>
-            <Switch
-              value={settingsSyntaxHighlighting}
-              onValueChange={(value) => {
+      <Host style={{ flex: 1 }} colorScheme={isDark ? 'dark' : 'light'}>
+        <Form>
+          <Section
+            footer={
+              <SwiftUIText>
+                Syntax highlighting for code blocks, with best-effort automatic
+                detection of languages.
+              </SwiftUIText>
+            }
+          >
+            <Toggle
+              isOn={settingsSyntaxHighlighting}
+              onIsOnChange={(value) => {
                 console.log({ value });
                 setSetting('syntaxHighlighting', value);
               }}
+              label="Syntax highlighting (beta)"
             />
-          </ListItem>
-        </ListMenu>
-        <OuterSpacer align="top" innerStyle={{ paddingHorizontal: 30 }}>
-          <Text
-            size="footnote"
-            type="insignificant"
-            style={{ marginBottom: 8 }}
+          </Section>
+
+          <Section
+            footer={
+              <SwiftUIText>
+                Interactions include upvoting and replying. This works by
+                opening a web view to load Hacker News web site with
+                interactions set in the URL.{'\n\n'}Login information and
+                session are stored in the web view, not the app itself.
+              </SwiftUIText>
+            }
           >
-            Syntax highlighting for code blocks, with best-effort automatic
-            detection of languages.
-          </Text>
-        </OuterSpacer>
-        <ListMenu>
-          <ListItem>
-            <Text>Allow interactions</Text>
-            <Switch
-              value={settingsInteractions}
-              onValueChange={(value) => {
+            <Toggle
+              isOn={settingsInteractions}
+              onIsOnChange={(value) => {
                 console.log({ value });
                 setSetting('interactions', value);
               }}
+              label="Allow interactions"
             />
-          </ListItem>
-        </ListMenu>
-        <OuterSpacer align="top" innerStyle={{ paddingHorizontal: 30 }}>
-          <Text
-            size="footnote"
-            type="insignificant"
-            style={{ marginBottom: 8 }}
-          >
-            Interactions include upvoting and replying. This works by opening a
-            web view to load Hacker News web site with interactions set in the
-            URL.
-          </Text>
-          <Text size="footnote" type="insignificant">
-            Login information and session are stored in the web view, not the
-            app itself.
-          </Text>
-        </OuterSpacer>
-        <OuterSpacer innerStyle={{ paddingHorizontal: 30 }}>
-          <Text type="insignificant" bold>
-            About
-          </Text>
-        </OuterSpacer>
-        <ListMenu>
-          <ListItem onPress={() => openBrowser('https://github.com/cheeaun')}>
-            <Text type="link">Made by @cheeaun</Text>
-          </ListItem>
-          <ListItemSeparator />
-          <ListItem
-            onPress={() =>
-              openBrowser('http://github.com/cheeaun/hackerweb-native-2')
+          </Section>
+
+          <Section
+            title="About"
+            footer={
+              <SwiftUIText>
+                Not affiliated with Hacker News or YCombinator.
+              </SwiftUIText>
             }
           >
-            <Text type="link">Open-sourced on GitHub</Text>
-          </ListItem>
-          <ListItemSeparator />
-          {!__PRODUCTION__ && (
-            <>
-              <ListItem
+            <Button
+              onPress={() => openBrowser('https://github.com/cheeaun')}
+              label="Made by @cheeaun"
+            />
+            <Button
+              onPress={() =>
+                openBrowser('http://github.com/cheeaun/hackerweb-native-2')
+              }
+              label="Open-sourced on GitHub"
+            />
+            {!__PRODUCTION__ && (
+              <Button
                 onPress={() =>
                   openBrowser('https://www.buymeacoffee.com/cheeaun')
                 }
-              >
-                <Text type="link">Buy me a coffee</Text>
-              </ListItem>
-              <ListItemSeparator />
-            </>
-          )}
-          {canRate && (
-            <>
-              <ListItem
+                label="Buy me a coffee"
+              />
+            )}
+            {canRate && (
+              <Button
                 onPress={() => {
                   if (__PRODUCTION__) {
                     StoreReview.requestReview();
@@ -216,16 +135,13 @@ export default function SettingsScreen() {
                     );
                   }
                 }}
-              >
-                <Text type="link">Rate {Constants.expoConfig.name}…</Text>
-              </ListItem>
-              <ListItemSeparator />
-            </>
-          )}
-          <ListItem
-            onPress={() => {
-              const subject = `${Application.applicationName} feedback`;
-              const body = `
+                label={`Rate ${Constants.expoConfig.name}…`}
+              />
+            )}
+            <Button
+              onPress={() => {
+                const subject = `${Application.applicationName} feedback`;
+                const body = `
 
               ---
               Additional Info (don't remove):
@@ -238,85 +154,69 @@ export default function SettingsScreen() {
               ${Device.modelName} (${Device.osName} ${Device.osVersion})
               `;
 
-              if (canComposeMail) {
-                MailComposer.composeAsync({
-                  recipients: [EMAIL],
-                  subject,
-                  body: body.replace(/\n/g, '<br>'),
-                  isHtml: true,
-                });
-              } else {
-                Linking.openURL(
-                  `mailto:${EMAIL}?subject=${encodeURIComponent(
+                if (canComposeMail) {
+                  MailComposer.composeAsync({
+                    recipients: [EMAIL],
                     subject,
-                  )}&body=${encodeURIComponent(body)}`,
-                );
-              }
-            }}
-          >
-            <Text type="link">Share Feedback…</Text>
-          </ListItem>
-          <ListItemSeparator />
-          <ListItem
-            onPress={() => openBrowser('https://hackerwebapp.com/privacy.md')}
-          >
-            <Text type="link">Privacy Policy</Text>
-          </ListItem>
-        </ListMenu>
-        <OuterSpacer align="top" innerStyle={{ paddingHorizontal: 30 }}>
-          <Text size="footnote" type="insignificant">
-            Not affiliated with Hacker News or YCombinator.
-          </Text>
-        </OuterSpacer>
-        <OuterSpacer innerStyle={{ paddingHorizontal: 30 }}>
-          <Text type="insignificant" bold>
-            Debugging
-          </Text>
-        </OuterSpacer>
-        <ListMenu>
-          <ListItem
-            onPress={() => {
-              Alert.prompt(
-                'Are you sure?',
-                'This is usually meant for debugging issues.',
-                [
-                  {
-                    text: 'Cancel',
-                    style: 'cancel',
-                  },
-                  {
-                    text: 'Clear',
-                    style: 'destructive',
-                    onPress: async () => {
-                      try {
-                        await AsyncStorage.clear();
-                        Alert.alert('Cache cleared.');
-                      } catch (e) {}
+                    body: body.replace(/\n/g, '<br>'),
+                    isHtml: true,
+                  });
+                } else {
+                  Linking.openURL(
+                    `mailto:${EMAIL}?subject=${encodeURIComponent(
+                      subject,
+                    )}&body=${encodeURIComponent(body)}`,
+                  );
+                }
+              }}
+              label="Share Feedback…"
+            />
+            <Button
+              onPress={() => openBrowser('https://hackerwebapp.com/privacy.md')}
+              label="Privacy Policy"
+            />
+          </Section>
+
+          <Section title="Debugging">
+            <Button
+              modifiers={[buttonStyle('plain')]}
+              onPress={() => {
+                Alert.prompt(
+                  'Are you sure?',
+                  'This is usually meant for debugging issues.',
+                  [
+                    {
+                      text: 'Cancel',
+                      style: 'cancel',
                     },
-                  },
-                ],
-                'default',
-              );
-            }}
-          >
-            <Text>Clear Cache…</Text>
-          </ListItem>
-        </ListMenu>
-        {!__PRODUCTION__ && (
-          <>
-            <OuterSpacer size="small" />
-            <ListMenu>
-              <ListItem
+                    {
+                      text: 'Clear',
+                      style: 'destructive',
+                      onPress: async () => {
+                        try {
+                          await AsyncStorage.clear();
+                          Alert.alert('Cache cleared.');
+                        } catch (e) {}
+                      },
+                    },
+                  ],
+                  'default',
+                );
+              }}
+              label="Clear Cache…"
+            />
+          </Section>
+
+          {!__PRODUCTION__ && (
+            <Section>
+              <Button
+                modifiers={[buttonStyle('plain')]}
                 onPress={() => {
                   router.push('/logs');
                 }}
-              >
-                <Text>Logs</Text>
-              </ListItem>
-
-              <ListItemSeparator />
-
-              <ListItem
+                label="Logs"
+              />
+              <Button
                 onPress={() => {
                   Alert.prompt(
                     'Open Story',
@@ -343,13 +243,9 @@ export default function SettingsScreen() {
                     'numeric',
                   );
                 }}
-              >
-                <Text type="link">Open Story…</Text>
-              </ListItem>
-
-              <ListItemSeparator />
-
-              <ListItem
+                label="Open Story…"
+              />
+              <Button
                 onPress={() => {
                   Updates.checkForUpdateAsync()
                     .then(({ isAvailable }) => {
@@ -374,54 +270,39 @@ export default function SettingsScreen() {
                       Alert.alert('An error occured', e?.toString());
                     });
                 }}
-              >
-                <Text type="link">Check for Updates…</Text>
-              </ListItem>
-            </ListMenu>
-          </>
-        )}
-        <OuterSpacer align="top" innerStyle={{ paddingHorizontal: 30 }}>
-          <Text size="footnote" type="insignificant">
-            {Application.applicationName} {Application.nativeApplicationVersion}{' '}
-            ({Application.nativeBuildVersion})
-          </Text>
-          {updateId && (
-            <Text size="footnote" type="insignificant" numberOfLines={1}>
-              Update: {updateId}
-            </Text>
+                label="Check for Updates…"
+              />
+            </Section>
           )}
-          {channel && (
-            <Text size="footnote" type="insignificant">
-              Channel: {channel}
-            </Text>
-          )}
-          {Constants.expoVersion && (
-            <Text size="footnote" type="insignificant">
-              Expo {Constants.expoVersion}
-            </Text>
-          )}
+
+          <Section
+            footer={
+              <SwiftUIText>
+                {`${Application.applicationName} ${Application.nativeApplicationVersion} (${Application.nativeBuildVersion})${updateId ? `\nUpdate: ${updateId}` : ''}${channel ? `\nChannel: ${channel}` : ''}${Constants.expoVersion ? `\nExpo ${Constants.expoVersion}` : ''}`}
+              </SwiftUIText>
+            }
+          />
+
           {updateIsAvailable && (
-            <Text
-              size="footnote"
-              type="link"
-              style={{ marginTop: 16 }}
-              onPress={() => {
-                Alert.alert('Update app', 'Install the latest update now?', [
-                  {
-                    text: 'OK',
-                    onPress: () => {
-                      reloadAsync();
+            <Section>
+              <Button
+                onPress={() => {
+                  Alert.alert('Update app', 'Install the latest update now?', [
+                    {
+                      text: 'OK',
+                      onPress: () => {
+                        reloadAsync();
+                      },
                     },
-                  },
-                  { text: 'Cancel', style: 'cancel' },
-                ]);
-              }}
-            >
-              Update available.
-            </Text>
+                    { text: 'Cancel', style: 'cancel' },
+                  ]);
+                }}
+                label="Update available."
+              />
+            </Section>
           )}
-        </OuterSpacer>
-      </ScrollView>
+        </Form>
+      </Host>
     </>
   );
 }
