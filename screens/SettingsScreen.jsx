@@ -36,7 +36,6 @@ export default function SettingsScreen() {
 
   const [canRate, setCanRate] = useState(false);
   useEffect(() => {
-    if (Constants.appOwnership === 'expo') return;
     StoreReview.hasAction().then((hasAction) => {
       setCanRate(hasAction);
     });
