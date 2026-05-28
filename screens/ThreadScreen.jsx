@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import { useLayout } from '@react-native-community/hooks';
-import SegmentedControl from '@react-native-segmented-control/segmented-control';
+import SegmentedControl from '@expo/ui/community/segmented-control';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
@@ -135,7 +135,7 @@ export default function ThreadScreen() {
         setCommentsLimit(parentCommentsCount);
         setTimeout(() => {
           scrollViewRef.current?.flashScrollIndicators();
-          scrollViewRef.current?.scrollToEnd();
+          // scrollViewRef.current?.scrollToEnd();
         }, 600);
         break;
       }
@@ -153,12 +153,14 @@ export default function ThreadScreen() {
     useLayout();
   const { onLayout, height } = useLayout();
 
-  const spacing = 30;
+  const spacing = 56;
   useEffect(() => {
     if (tabView === 'share') {
       const wholeHeight = height + spacing;
       const scale =
-        wholeHeight > scrollViewHeight ? scrollViewHeight / wholeHeight : 1;
+        wholeHeight > scrollViewHeight
+          ? (scrollViewHeight / wholeHeight) * 0.9
+          : 0.9;
 
       threadRef.current?.setNativeProps({
         style: {
@@ -169,7 +171,7 @@ export default function ThreadScreen() {
       // scroll to middle
       scrollViewRef.current?.scrollTo({
         x: 0,
-        y: (wholeHeight - wholeHeight * scale) / 2,
+        y: (wholeHeight - wholeHeight * scale) / 2 - spacing,
         animated: false,
       });
     } else {

@@ -26,7 +26,7 @@ import {
   useLocalSearchParams,
 } from 'expo-router';
 import { useAppState } from '@react-native-community/hooks';
-import SegmentedControl from '@react-native-segmented-control/segmented-control';
+import SegmentedControl from '@expo/ui/community/segmented-control';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { URL } from 'react-native-url-polyfill';
 import { WebView } from 'react-native-webview';
@@ -515,7 +515,7 @@ export default function StoryScreen() {
             )}
             {settingsInteractions && (
               <Stack.Toolbar.MenuAction
-                icon="arrow.up"
+                icon="arrowtriangle.up.fill"
                 onPress={() => {
                   const jsKey = `web-view-${Date.now()}`;
                   useStore.getState().setRouteInjectedJS(

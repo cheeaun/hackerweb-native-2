@@ -33,7 +33,9 @@
     "viz": "npx --yes react-native-bundle-visualizer",
     "deploy-staging": "if [ $(npm run last-prod-release --silent) = $(npm run current-prod-release --silent) ]; then if [ $(npm run last-eas-build --silent) = $(npm run current-eas-build --silent) ]; then npm run publish; else npm run eas-build-submit-ci; fi; fi",
     "deploy-production": "npm run eas-build-submit-ci-prod",
-    "expo-version": "expo --version"
+    "expo-version": "expo --version",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check"
   },
   "expo": {
     "install": {
@@ -43,6 +45,7 @@
     }
   },
   "dependencies": {
+    "@expo/ui": "~56.0.14",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-community/hooks": "~100.1.0",
     "@react-native-masked-view/masked-view": "0.3.2",
@@ -99,6 +102,7 @@
   },
   "devDependencies": {
     "baseline-browser-mapping": "^2.10.32",
-    "expo-atlas": "~0.4.3"
+    "expo-atlas": "~0.4.3",
+    "oxfmt": "~0.52.0"
   }
 }
