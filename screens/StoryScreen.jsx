@@ -14,8 +14,8 @@ import {
   Linking,
   ScrollView,
   StyleSheet,
-  TouchableOpacity,
   View,
+  useWindowDimensions,
 } from 'react-native';
 
 import {
@@ -33,8 +33,6 @@ import { WebView } from 'react-native-webview';
 
 import * as Application from 'expo-application';
 import * as Haptics from 'expo-haptics';
-import { GlassView } from 'expo-glass-effect';
-import { SymbolView } from 'expo-symbols';
 
 import CommentContainer from '../components/CommentContainer';
 import CommentPage from '../components/CommentPage';
@@ -180,8 +178,6 @@ export default function StoryScreen() {
 
   const { underViewableHeight } = useViewport();
   const [navState, setNavState] = useState({});
-  const [toolbarHeight, setToolbarHeight] = useState(0);
-  const [toolbarWidth, setToolbarWidth] = useState(0);
   const progressAnim = useRef(new Animated.Value(0)).current;
   const progressOpacityAnim = useRef(new Animated.Value(1)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -451,8 +447,12 @@ export default function StoryScreen() {
   );
 
   const insets = useSafeAreaInsets();
-
-  const toolbarPadding = underViewableHeight ? 8 : 15;
+  const { width: windowWidth } = useWindowDimensions();
+  const buttonWidth = 80;
+  const segmentWidth = Math.min(
+    Math.max(180, windowWidth - insets.left - insets.right - buttonWidth * 2),
+    360,
+  );
 
   const listRef = useRef(null);
   const currentAppState = useAppState();
@@ -581,155 +581,165 @@ export default function StoryScreen() {
           setStoryScroll(id, y);
         }}
         removeClippedSubviews
-        scrollIndicatorInsets={{
-          top: 0,
-          right: 0,
-          bottom: toolbarHeight,
-          left: 0,
-        }}
-        ListFooterComponent={() => <View style={{ height: toolbarHeight }} />}
-        contentContainerStyle={{ flexGrow: 0.8 }}
         contentOffset={{
           x: 0,
           y: scrollY.current,
         }}
       />
       {httpLink && (
-        <View
-          pointerEvents="box-none"
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-          }}
-        >
-          <Animated.View
-            pointerEvents={tabView === 'web' ? 'auto' : 'none'}
+        <>
+          <View
+            pointerEvents="box-none"
             style={{
-              flex: 1,
-              opacity: fadeAnim,
-              transform: [
-                {
-                  scale: fadeAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0.98, 1],
-                  }),
-                },
-              ],
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
             }}
           >
-            {webMounted && (
-              <WebView
-                ref={webViewRef}
-                style={{ backgroundColor: colors.background }}
-                applicationNameForUserAgent={`${Application.applicationName}/${Application.nativeApplicationVersion}`}
-                source={{ uri: url }}
-                originWhitelist={['http://*', 'https://*', 'data:*', 'about:*']}
-                decelerationRate="normal"
-                allowsInlineMediaPlayback
-                contentInsetAdjustmentBehavior="automatic"
-                automaticallyAdjustContentInsets
-                automaticallyAdjustsScrollIndicatorInsets
-                allowsBackForwardNavigationGestures
-                renderLoading={() => null}
-                onNavigationStateChange={(navState) => {
-                  setNavState(navState);
-                }}
-                onLoadStart={() => {
-                  progressAnim.setValue(0);
-                  progressOpacityAnim.setValue(1);
-                  addLink(url);
-                }}
-                onLoadEnd={() => {
-                  Animated.timing(progressAnim, {
-                    toValue: 1,
-                    duration: 300,
-                    useNativeDriver: false,
-                  }).start(() => {
-                    Animated.timing(progressOpacityAnim, {
-                      toValue: 0,
-                      delay: 100,
+            <Animated.View
+              pointerEvents={tabView === 'web' ? 'auto' : 'none'}
+              style={{
+                flex: 1,
+                opacity: fadeAnim,
+                transform: [
+                  {
+                    scale: fadeAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0.98, 1],
+                    }),
+                  },
+                ],
+              }}
+            >
+              {webMounted && (
+                <WebView
+                  ref={webViewRef}
+                  style={{ backgroundColor: colors.background }}
+                  applicationNameForUserAgent={`${Application.applicationName}/${Application.nativeApplicationVersion}`}
+                  source={{ uri: url }}
+                  originWhitelist={[
+                    'http://*',
+                    'https://*',
+                    'data:*',
+                    'about:*',
+                  ]}
+                  decelerationRate="normal"
+                  allowsInlineMediaPlayback
+                  contentInsetAdjustmentBehavior="automatic"
+                  automaticallyAdjustContentInsets
+                  automaticallyAdjustsScrollIndicatorInsets
+                  allowsBackForwardNavigationGestures
+                  renderLoading={() => null}
+                  onNavigationStateChange={(navState) => {
+                    setNavState(navState);
+                  }}
+                  onLoadStart={() => {
+                    progressAnim.setValue(0);
+                    progressOpacityAnim.setValue(1);
+                    addLink(url);
+                  }}
+                  onLoadEnd={() => {
+                    Animated.timing(progressAnim, {
+                      toValue: 1,
                       duration: 300,
                       useNativeDriver: false,
-                    }).start();
-                  });
-                }}
-                onLoadProgress={(e) => {
-                  const { progress, loading } = e.nativeEvent;
-                  Animated.timing(progressAnim, {
-                    toValue: progress,
-                    duration: 1000,
-                    useNativeDriver: false,
-                  }).start(() => {
-                    if (progress > 0.99) {
+                    }).start(() => {
                       Animated.timing(progressOpacityAnim, {
                         toValue: 0,
                         delay: 100,
                         duration: 300,
                         useNativeDriver: false,
                       }).start();
-                    }
-                  });
-                  setNavState({
-                    ...navState,
-                    loading,
-                  });
-                }}
-                onMessage={() => {}}
-                injectedJavaScript={`
-                  try {
-                    document.querySelectorAll('video[autoplay]').forEach(v => v.playsInline = true);
-                    var observer = new MutationObserver(function(mutations) {
-                      document.querySelectorAll('video[autoplay]').forEach(v => v.playsInline = true);
                     });
-                    observer.observe(document, {attributes: false, childList: true, characterData: false, subtree: true});
-                  } catch (e) {}
-                  true;
-                `}
-              />
-            )}
-          </Animated.View>
-          <GlassView>
-            <View
-              onLayout={(e) => {
-                const { height, width } = e.nativeEvent.layout;
-                setToolbarWidth(width);
-                setToolbarHeight(height - insets.bottom);
-              }}
+                  }}
+                  onLoadProgress={(e) => {
+                    const { progress, loading } = e.nativeEvent;
+                    Animated.timing(progressAnim, {
+                      toValue: progress,
+                      duration: 1000,
+                      useNativeDriver: false,
+                    }).start(() => {
+                      if (progress > 0.99) {
+                        Animated.timing(progressOpacityAnim, {
+                          toValue: 0,
+                          delay: 100,
+                          duration: 300,
+                          useNativeDriver: false,
+                        }).start();
+                      }
+                    });
+                    setNavState({
+                      ...navState,
+                      loading,
+                    });
+                  }}
+                  onMessage={() => {}}
+                  injectedJavaScript={`
+                    try {
+                      document.querySelectorAll('video[autoplay]').forEach(v => v.playsInline = true);
+                      var observer = new MutationObserver(function(mutations) {
+                        document.querySelectorAll('video[autoplay]').forEach(v => v.playsInline = true);
+                      });
+                      observer.observe(document, {attributes: false, childList: true, characterData: false, subtree: true});
+                    } catch (e) {}
+                    true;
+                  `}
+                />
+              )}
+            </Animated.View>
+            <ScrollView
+              pointerEvents="none"
+              removeClippedSubviews
+              contentInsetAdjustmentBehavior="automatic"
               style={{
-                paddingTop: toolbarPadding,
-                paddingBottom: Math.max(toolbarPadding, insets.bottom),
-                flexShrink: 0,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
+                opacity: tabView === 'web' ? 1 : 0,
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0,
               }}
             >
-              <View style={{ width: 60, alignItems: 'center' }}>
-                {navState.canGoBack && tabView === 'web' && (
-                  <TouchableOpacity
-                    onPress={() => {
-                      webViewRef.current?.goBack();
-                    }}
-                    hitSlop={{
-                      top: 22,
-                      right: 22,
-                      bottom: 22,
-                      left: 22,
-                    }}
-                  >
-                    <SymbolView
-                      name="chevron.backward"
-                      size={18}
-                      tintColor={colors.text}
-                    />
-                  </TouchableOpacity>
-                )}
+              <View style={{ width: '100%' }}>
+                <Animated.View
+                  style={{
+                    width: '100%',
+                    backgroundColor: colors.primary,
+                    height: 2,
+                    shadowOpacity: 0.7,
+                    shadowOffset: { width: 0, height: 0 },
+                    shadowColor: colors.primary,
+                    shadowRadius: 2,
+                    transform: [
+                      {
+                        translateX:
+                          0 ||
+                          progressAnim.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [-windowWidth + 10, 0],
+                          }),
+                      },
+                    ],
+                    opacity: progressOpacityAnim,
+                  }}
+                />
               </View>
+            </ScrollView>
+          </View>
+          <Stack.Toolbar placement="bottom">
+            {navState.canGoBack && tabView === 'web' && (
+              <Stack.Toolbar.Button
+                icon="chevron.backward"
+                onPress={() => webViewRef.current?.goBack()}
+                hidden={navState.canGoBack && tabView === 'web' ? false : true}
+              />
+            )}
+            <Stack.Toolbar.Spacer width={1} />
+            <Stack.Toolbar.View>
               <SegmentedControl
-                style={{ flexGrow: 1, maxWidth: 480 }}
+                style={{ width: segmentWidth }}
                 appearance={isDark ? 'dark' : 'light'}
                 values={tabValues}
                 selectedIndex={Math.max(
@@ -743,48 +753,10 @@ export default function StoryScreen() {
                   setTabView(tab);
                 }}
               />
-              <View style={{ width: 60 }} />
-            </View>
-          </GlassView>
-          <ScrollView
-            pointerEvents="none"
-            removeClippedSubviews
-            contentInsetAdjustmentBehavior="automatic"
-            style={{
-              opacity: tabView === 'web' ? 1 : 0,
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0,
-            }}
-          >
-            <View style={{ width: '100%' }}>
-              <Animated.View
-                style={{
-                  width: '100%',
-                  backgroundColor: colors.primary,
-                  height: 2,
-                  shadowOpacity: 0.7,
-                  shadowOffset: { width: 0, height: 0 },
-                  shadowColor: colors.primary,
-                  shadowRadius: 2,
-                  transform: [
-                    {
-                      translateX:
-                        0 ||
-                        progressAnim.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: [-toolbarWidth + 10, 0],
-                        }),
-                    },
-                  ],
-                  opacity: progressOpacityAnim,
-                }}
-              />
-            </View>
-          </ScrollView>
-        </View>
+            </Stack.Toolbar.View>
+            <Stack.Toolbar.Spacer width={1} />
+          </Stack.Toolbar>
+        </>
       )}
     </>
   );
