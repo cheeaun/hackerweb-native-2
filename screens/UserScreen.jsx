@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { LayoutAnimation, StyleSheet, View } from 'react-native';
+import { LayoutAnimation, StyleSheet, View, ScrollView } from 'react-native';
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
@@ -100,7 +100,10 @@ export default function UserScreen() {
   );
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      style={styles.container}
+    >
       <Separator />
       {fetchState === 'error' ? (
         <View style={styles.centeredContainer}>
@@ -172,6 +175,6 @@ export default function UserScreen() {
           )}
         </>
       )}
-    </View>
+    </ScrollView>
   );
 }

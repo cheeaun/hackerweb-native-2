@@ -143,6 +143,7 @@ export default function RootLayout() {
               name="story/[id]"
               options={{
                 title: '',
+                headerTitleStyle: { color: colors.text },
                 headerTransparent: true,
                 headerBackButtonDisplayMode: 'minimal',
               }}
@@ -150,6 +151,7 @@ export default function RootLayout() {
             <Stack.Screen
               name="story-modal/[id]"
               options={{
+                headerTitleStyle: { color: colors.text },
                 presentation: 'modal',
                 headerTransparent: true,
                 headerShadowVisible: false,
@@ -167,8 +169,7 @@ export default function RootLayout() {
               options={{
                 presentation: 'formSheet',
                 sheetAllowedDetents: 'fitToContents',
-                headerTransparent: false,
-                headerStyle: { backgroundColor: 'transparent' },
+                sheetExpandsWhenScrolledToEdge: true,
               }}
             />
             <Stack.Screen
