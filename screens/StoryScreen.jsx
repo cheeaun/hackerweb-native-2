@@ -1,4 +1,5 @@
 import {
+  Fragment,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -21,6 +22,7 @@ import {
 import {
   Stack,
   useFocusEffect,
+  useIsPreview,
   useRouter,
   useNavigation,
   useLocalSearchParams,
@@ -88,6 +90,8 @@ export default function StoryScreen() {
   const router = useRouter();
   const navigation = useNavigation();
 
+  const isPreview = useIsPreview();
+
   const { id, tab } = useLocalSearchParams();
 
   const story = useStore(
@@ -109,45 +113,42 @@ export default function StoryScreen() {
   const [storyLoading, setStoryLoading] = useState(false);
   const transitionEnded = useRef(false);
   useEffect(() => {
+    if (isPreview) return;
     const unsubscribe = navigation.addListener('transitionEnd', () => {
       transitionEnded.current = true;
     });
     return unsubscribe;
-  }, [navigation]);
+  }, [navigation, isPreview]);
 
-  useFocusEffect(
-    useCallback(() => {
-      console.log('👀 StoryScreen is focused');
-      if (story.comments?.length) return;
+  useEffect(() => {
+    if (isPreview && tabView === 'web') return;
+    if (story.comments?.length) return;
 
-      let ignore = false;
-      setStoryLoading(true);
-      let fetchPromise;
-      const numericId = parseInt(id, 10);
-      if (!story.__isItem) {
-        fetchPromise = fetchStory(numericId);
-      } else {
-        fetchPromise = fetchItem(numericId);
-      }
-      fetchPromise
-        .catch((e) => {
-          Alert.alert('Error loading story');
-        })
-        .finally(() => {
-          if (ignore) return;
-          if (transitionEnded.current) {
-            LayoutAnimation.configureNext(
-              LayoutAnimation.Presets.easeInEaseOut,
-            );
-          }
-          setStoryLoading(false);
-        });
+    let ignore = false;
+    setStoryLoading(true);
+    let fetchPromise;
+    const numericId = parseInt(id, 10);
+    if (!story.__isItem) {
+      fetchPromise = fetchStory(numericId);
+    } else {
+      fetchPromise = fetchItem(numericId);
+    }
+    fetchPromise
+      .catch((e) => {
+        Alert.alert('Error loading story');
+      })
+      .finally(() => {
+        if (ignore) return;
+        if (!isPreview && transitionEnded.current) {
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        }
+        setStoryLoading(false);
+      });
 
-      return () => {
-        ignore = true;
-      };
-    }, [id, story.comments?.length, !!story.__isItem]),
-  );
+    return () => {
+      ignore = true;
+    };
+  }, [id, tabView, story.comments?.length, !!story.__isItem, isPreview]);
 
   const {
     title,
@@ -411,28 +412,42 @@ export default function StoryScreen() {
       const options = {
         title: scrolled ? title : '',
       };
-      navigation.setOptions(options);
+      if (!isPreview) {
+        try {
+          navigation.setOptions(options);
+        } catch {}
+      }
       commentsNavOptions.current = options;
     },
-    [tabView, title],
+    [tabView, title, isPreview],
   );
 
   useLayoutEffect(() => {
-    if (tabView === 'web') {
+    if (isPreview || tabView !== 'web') return;
+    try {
       navigation.setOptions({
         title: parseURL(navState.url || url).domain || '',
       });
-    }
-  }, [url, navState.url, navState.title]);
+    } catch {}
+  }, [url, navState.url, navState.title, isPreview]);
 
   useLayoutEffect(
     useCallback(() => {
-      navigation.setOptions({
-        title:
-          tabView === 'web'
-            ? parseURL(navState.url || url).domain || ''
-            : commentsNavOptions.current.title,
-      });
+      if (tabView === 'web') setWebMounted(true);
+
+      if (isPreview) {
+        fadeAnim.setValue(tabView === 'web' ? 1 : 0);
+        return;
+      }
+
+      try {
+        navigation.setOptions({
+          title:
+            tabView === 'web'
+              ? parseURL(navState.url || url).domain || ''
+              : commentsNavOptions.current.title,
+        });
+      } catch {}
 
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       Animated.timing(fadeAnim, {
@@ -440,9 +455,7 @@ export default function StoryScreen() {
         duration: isDark ? 300 : 150,
         useNativeDriver: true,
       }).start();
-
-      if (tabView === 'web') setWebMounted(true);
-    }, [tabView, isDark]),
+    }, [tabView, isDark, isPreview]),
     [tabView],
   );
 
@@ -457,6 +470,7 @@ export default function StoryScreen() {
   const listRef = useRef(null);
   const currentAppState = useAppState();
   useEffect(() => {
+    if (isPreview) return;
     let timeout;
     if (
       tabView === 'comments' &&
@@ -468,20 +482,32 @@ export default function StoryScreen() {
       }, 300);
     }
     return () => clearTimeout(timeout);
-  }, [tabView, storyLoading, currentAppState === 'active']);
+  }, [tabView, storyLoading, currentAppState === 'active', isPreview]);
   useFocusEffect(
     useCallback(() => {
+      if (isPreview) return;
       if (tabView === 'comments') {
         setTimeout(() => {
           listRef.current?.flashScrollIndicators();
         }, 300);
       }
-    }, [tabView]),
+    }, [tabView, isPreview]),
   );
 
+  const Container = isPreview ? View : Fragment;
+  const containerProps = isPreview
+    ? {
+        style: {
+          flex: 1,
+          backgroundColor: colors.background,
+          overflow: 'hidden',
+        },
+      }
+    : {};
+
   return (
-    <>
-      {tabView === 'web' && (
+    <Container {...containerProps}>
+      {!isPreview && tabView === 'web' && (
         <Stack.Toolbar placement="right">
           <Stack.Toolbar.Menu icon="ellipsis">
             <Stack.Toolbar.MenuAction
@@ -505,7 +531,7 @@ export default function StoryScreen() {
           </Stack.Toolbar.Menu>
         </Stack.Toolbar>
       )}
-      {tabView === 'comments' && (
+      {!isPreview && tabView === 'comments' && (
         <Stack.Toolbar placement="right">
           <Stack.Toolbar.Menu icon="square.and.arrow.up">
             {!settingsInteractions && (
@@ -565,7 +591,7 @@ export default function StoryScreen() {
         ref={listRef}
         pointerEvents={tabView === 'comments' ? 'auto' : 'none'}
         ListHeaderComponent={ListHeaderComponent}
-        data={comments}
+        data={isPreview ? comments.slice(0, 5) : comments}
         renderItem={renderItem}
         ListEmptyComponent={ListEmptyComponent}
         keyExtractor={keyExtractor}
@@ -728,36 +754,40 @@ export default function StoryScreen() {
               </View>
             </ScrollView>
           </View>
-          <Stack.Toolbar placement="bottom">
-            {navState.canGoBack && tabView === 'web' && (
-              <Stack.Toolbar.Button
-                icon="chevron.backward"
-                onPress={() => webViewRef.current?.goBack()}
-                hidden={navState.canGoBack && tabView === 'web' ? false : true}
-              />
-            )}
-            <Stack.Toolbar.Spacer width={1} />
-            <Stack.Toolbar.View>
-              <SegmentedControl
-                style={{ width: segmentWidth }}
-                appearance={isDark ? 'dark' : 'light'}
-                values={tabValues}
-                selectedIndex={Math.max(
-                  0,
-                  tabViews.findIndex((v) => v === tabView),
-                )}
-                onChange={(e) => {
-                  Haptics.selectionAsync();
-                  const index = e.nativeEvent.selectedSegmentIndex;
-                  const tab = tabViews[index].toLowerCase();
-                  setTabView(tab);
-                }}
-              />
-            </Stack.Toolbar.View>
-            <Stack.Toolbar.Spacer width={1} />
-          </Stack.Toolbar>
+          {!isPreview && (
+            <Stack.Toolbar placement="bottom">
+              {navState.canGoBack && tabView === 'web' && (
+                <Stack.Toolbar.Button
+                  icon="chevron.backward"
+                  onPress={() => webViewRef.current?.goBack()}
+                  hidden={
+                    navState.canGoBack && tabView === 'web' ? false : true
+                  }
+                />
+              )}
+              <Stack.Toolbar.Spacer width={1} />
+              <Stack.Toolbar.View>
+                <SegmentedControl
+                  style={{ width: segmentWidth }}
+                  appearance={isDark ? 'dark' : 'light'}
+                  values={tabValues}
+                  selectedIndex={Math.max(
+                    0,
+                    tabViews.findIndex((v) => v === tabView),
+                  )}
+                  onChange={(e) => {
+                    Haptics.selectionAsync();
+                    const index = e.nativeEvent.selectedSegmentIndex;
+                    const tab = tabViews[index].toLowerCase();
+                    setTabView(tab);
+                  }}
+                />
+              </Stack.Toolbar.View>
+              <Stack.Toolbar.Spacer width={1} />
+            </Stack.Toolbar>
+          )}
         </>
       )}
-    </>
+    </Container>
   );
 }
