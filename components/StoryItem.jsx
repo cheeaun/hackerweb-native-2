@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Link } from 'expo-router';
@@ -72,6 +72,8 @@ export default function StoryItem({ id, position }) {
   const isJob = type === 'job';
   const [pressed, setPressed] = useState(false);
   const [pressed2, setPressed2] = useState(false);
+  const pressTimer = useRef(null);
+  const pressTimer2 = useRef(null);
 
   if (!story) {
     console.warn(`Story not found: ${id} (${position})`);
@@ -80,12 +82,39 @@ export default function StoryItem({ id, position }) {
 
   const shortCommentsCount = shortenNumber(comments_count);
 
+  const handleTouchStart = () => {
+    clearTimeout(pressTimer.current);
+    pressTimer.current = setTimeout(() => setPressed(true), 130);
+  };
+
+  const handleTouchEnd = () => {
+    clearTimeout(pressTimer.current);
+    setPressed(false);
+  };
+
+  const handleTouchStart2 = () => {
+    clearTimeout(pressTimer2.current);
+    pressTimer2.current = setTimeout(() => setPressed2(true), 130);
+  };
+
+  const handleTouchEnd2 = () => {
+    clearTimeout(pressTimer2.current);
+    setPressed2(false);
+  };
+
   const shareHandler = useCallback(() => {
     const shareUrl = httpLink
       ? url
       : `https://news.ycombinator.com/item?id=${id}`;
     openShare({ url: shareUrl });
   }, [httpLink, url, id]);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(pressTimer.current);
+      clearTimeout(pressTimer2.current);
+    };
+  }, []);
 
   const storyInfoContent = (
     <>
@@ -187,14 +216,15 @@ export default function StoryItem({ id, position }) {
         <View style={styles.flex}>
           <Link href={`/story/${id}?tab=web`} push>
             <Link.Trigger>
-              <Pressable
-                unstable_pressDelay={130}
-                onPressIn={() => setPressed(true)}
-                onPressOut={() => setPressed(false)}
+              <View
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+                onTouchMove={handleTouchEnd}
+                onTouchCancel={handleTouchEnd}
                 style={styles.storyInfo}
               >
                 {storyInfoContent}
-              </Pressable>
+              </View>
             </Link.Trigger>
             <Link.Preview />
             <Link.Menu>
@@ -209,13 +239,14 @@ export default function StoryItem({ id, position }) {
         </View>
         <Link href={`/story/${id}?tab=comments`} push>
           <Link.Trigger>
-            <Pressable
-              unstable_pressDelay={130}
-              onPressIn={() => {
+            <View
+              onTouchStart={() => {
                 fetchStory(id);
-                setPressed2(true);
+                handleTouchStart2();
               }}
-              onPressOut={() => setPressed2(false)}
+              onTouchEnd={handleTouchEnd2}
+              onTouchMove={handleTouchEnd2}
+              onTouchCancel={handleTouchEnd2}
               style={StyleSheet.flatten([
                 styles.storyComments,
                 pressed2 && { opacity: 0.5 },
@@ -236,7 +267,7 @@ export default function StoryItem({ id, position }) {
                   {shortenNumber(comments_count)}
                 </Text>
               )}
-            </Pressable>
+            </View>
           </Link.Trigger>
           <Link.Preview />
           <Link.Menu>
@@ -255,17 +286,18 @@ export default function StoryItem({ id, position }) {
       <View style={styles.flex}>
         <Link href={`/story/${id}?tab=comments`} push>
           <Link.Trigger>
-            <Pressable
-              unstable_pressDelay={130}
-              onPressIn={() => setPressed(true)}
-              onPressOut={() => setPressed(false)}
+            <View
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              onTouchMove={handleTouchEnd}
+              onTouchCancel={handleTouchEnd}
               style={StyleSheet.flatten([
                 styles.storyInfo,
                 pressed && { backgroundColor: colors.secondaryBackground },
               ])}
             >
               {storyInfoContent}
-            </Pressable>
+            </View>
           </Link.Trigger>
           <Link.Preview />
           <Link.Menu>
