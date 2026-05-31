@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
-import { PlatformColor, StyleSheet, View } from 'react-native';
+import { PlatformColor, Pressable, StyleSheet, View } from 'react-native';
 
-import { useFocusEffect, useRouter } from 'expo-router';
+import { Link, useFocusEffect } from 'expo-router';
 import Svg, { Path } from 'react-native-svg';
 
 import { SymbolView } from 'expo-symbols';
@@ -12,7 +12,6 @@ import useStore from '../hooks/useStore';
 import getCommentsMetadata from '../utils/getCommentsMetadata';
 import getHTMLText from '../utils/getHTMLText';
 
-import Button from './Button';
 import Comment from './Comment';
 import ReadableWidthContainer from './ReadableWidthContainer';
 import Separator from './Separator';
@@ -30,14 +29,16 @@ const styles = StyleSheet.create({
 function RepliesCommentsButton({
   replies,
   comments,
+  item,
+  storyID,
   level = 1,
   style,
   suffix,
   previews = [],
-  onPress = () => {},
   ...props
 }) {
   const { colors } = useTheme();
+  const setRouteItemCache = useStore((state) => state.setRouteItemCache);
   const countDiffer = replies !== comments;
   const [pressed, setPressed] = useState(false);
   useFocusEffect(
@@ -48,102 +49,110 @@ function RepliesCommentsButton({
       return () => clearTimeout(timer);
     }, []),
   );
+  const cacheKey = `${storyID}-${item?.id}`;
+  const href = `/comments/${storyID}/${item?.id}?zIndex=${level + 1}`;
   return (
     <View style={styles.innerComment}>
       <CommentBar last />
-      <Button
-        style={[
-          {
-            backgroundColor: colors.opaqueBackground,
-            flexGrow: 1,
-            marginRight: 15,
-            borderWidth: StyleSheet.hairlineWidth,
-            borderColor: colors.opaqueBackground3,
-          },
-          pressed && { backgroundColor: colors.opaqueBackground2 },
-          style,
-        ]}
-        pressedStyle={{
-          backgroundColor: colors.opaqueBackground2,
-        }}
-        onPress={() => {
-          setPressed(true);
-          onPress();
-        }}
-        {...props}
-      >
-        {!!previews?.length && (
-          <>
-            {previews.map((comment) => {
-              const commentText = getHTMLText(comment.content);
-              const firstNonBlockQuoteLine = commentText
-                .split(/\n+/)
-                .find(
-                  (line) => line.trim() !== '' && !line.trim().startsWith('>'),
-                );
-
-              return (
-                <View
-                  key={comment.id}
-                  style={{
-                    marginBottom: 8,
-                    opacity: 0.7,
-                  }}
-                >
-                  <Text numberOfLines={1}>
-                    <Text size="subhead" bold>
-                      {comment.user}
-                    </Text>
-                    {'  '}
-                    <Text size="subhead">
-                      {firstNonBlockQuoteLine || commentText}
-                    </Text>
-                  </Text>
-                </View>
-              );
-            })}
-            <Separator
-              style={{
-                marginBottom: 12,
-                marginTop: 8,
-              }}
-            />
-          </>
-        )}
-        <Text numberOfLines={1}>
-          <SymbolView
-            name="bubble"
-            size={15}
-            weight="bold"
-            style={{
-              transform: [
-                {
-                  translateY: 2,
-                },
-              ],
+      <Link href={href} push asChild>
+        <Link.Trigger>
+          <Pressable
+            onPressIn={() => {
+              setPressed(true);
+              if (item) setRouteItemCache(cacheKey, item);
             }}
-          />
-          <Text size="subhead" type="link" bold>
-            {' '}
-            {replies.toLocaleString('en-US')}{' '}
-            {replies !== 1 ? 'replies' : 'reply'}
-          </Text>
-          {countDiffer ? (
-            <Text size="footnote" type="insignificant">
-              {' '}
-              &bull; {comments.toLocaleString('en-US')}{' '}
-              {comments !== 1 ? 'comments' : 'comment'}
-            </Text>
-          ) : (
-            suffix && (
-              <Text size="footnote" type="insignificant">
+            onPressOut={() => setPressed(false)}
+            style={StyleSheet.flatten([
+              {
+                flexGrow: 1,
+                marginRight: 15,
+                backgroundColor: colors.opaqueBackground,
+                borderWidth: StyleSheet.hairlineWidth,
+                borderColor: colors.opaqueBackground3,
+                padding: 12,
+                borderRadius: 15,
+                borderCurve: 'continuous',
+              },
+              pressed && { backgroundColor: colors.opaqueBackground2 },
+              style,
+            ])}
+          >
+            {!!previews?.length && (
+              <>
+                {previews.map((comment) => {
+                  const commentText = getHTMLText(comment.content);
+                  const firstNonBlockQuoteLine = commentText
+                    .split(/\n+/)
+                    .find(
+                      (line) =>
+                        line.trim() !== '' && !line.trim().startsWith('>'),
+                    );
+
+                  return (
+                    <View
+                      key={comment.id}
+                      style={{
+                        marginBottom: 8,
+                        opacity: 0.7,
+                      }}
+                    >
+                      <Text numberOfLines={1}>
+                        <Text size="subhead" bold>
+                          {comment.user}
+                        </Text>
+                        {'  '}
+                        <Text size="subhead">
+                          {firstNonBlockQuoteLine || commentText}
+                        </Text>
+                      </Text>
+                    </View>
+                  );
+                })}
+                <Separator
+                  style={{
+                    marginBottom: 12,
+                    marginTop: 8,
+                  }}
+                />
+              </>
+            )}
+            <Text numberOfLines={1}>
+              <SymbolView
+                name="bubble"
+                size={15}
+                weight="bold"
+                style={{
+                  transform: [
+                    {
+                      translateY: 2,
+                    },
+                  ],
+                }}
+              />
+              <Text size="subhead" type="link" bold>
                 {' '}
-                {suffix}
+                {replies.toLocaleString('en-US')}{' '}
+                {replies !== 1 ? 'replies' : 'reply'}
               </Text>
-            )
-          )}
-        </Text>
-      </Button>
+              {countDiffer ? (
+                <Text size="footnote" type="insignificant">
+                  {' '}
+                  &bull; {comments.toLocaleString('en-US')}{' '}
+                  {comments !== 1 ? 'comments' : 'comment'}
+                </Text>
+              ) : (
+                suffix && (
+                  <Text size="footnote" type="insignificant">
+                    {' '}
+                    {suffix}
+                  </Text>
+                )
+              )}
+            </Text>
+          </Pressable>
+        </Link.Trigger>
+        <Link.Preview />
+      </Link>
     </View>
   );
 }
@@ -202,8 +211,6 @@ function InnerCommentContainer({
   if (item.dead || (item.deleted && !item.comments.length)) return null;
 
   const { colors } = useTheme();
-  const router = useRouter();
-  const setRouteItemCache = useStore((state) => state.setRouteItemCache);
   const { repliesCount, totalComments } = getCommentsMetadata(item);
   const totalWeight =
     calcCommentWeight(item) + calcCommentsWeight(item.comments) + accWeight;
@@ -237,16 +244,11 @@ function InnerCommentContainer({
             <RepliesCommentsButton
               level={nextLevel}
               style={{ marginBottom: 15 }}
+              item={item}
+              storyID={storyID}
               replies={repliesCount}
               comments={totalComments}
               suffix={suffixText(comments, repliesCount)}
-              onPress={() => {
-                const cacheKey = `${storyID}-${item.id}`;
-                setRouteItemCache(cacheKey, item);
-                router.push(
-                  `/comments/${storyID}/${item.id}?zIndex=${level + 1}`,
-                );
-              }}
             />
           ))}
       </View>
@@ -280,9 +282,6 @@ function suffixText(comments, repliesCount) {
 }
 
 export default function CommentContainer({ item, maxWeight = 5, storyID }) {
-  const router = useRouter();
-  const setRouteItemCache = useStore((state) => state.setRouteItemCache);
-
   if (item.dead || (item.deleted && !item.comments.length)) return null;
 
   const { repliesCount, totalComments } = getCommentsMetadata(item);
@@ -317,13 +316,10 @@ export default function CommentContainer({ item, maxWeight = 5, storyID }) {
             <RepliesCommentsButton
               replies={repliesCount}
               comments={totalComments}
+              item={item}
+              storyID={storyID}
               suffix={suffixText(comments, repliesCount)}
               previews={hasPreviews ? item.comments.slice(0, 2) : []}
-              onPress={() => {
-                const cacheKey = `${storyID}-${item.id}`;
-                setRouteItemCache?.(cacheKey, item);
-                router.push(`/comments/${storyID}/${item.id}?zIndex=1`);
-              }}
             />
           ))}
       </View>

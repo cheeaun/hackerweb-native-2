@@ -425,6 +425,9 @@ export default function StoryScreen() {
   useLayoutEffect(() => {
     if (isPreview || tabView !== 'web') return;
     try {
+      console.log('🔧 Set header options for web view', {
+        isPreview,
+      });
       navigation.setOptions({
         title: parseURL(navState.url || url).domain || '',
       });
@@ -441,6 +444,10 @@ export default function StoryScreen() {
       }
 
       try {
+        console.log('🔧 Set header options on tab change', {
+          isPreview,
+          tabView,
+        });
         navigation.setOptions({
           title:
             tabView === 'web'

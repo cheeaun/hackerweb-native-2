@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Animated,
   LayoutAnimation,
@@ -13,6 +20,8 @@ import { useAppState } from '@react-native-community/hooks';
 import MaskedView from '@react-native-masked-view/masked-view';
 import {
   useFocusEffect,
+  useIsFocused,
+  useIsPreview,
   useRouter,
   useLocalSearchParams,
   useNavigation,
@@ -86,10 +95,12 @@ function FadedContent({ maxHeight, children, onPress, ...props }) {
   );
 }
 
-export default function CommentsScreen() {
+export default function CommentsScreen({ isPreview: isPreviewProp }) {
   const { isDark, colors } = useTheme();
   const router = useRouter();
   const navigation = useNavigation();
+  const isPreview = isPreviewProp || useIsPreview();
+  const isFocused = useIsFocused();
 
   // Get params - item comes from routeItemCache
   const {
@@ -108,26 +119,30 @@ export default function CommentsScreen() {
   const countDiffer = repliesCount !== totalComments;
 
   const listRef = useRef(null);
-  const windowHeight = useWindowDimensions().height;
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const listHeaderHeight = useRef(0);
   const ListHeaderComponent = useMemo(
     () => (
       <>
-        <ReadableWidthContainer>
-          <FadedContent
-            maxHeight={windowHeight / 6}
-            onPress={() => {
-              listRef.current?.flashScrollIndicators();
-            }}
-            onLayout={(e) => {
-              console.log('📐 MaskedView onLayout', e.nativeEvent.layout);
-              listHeaderHeight.current = e.nativeEvent.layout.height;
-            }}
-          >
-            <HTMLView2 html={content} />
-          </FadedContent>
-        </ReadableWidthContainer>
-        <Separator />
+        {!isPreview && (
+          <>
+            <ReadableWidthContainer>
+              <FadedContent
+                maxHeight={windowHeight / 6}
+                onPress={() => {
+                  listRef.current?.flashScrollIndicators();
+                }}
+                onLayout={(e) => {
+                  console.log('📐 MaskedView onLayout', e.nativeEvent.layout);
+                  listHeaderHeight.current = e.nativeEvent.layout.height;
+                }}
+              >
+                <HTMLView2 html={content} />
+              </FadedContent>
+            </ReadableWidthContainer>
+            <Separator />
+          </>
+        )}
         <OuterSpacer
           style={{
             backgroundColor: colors.opaqueSecondaryBackground,
@@ -160,7 +175,7 @@ export default function CommentsScreen() {
         <Separator />
       </>
     ),
-    [windowHeight, content, listRef.current],
+    [windowHeight, content, listRef.current, isPreview],
   );
 
   const renderItem = useCallback(
@@ -232,45 +247,74 @@ export default function CommentsScreen() {
   }, [currentAppState === 'active']);
 
   useEffect(() => {
-    navigation.setOptions({
-      headerTitle: () => {
-        return (
-          <ReadableWidthContainer>
-            <View
-              style={{
-                paddingHorizontal: 15,
-              }}
-            >
-              <Text numberOfLines={1}>
-                <Text
-                  bold
-                  style={{ color: colors.red }}
-                  onPress={() => {
-                    router.push(`/user/${item.user}`);
-                  }}
-                >
-                  {item.user}
+    if (!isFocused || isPreview) return;
+    try {
+      console.log('🔧 Set header options', {
+        isFocused,
+        isPreview,
+      });
+      navigation.setOptions({
+        headerTitle: () => {
+          return (
+            <ReadableWidthContainer>
+              <View
+                style={{
+                  paddingHorizontal: 15,
+                }}
+              >
+                <Text numberOfLines={1}>
+                  <Text
+                    bold
+                    style={{ color: colors.red }}
+                    onPress={() => {
+                      router.push(`/user/${item.user}`);
+                    }}
+                  >
+                    {item.user}
+                  </Text>
+                  <Text type="insignificant"> &bull; </Text>
+                  {scrolledDown ? (
+                    <Text size="subhead" type="insignificant">
+                      {getHTMLText(content)}
+                    </Text>
+                  ) : (
+                    <Text type="insignificant">
+                      <TimeAgo time={new Date(item.time * 1000)} />
+                    </Text>
+                  )}
                 </Text>
-                <Text type="insignificant"> &bull; </Text>
-                {scrolledDown ? (
-                  <Text size="subhead" type="insignificant">
-                    {getHTMLText(content)}
-                  </Text>
-                ) : (
-                  <Text type="insignificant">
-                    <TimeAgo time={new Date(item.time * 1000)} />
-                  </Text>
-                )}
-              </Text>
-            </View>
-          </ReadableWidthContainer>
-        );
-      },
-    });
-  }, [scrolledDown, item.user, item.time, content]);
+              </View>
+            </ReadableWidthContainer>
+          );
+        },
+      });
+    } catch {}
+  }, [
+    scrolledDown,
+    item.user,
+    item.time,
+    content,
+    navigation,
+    isPreview,
+    isFocused,
+  ]);
+
+  if (!isFocused) return null;
+
+  const Container = isPreview ? View : Fragment;
+  const containerProps = isPreview
+    ? {
+        style: {
+          width: windowWidth,
+          flex: 1,
+          backgroundColor: colors.background,
+          overflow: 'hidden',
+        },
+      }
+    : {};
 
   return (
-    <>
+    <Container {...containerProps}>
       <FlatList
         ref={listRef}
         key={`comments-${storyID}`}
@@ -279,112 +323,114 @@ export default function CommentsScreen() {
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         ItemSeparatorComponent={Separator}
-        contentInsetAdjustmentBehavior="automatic"
+        contentInsetAdjustmentBehavior={isPreview ? 'never' : 'automatic'}
         ListFooterComponent={ListFooterComponent}
         removeClippedSubviews
         onScroll={onScroll}
         scrollIndicatorInsets={{ top: -1 }}
       />
-      <Animated.View
-        key={`bottombar-${storyID}`}
-        pointerEvents="box-none"
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          width: '100%',
-          alignItems: 'center',
-          marginBottom: insets.bottom + 15,
-          transform: [
-            {
-              translateY: appearAnim.interpolate({
-                inputRange: [0, 1],
-                outputRange: [200, 0],
-              }),
-            },
-          ],
-          shadowRadius: 5,
-          shadowOpacity: isDark ? 0.2 : 0.1,
-          shadowOffset: { width: 0, height: 3 },
-          shadowColor: isDark ? colors.primary : undefined,
-        }}
-      >
-        <GlassView
+      {!isPreview && (
+        <Animated.View
+          key={`bottombar-${storyID}`}
+          pointerEvents="box-none"
           style={{
-            borderRadius: 30,
-            borderCurve: 'continuous',
-            borderWidth: StyleSheet.hairlineWidth,
-            borderColor: colors.opaqueSeparator,
-            overflow: 'hidden',
-          }}
-          onLayout={({ nativeEvent }) => {
-            console.log('📐 GlassView onLayout', nativeEvent.layout);
-            footerRef.current?.setNativeProps({
-              style: {
-                height: nativeEvent.layout.height + 30,
+            position: 'absolute',
+            bottom: 0,
+            width: '100%',
+            alignItems: 'center',
+            marginBottom: insets.bottom + 15,
+            transform: [
+              {
+                translateY: appearAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [200, 0],
+                }),
               },
-            });
+            ],
+            shadowRadius: 5,
+            shadowOpacity: isDark ? 0.2 : 0.1,
+            shadowOffset: { width: 0, height: 3 },
+            shadowColor: isDark ? colors.primary : undefined,
           }}
         >
-          <TouchableOpacity
-            disallowInterruption
-            onPress={() => {
-              router.back();
-            }}
+          <GlassView
             style={{
-              paddingVertical: 14,
-              paddingHorizontal: 14,
-              alignItems: 'center',
+              borderRadius: 30,
+              borderCurve: 'continuous',
+              borderWidth: StyleSheet.hairlineWidth,
+              borderColor: colors.opaqueSeparator,
+              overflow: 'hidden',
             }}
-            hitSlop={{
-              top: 44,
-              right: 44,
-              bottom: 44,
-              left: 44,
+            onLayout={({ nativeEvent }) => {
+              console.log('📐 GlassView onLayout', nativeEvent.layout);
+              footerRef.current?.setNativeProps({
+                style: {
+                  height: nativeEvent.layout.height + 30,
+                },
+              });
             }}
           >
-            <View
+            <TouchableOpacity
+              disallowInterruption
+              onPress={() => {
+                router.back();
+              }}
               style={{
-                flexDirection: 'row',
+                paddingVertical: 14,
+                paddingHorizontal: 14,
                 alignItems: 'center',
               }}
+              hitSlop={{
+                top: 44,
+                right: 44,
+                bottom: 44,
+                left: 44,
+              }}
             >
-              <SymbolView
-                name="xmark.circle"
-                size={22}
-                weight="medium"
-                style={{ marginRight: 8 }}
-              />
-              <Text type="link" bold>
-                Close thread
-              </Text>
-              {(parseInt(zIndex) > 1 || showZIndex === 'true') && (
-                <View
-                  style={{
-                    borderRadius: 100,
-                    backgroundColor: colors.opaqueSeparator,
-                    width: 24,
-                    height: 24,
-                    marginLeft: 8,
-                    overflow: 'hidden',
-                  }}
-                >
-                  <Text
-                    bold
-                    center
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+              >
+                <SymbolView
+                  name="xmark.circle"
+                  size={22}
+                  weight="medium"
+                  style={{ marginRight: 8 }}
+                />
+                <Text type="link" bold>
+                  Close thread
+                </Text>
+                {(parseInt(zIndex) > 1 || showZIndex === 'true') && (
+                  <View
                     style={{
-                      color: colors.secondaryText,
-                      lineHeight: 24,
-                      fontSize: 14,
+                      borderRadius: 100,
+                      backgroundColor: colors.opaqueSeparator,
+                      width: 24,
+                      height: 24,
+                      marginLeft: 8,
+                      overflow: 'hidden',
                     }}
                   >
-                    {parseInt(zIndex)}
-                  </Text>
-                </View>
-              )}
-            </View>
-          </TouchableOpacity>
-        </GlassView>
-      </Animated.View>
-    </>
+                    <Text
+                      bold
+                      center
+                      style={{
+                        color: colors.secondaryText,
+                        lineHeight: 24,
+                        fontSize: 14,
+                      }}
+                    >
+                      {parseInt(zIndex)}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            </TouchableOpacity>
+          </GlassView>
+        </Animated.View>
+      )}
+    </Container>
   );
 }
