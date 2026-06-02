@@ -13,6 +13,12 @@
       "skillPath": "plugins/expo/skills/add-app-clip/SKILL.md",
       "computedHash": "6bbeeae2814231780a4ee1bbd89e6916e35803a78a9a57778dc883cc3113c6fc"
     },
+    "agent-device": {
+      "source": "callstackincubator/agent-device",
+      "sourceType": "github",
+      "skillPath": "skills/agent-device/SKILL.md",
+      "computedHash": "a09ff3456969a416fb35de14484a933e70df307bc11ba77bf3b0a9ea2f723c07"
+    },
     "building-native-ui": {
       "source": "expo/skills",
       "sourceType": "github",
