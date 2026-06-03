@@ -192,9 +192,9 @@ const urlRegex = urlRegexSafe({
 });
 
 export default function HTMLView({ html, linkify }) {
-  if (!html.trim()) return null;
   const [elements, setElements] = useState(null);
   useEffect(() => {
+    if (!html.trim()) return;
     if (linkify) {
       const containsLink = /<\/a>/i.test(html);
       if (containsLink) {
@@ -208,5 +208,6 @@ export default function HTMLView({ html, linkify }) {
     }
     processDOM(html, setElements);
   }, [html, linkify]);
+  if (!html.trim()) return null;
   return <View>{elements}</View>;
 }

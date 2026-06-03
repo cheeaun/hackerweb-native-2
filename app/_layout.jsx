@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { LayoutAnimation, View } from 'react-native';
+import { useEffect, useMemo, useRef } from 'react';
+import { View } from 'react-native';
 
 import { useAppState } from '@react-native-community/hooks';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -49,12 +49,14 @@ export default function RootLayout() {
   const pathnameRef = useRef(pathname);
   pathnameRef.current = pathname;
 
-  const [reloadKey, setReloadKey] = useState('');
-  const reload = useCallback(() => {
-    const key = '' + Math.random();
-    console.log(`✨ Reload Navigator ${key}`);
-    setReloadKey(key);
-  }, []);
+  const reloadKey = useMemo(() => {
+    if (pathname !== '/') return '';
+    if (updateIsAvailable) return '';
+    if (!lastBackgroundTime) return '';
+    const elapsed = new Date() - lastBackgroundTime;
+    if (elapsed <= BACKGROUND_BUFFER) return '';
+    return '' + lastBackgroundTime.getTime();
+  }, [pathname, updateIsAvailable, lastBackgroundTime]);
 
   useEffect(() => {
     console.log(`🏃 App Active: ${currentAppState === 'active'}`);
@@ -76,15 +78,9 @@ export default function RootLayout() {
           .catch(() => {});
       }
 
-      const isOnHome = pathnameRef.current === '/';
-      if (isOnHome) {
-        console.log(`💫 Reload, updateIsAvailable: ${updateIsAvailable}`);
-        if (updateIsAvailable) {
-          Updates.reloadAsync();
-        } else {
-          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-          reload();
-        }
+      if (pathnameRef.current === '/' && updateIsAvailable) {
+        console.log(`💫 Reload via Updates`);
+        Updates.reloadAsync();
       }
     } else if (currentAppState !== 'active') {
       setLastBackgroundTime(new Date());

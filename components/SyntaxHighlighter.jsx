@@ -342,4 +342,6 @@ low.registerLanguage('xl', require('highlight.js/lib/languages/xl'));
 low.registerLanguage('xquery', require('highlight.js/lib/languages/xquery'));
 low.registerLanguage('zephir', require('highlight.js/lib/languages/zephir'));
 
-export default highlight(low, {});
+const SyntaxHighlighter = highlight(low, {});
+
+export default SyntaxHighlighter;

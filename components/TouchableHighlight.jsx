@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { PlatformColor, Pressable } from 'react-native';
 
-export default function (props) {
+export default function TouchableHighlight(props) {
   const { style, ...otherProps } = props;
   const [pressed, setPressed] = useState(false);
   return (

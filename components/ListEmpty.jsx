@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import ActivityIndicator from './ActivityIndicator';
 import Text from './Text';
 
-export default function ({
+export default function ListEmpty({
   state = null, // loading, nada, error
   nadaText = '',
   errorComponent = () => null,

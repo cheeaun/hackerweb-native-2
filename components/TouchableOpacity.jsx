@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable } from 'react-native';
 
-export default function (props) {
+export default function TouchableOpacity(props) {
   const { style, ...otherProps } = props;
   const [pressed, setPressed] = useState(false);
   return (

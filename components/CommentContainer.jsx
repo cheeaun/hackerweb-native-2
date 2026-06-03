@@ -208,9 +208,9 @@ function InnerCommentContainer({
   last = false,
   storyID,
 }) {
+  const { colors } = useTheme();
   if (item.dead || (item.deleted && !item.comments.length)) return null;
 
-  const { colors } = useTheme();
   const { repliesCount, totalComments } = getCommentsMetadata(item);
   const totalWeight =
     calcCommentWeight(item) + calcCommentsWeight(item.comments) + accWeight;

@@ -22,7 +22,7 @@ const SIZES = {
   caption2: 11,
 };
 
-export default function (props) {
+export default function ThemedText(props) {
   const { colors } = useTheme();
   const {
     type = 'default',

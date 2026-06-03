@@ -64,11 +64,10 @@ export default function StoriesScreen() {
   const isStoriesExpired = useStore((state) => state.isStoriesExpired);
   const fetchStories = useStore((state) => state.fetchStories);
 
-  const [storiesLoading, setStoriesLoading] = useState(false);
+  const [storiesLoading, setStoriesLoading] = useState(true);
   const onFetchStories = useCallback(() => {
     console.log('🤙 onFetchStories');
     let ignore = false;
-    setStoriesLoading(true);
     fetchStories().finally(() => {
       if (ignore) return;
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -102,7 +101,15 @@ export default function StoriesScreen() {
     }, []),
   );
   useEffect(() => {
-    return onFetchStories();
+    let ignore = false;
+    fetchStories().finally(() => {
+      if (ignore) return;
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      setStoriesLoading(false);
+    });
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const noStories = !stories.length;

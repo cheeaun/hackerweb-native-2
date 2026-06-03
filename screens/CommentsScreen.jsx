@@ -99,8 +99,9 @@ export default function CommentsScreen({ isPreview: isPreviewProp }) {
   const { isDark, colors } = useTheme();
   const router = useRouter();
   const navigation = useNavigation();
-  const isPreview = isPreviewProp || useIsPreview();
+  const isPreviewFromContext = useIsPreview();
   const isFocused = useIsFocused();
+  const isPreview = isPreviewProp || isPreviewFromContext;
 
   // Get params - item comes from routeItemCache
   const {

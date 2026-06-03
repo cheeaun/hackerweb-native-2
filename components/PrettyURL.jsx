@@ -6,13 +6,13 @@ import Text from './Text';
 // Following HN's behaviour
 const DOMAINS_FIRSTPATH = /^(github.com|twitter.com|medium.com)/i;
 
-export default ({
+export default function PrettyURL({
   url,
   style,
   prominent = false,
   domainOnly = false,
   ...props
-}) => {
+}) {
   if (!url) return null;
   const link = new URL(url);
   const { hostname, pathname, search, hash } = link;
@@ -45,4 +45,4 @@ export default ({
       )}
     </Text>
   );
-};
+}

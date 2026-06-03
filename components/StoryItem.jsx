@@ -54,8 +54,6 @@ const styles = StyleSheet.create({
 });
 
 export default function StoryItem({ id, position }) {
-  if (!id) return null;
-
   const { colors } = useTheme();
 
   const story = useStore(
@@ -74,6 +72,22 @@ export default function StoryItem({ id, position }) {
   const [pressed2, setPressed2] = useState(false);
   const pressTimer = useRef(null);
   const pressTimer2 = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(pressTimer.current);
+      clearTimeout(pressTimer2.current);
+    };
+  }, []);
+
+  const shareHandler = useCallback(() => {
+    const shareUrl = httpLink
+      ? url
+      : `https://news.ycombinator.com/item?id=${id}`;
+    openShare({ url: shareUrl });
+  }, [httpLink, url, id]);
+
+  if (!id) return null;
 
   if (!story) {
     console.warn(`Story not found: ${id} (${position})`);
@@ -101,20 +115,6 @@ export default function StoryItem({ id, position }) {
     clearTimeout(pressTimer2.current);
     setPressed2(false);
   };
-
-  const shareHandler = useCallback(() => {
-    const shareUrl = httpLink
-      ? url
-      : `https://news.ycombinator.com/item?id=${id}`;
-    openShare({ url: shareUrl });
-  }, [httpLink, url, id]);
-
-  useEffect(() => {
-    return () => {
-      clearTimeout(pressTimer.current);
-      clearTimeout(pressTimer2.current);
-    };
-  }, []);
 
   const storyInfoContent = (
     <>

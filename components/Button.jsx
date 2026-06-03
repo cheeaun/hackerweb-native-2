@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function (props) {
+export default function Button(props) {
   const { style, pressedStyle, disabled, ...otherProps } = props;
   const [pressed, setPressed] = useState(false);
   return (

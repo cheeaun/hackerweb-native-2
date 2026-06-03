@@ -2,7 +2,7 @@ import { View } from 'react-native';
 
 import ReadableWidthContainer from './ReadableWidthContainer';
 
-export default function ({
+export default function OuterSpacer({
   size = 'default',
   align = 'bottom',
   style = {},

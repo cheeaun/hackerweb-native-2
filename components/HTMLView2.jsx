@@ -19,13 +19,13 @@ import Text from './Text';
 import nodeStyles from './nodeStyles';
 
 function Link({ style, url, ...props }) {
-  if (!url) return null;
-
   const router = useRouter();
   const fetchMinimalItem = useStore((state) => state.fetchMinimalItem);
   const [loading, setLoading] = useState(false);
   const addLink = useStore((state) => state.addLink);
   const visited = useStore(useCallback((state) => state.visited(url), [url]));
+
+  if (!url) return null;
 
   return (
     <Text

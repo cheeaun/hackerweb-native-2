@@ -14,13 +14,13 @@ export default function WebViewScreen() {
   const url = paramUrl;
   const routeInjectedJS = useStore((state) => state.routeInjectedJS);
   const injectedJavaScript = jsKey ? routeInjectedJS.get(jsKey) || '' : '';
-  if (!url) return null;
 
   const [navState, setNavState] = useState({});
   const webViewRef = useRef(null);
-
   const { colors } = useTheme();
   const navigation = useNavigation();
+
+  if (!url) return null;
 
   return (
     <>

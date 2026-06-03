@@ -6,9 +6,9 @@ import useTheme from '../hooks/useTheme';
 import Text from './Text';
 
 export default function CommentPage({ page }) {
-  if (!page) return null;
   const { colors } = useTheme();
   const [topMargin, setTopMargin] = useState(0);
+  if (!page) return null;
   return (
     <View
       style={{

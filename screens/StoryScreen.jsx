@@ -110,7 +110,8 @@ export default function StoryScreen() {
   );
   const fetchStory = useStore((state) => state.fetchStory);
   const fetchItem = useStore((state) => state.fetchItem);
-  const [storyLoading, setStoryLoading] = useState(false);
+  const [initiatedStoryID, setInitiatedStoryID] = useState(id);
+  const storyLoading = initiatedStoryID !== id;
   const transitionEnded = useRef(false);
   useEffect(() => {
     if (isPreview) return;
@@ -120,12 +121,11 @@ export default function StoryScreen() {
     return unsubscribe;
   }, [navigation, isPreview]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isPreview && tabView === 'web') return;
     if (story.comments?.length) return;
 
     let ignore = false;
-    setStoryLoading(true);
     let fetchPromise;
     const numericId = parseInt(id, 10);
     if (!story.__isItem) {
@@ -142,7 +142,7 @@ export default function StoryScreen() {
         if (!isPreview && transitionEnded.current) {
           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         }
-        setStoryLoading(false);
+        setInitiatedStoryID(id);
       });
 
     return () => {
@@ -386,16 +386,10 @@ export default function StoryScreen() {
     setTabView(tab);
   }, [tab]);
 
-  const [webMounted, setWebMounted] = useState(false);
-  useFocusEffect(
-    useCallback(() => {
-      console.log('🧘‍♀️ StoryScreen focus effect');
-      if (tabView === 'web') setWebMounted(true);
-      return () => setWebMounted(false);
-    }, []),
-  );
+  const webMounted = tabView === 'web';
 
-  const scrollY = useRef(useStore.getState().storyScroll?.get?.(id) || 0);
+  const initialScrollY = useStore((state) => state.storyScroll?.get?.(id) || 0);
+  const scrollY = useRef(initialScrollY);
   const setStoryScroll = useStore((state) => state.setStoryScroll);
 
   const scrolledDown = useRef(false);
@@ -436,8 +430,6 @@ export default function StoryScreen() {
 
   useLayoutEffect(
     useCallback(() => {
-      if (tabView === 'web') setWebMounted(true);
-
       if (isPreview) {
         fadeAnim.setValue(tabView === 'web' ? 1 : 0);
         return;

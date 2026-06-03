@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { ActivityIndicator, Animated } from 'react-native';
 
-export default function (props) {
+export default function LoadingIndicator(props) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     Animated.timing(fadeAnim, {

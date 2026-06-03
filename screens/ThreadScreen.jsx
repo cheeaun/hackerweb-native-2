@@ -93,65 +93,30 @@ export default function ThreadScreen() {
   const { storyID, commentID, tab: tabParam } = useLocalSearchParams();
 
   const [tabView, setTabView] = useState(tabParam || 'thread');
-
-  if (!storyID || !commentID) return null;
-
-  const thread = extractThread(storyID, commentID);
-
-  const [story, ...comments] = thread;
+  const thread =
+    storyID && commentID ? extractThread(storyID, commentID) : null;
+  const [story, ...comments] = thread || [];
   const parentCommentsCount = comments.length - 1;
 
-  const [commentsLimit, setCommentsLimit] = useState(parentCommentsCount || 0);
+  const [commentsLimit, setCommentsLimit] = useState(
+    () => (tabParam === 'share' ? 0 : parentCommentsCount) || 0,
+  );
   const [showStory, toggleShowStory] = useReducer(
     (state, value) => (value === null ? !state : value),
-    true,
+    () => tabParam !== 'share',
   );
 
-  const { title, url, points, user, time } = story;
-  const datetime = new Date(time * 1000);
-  const httpLink = isHTTPLink(url);
-
-  const slicedComments = useMemo(() => {
-    return comments.slice(-(commentsLimit + 1));
-  }, [comments.length, commentsLimit]);
-
-  const tabViews = ['thread', 'share'];
-  const tabValues = [
-    `Thread ${comments.length > 1 ? `(${comments.length})` : ''}`,
-    'Share as Image',
-  ];
-
   const scrollViewRef = useRef();
-  useEffect(() => {
-    switch (tabView) {
-      case 'share': {
-        toggleShowStory(false);
-        setCommentsLimit(0);
-        break;
-      }
-      default: {
-        // thread
-        toggleShowStory(true);
-        setCommentsLimit(parentCommentsCount);
-        setTimeout(() => {
-          scrollViewRef.current?.flashScrollIndicators();
-          // scrollViewRef.current?.scrollToEnd();
-        }, 600);
-        break;
-      }
-    }
-  }, [storyID, tabView]);
-
   const threadRef = useRef();
   const [loadingShare, setLoadingShare] = useState(false);
-
-  useEffect(() => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-  }, [loadingShare]);
 
   const { onLayout: onScrollViewLayout, height: scrollViewHeight } =
     useLayout();
   const { onLayout, height } = useLayout();
+
+  useEffect(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+  }, [loadingShare]);
 
   const spacing = 56;
   useEffect(() => {
@@ -182,6 +147,36 @@ export default function ThreadScreen() {
       });
     }
   }, [tabView, Math.round(scrollViewHeight), Math.round(height)]);
+
+  const slicedComments = useMemo(() => {
+    return comments.slice(-(commentsLimit + 1));
+  }, [comments.length, commentsLimit]);
+
+  if (!storyID || !commentID || !story) return null;
+
+  const { title, url, points, user, time } = story;
+  const datetime = new Date(time * 1000);
+  const httpLink = isHTTPLink(url);
+
+  const tabViews = ['thread', 'share'];
+  const tabValues = [
+    `Thread ${comments.length > 1 ? `(${comments.length})` : ''}`,
+    'Share as Image',
+  ];
+
+  const handleTabChange = (tab) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    if (tab === 'share') {
+      toggleShowStory(false);
+      setCommentsLimit(0);
+    } else {
+      toggleShowStory(true);
+      setCommentsLimit(parentCommentsCount);
+      setTimeout(() => {
+        scrollViewRef.current?.flashScrollIndicators();
+      }, 600);
+    }
+  };
 
   const lastComment = comments[comments.length - 1];
 
@@ -312,9 +307,7 @@ export default function ThreadScreen() {
                 const index = e.nativeEvent.selectedSegmentIndex;
                 const tab = tabViews[index].toLowerCase();
 
-                LayoutAnimation.configureNext(
-                  LayoutAnimation.Presets.easeInEaseOut,
-                );
+                handleTabChange(tab);
                 setTabView(tab);
               }}
             />

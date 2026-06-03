@@ -61,7 +61,7 @@ export default function UserScreen() {
   );
   const setUserInfo = useStore((state) => state.setUserInfo);
 
-  const [fetchState, setFetchState] = useState('');
+  const [fetchState, setFetchState] = useState(userInfo ? '' : 'loading');
   const [info, setInfo] = useState(userInfo);
 
   const { created, karma, submitted, about } = info || {};
@@ -70,7 +70,6 @@ export default function UserScreen() {
     useCallback(() => {
       if (!user || info) return;
       let ignore = false;
-      setFetchState('loading');
       ky(
         `https://hacker-news.firebaseio.com/v0/user/${encodeURIComponent(
           user,

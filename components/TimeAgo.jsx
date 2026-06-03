@@ -9,7 +9,7 @@ const HOURS_IN_DAY = 24;
 const DAYS_IN_WEEK = 7;
 const MINUTES_IN_WEEK = MINUTES_IN_DAY * DAYS_IN_WEEK;
 
-export default function ({ time }) {
+export default function TimeAgo({ time }) {
   if (!time || !isValid(time)) return null;
   const now = new Date();
   const seconds = differenceInSeconds(now, time);
