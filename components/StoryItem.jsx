@@ -171,14 +171,16 @@ export default function StoryItem({ id, position }) {
     <Link href={`/story/${id}?tab=web`} push style={styles.flex}>
       <Link.Trigger>
         <View
-          style={styles.story}
+          style={StyleSheet.flatten([styles.story, styles.flex])}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
           onTouchMove={handleTouchEnd}
           onTouchCancel={handleTouchEnd}
         >
           {positionView}
-          <View style={styles.storyInfo}>{storyInfoContent}</View>
+          <View style={[styles.storyInfo, styles.flex]}>
+            {storyInfoContent}
+          </View>
         </View>
       </Link.Trigger>
       <Link.Preview />
