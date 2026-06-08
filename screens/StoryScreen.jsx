@@ -110,7 +110,7 @@ export default function StoryScreen() {
   );
   const fetchStory = useStore((state) => state.fetchStory);
   const fetchItem = useStore((state) => state.fetchItem);
-  const [initiatedStoryID, setInitiatedStoryID] = useState(id);
+  const [initiatedStoryID, setInitiatedStoryID] = useState(null);
   const storyLoading = initiatedStoryID !== id;
   const transitionEnded = useRef(false);
   useEffect(() => {
@@ -123,7 +123,11 @@ export default function StoryScreen() {
 
   useLayoutEffect(() => {
     if (isPreview && tabView === 'web') return;
-    if (story.comments?.length) return;
+
+    if (story.comments?.length) {
+      setInitiatedStoryID(id);
+      return;
+    }
 
     let ignore = false;
     let fetchPromise;
