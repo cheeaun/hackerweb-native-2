@@ -51,6 +51,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 4,
   },
+  storyRow: {
+    flexDirection: 'row',
+    alignItems: 'stretch',
+  },
 });
 
 export default function StoryItem({ id, position }) {
@@ -163,6 +167,29 @@ export default function StoryItem({ id, position }) {
     </View>
   );
 
+  const storyWebLink = (
+    <Link href={`/story/${id}?tab=web`} push style={styles.flex}>
+      <Link.Trigger>
+        <View
+          style={styles.story}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onTouchMove={handleTouchEnd}
+          onTouchCancel={handleTouchEnd}
+        >
+          {positionView}
+          <View style={styles.storyInfo}>{storyInfoContent}</View>
+        </View>
+      </Link.Trigger>
+      <Link.Preview />
+      <Link.Menu>
+        <Link.MenuAction icon="square.and.arrow.up" onPress={shareHandler}>
+          Share&hellip;
+        </Link.MenuAction>
+      </Link.Menu>
+    </Link>
+  );
+
   if (isJob) {
     return (
       <Pressable
@@ -204,39 +231,8 @@ export default function StoryItem({ id, position }) {
 
   if (httpLink) {
     return (
-      <View
-        style={[
-          styles.story,
-          (pressed || pressed2) && {
-            backgroundColor: colors.secondaryBackground,
-          },
-        ]}
-      >
-        {positionView}
-        <View style={styles.flex}>
-          <Link href={`/story/${id}?tab=web`} push>
-            <Link.Trigger>
-              <View
-                onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}
-                onTouchMove={handleTouchEnd}
-                onTouchCancel={handleTouchEnd}
-                style={styles.storyInfo}
-              >
-                {storyInfoContent}
-              </View>
-            </Link.Trigger>
-            <Link.Preview />
-            <Link.Menu>
-              <Link.MenuAction
-                icon="square.and.arrow.up"
-                onPress={shareHandler}
-              >
-                Share&hellip;
-              </Link.MenuAction>
-            </Link.Menu>
-          </Link>
-        </View>
+      <View style={styles.storyRow}>
+        {storyWebLink}
         <Link href={`/story/${id}?tab=comments`} push>
           <Link.Trigger>
             <View
@@ -281,32 +277,43 @@ export default function StoryItem({ id, position }) {
   }
 
   return (
-    <View style={styles.story}>
-      {positionView}
-      <View style={styles.flex}>
-        <Link href={`/story/${id}?tab=comments`} push>
-          <Link.Trigger>
-            <View
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-              onTouchMove={handleTouchEnd}
-              onTouchCancel={handleTouchEnd}
-              style={StyleSheet.flatten([
-                styles.storyInfo,
-                pressed && { backgroundColor: colors.secondaryBackground },
-              ])}
-            >
-              {storyInfoContent}
-            </View>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction icon="square.and.arrow.up" onPress={shareHandler}>
-              Share story&hellip;
-            </Link.MenuAction>
-          </Link.Menu>
-        </Link>
-      </View>
+    <View style={styles.storyRow}>
+      {storyWebLink}
+      <Link href={`/story/${id}?tab=comments`} push>
+        <Link.Trigger>
+          <View
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onTouchMove={handleTouchEnd}
+            onTouchCancel={handleTouchEnd}
+            style={StyleSheet.flatten([
+              styles.storyComments,
+              pressed && { backgroundColor: colors.secondaryBackground },
+            ])}
+          >
+            <SymbolView name="bubble" size={22} weight="medium" />
+            {comments_count > 0 && (
+              <Text
+                style={{
+                  alignSelf: 'stretch',
+                  marginTop: 8,
+                  textAlign: shortCommentsCount.length > 2 ? 'right' : 'center',
+                }}
+                type="insignificant"
+                size={shortCommentsCount.length > 2 ? 'caption2' : 'footnote'}
+              >
+                {shortenNumber(comments_count)}
+              </Text>
+            )}
+          </View>
+        </Link.Trigger>
+        <Link.Preview />
+        <Link.Menu>
+          <Link.MenuAction icon="square.and.arrow.up" onPress={shareHandler}>
+            Share story&hellip;
+          </Link.MenuAction>
+        </Link.Menu>
+      </Link>
     </View>
   );
 }
