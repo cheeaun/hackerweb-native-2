@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Link } from 'expo-router';
@@ -100,6 +100,25 @@ export default function StoryItem({ id, position }) {
 
   const shortCommentsCount = shortenNumber(comments_count);
 
+  const commentsIcon = (
+    <>
+      <SymbolView name="bubble" size={22} weight="medium" />
+      {comments_count > 0 && (
+        <Text
+          style={{
+            alignSelf: 'stretch',
+            marginTop: 8,
+            textAlign: shortCommentsCount.length > 2 ? 'right' : 'center',
+          }}
+          type="insignificant"
+          size={shortCommentsCount.length > 2 ? 'caption2' : 'footnote'}
+        >
+          {shortenNumber(comments_count)}
+        </Text>
+      )}
+    </>
+  );
+
   const handleTouchStart = () => {
     clearTimeout(pressTimer.current);
     pressTimer.current = setTimeout(() => setPressed(true), 130);
@@ -183,7 +202,7 @@ export default function StoryItem({ id, position }) {
           </View>
         </View>
       </Link.Trigger>
-      <Link.Preview />
+      {httpLink && <Link.Preview />}
       <Link.Menu>
         <Link.MenuAction icon="square.and.arrow.up" onPress={shareHandler}>
           Share&hellip;
@@ -250,21 +269,7 @@ export default function StoryItem({ id, position }) {
                 pressed2 && { opacity: 0.5 },
               ])}
             >
-              <SymbolView name="bubble" size={22} weight="medium" />
-              {comments_count > 0 && (
-                <Text
-                  style={{
-                    alignSelf: 'stretch',
-                    marginTop: 8,
-                    textAlign:
-                      shortCommentsCount.length > 2 ? 'right' : 'center',
-                  }}
-                  type="insignificant"
-                  size={shortCommentsCount.length > 2 ? 'caption2' : 'footnote'}
-                >
-                  {shortenNumber(comments_count)}
-                </Text>
-              )}
+              {commentsIcon}
             </View>
           </Link.Trigger>
           <Link.Preview />
@@ -279,43 +284,26 @@ export default function StoryItem({ id, position }) {
   }
 
   return (
-    <View style={styles.storyRow}>
-      {storyWebLink}
-      <Link href={`/story/${id}?tab=comments`} push>
-        <Link.Trigger>
-          <View
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-            onTouchMove={handleTouchEnd}
-            onTouchCancel={handleTouchEnd}
-            style={StyleSheet.flatten([
-              styles.storyComments,
-              pressed && { backgroundColor: colors.secondaryBackground },
-            ])}
-          >
-            <SymbolView name="bubble" size={22} weight="medium" />
-            {comments_count > 0 && (
-              <Text
-                style={{
-                  alignSelf: 'stretch',
-                  marginTop: 8,
-                  textAlign: shortCommentsCount.length > 2 ? 'right' : 'center',
-                }}
-                type="insignificant"
-                size={shortCommentsCount.length > 2 ? 'caption2' : 'footnote'}
-              >
-                {shortenNumber(comments_count)}
-              </Text>
-            )}
+    <Link href={`/story/${id}?tab=comments`} push style={styles.storyRow}>
+      <Link.Trigger>
+        <View style={styles.storyRow}>
+          <View style={[styles.story, styles.flex]}>
+            {positionView}
+            <View style={[styles.storyInfo, styles.flex]}>
+              {storyInfoContent}
+            </View>
           </View>
-        </Link.Trigger>
-        <Link.Preview />
-        <Link.Menu>
-          <Link.MenuAction icon="square.and.arrow.up" onPress={shareHandler}>
-            Share story&hellip;
-          </Link.MenuAction>
-        </Link.Menu>
-      </Link>
-    </View>
+          <View style={styles.storyComments}>
+            {commentsIcon}
+          </View>
+        </View>
+      </Link.Trigger>
+      <Link.Preview />
+      <Link.Menu>
+        <Link.MenuAction icon="square.and.arrow.up" onPress={shareHandler}>
+          Share story&hellip;
+        </Link.MenuAction>
+      </Link.Menu>
+    </Link>
   );
 }
