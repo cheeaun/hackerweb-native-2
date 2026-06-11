@@ -769,7 +769,7 @@ export default function StoryScreen() {
                 />
               )}
               <Stack.Toolbar.Spacer width={1} />
-              <Stack.Toolbar.View>
+              <Stack.Toolbar.View hidesSharedBackground>
                 <SegmentedControl
                   style={{ width: segmentWidth }}
                   appearance={isDark ? 'dark' : 'light'}
