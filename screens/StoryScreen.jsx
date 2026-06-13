@@ -464,7 +464,7 @@ export default function StoryScreen() {
 
   const insets = useSafeAreaInsets();
   const { width: windowWidth } = useWindowDimensions();
-  const buttonWidth = 80;
+  const buttonWidth = 60;
   const segmentWidth = Math.min(
     Math.max(180, windowWidth - insets.left - insets.right - buttonWidth * 2),
     360,
