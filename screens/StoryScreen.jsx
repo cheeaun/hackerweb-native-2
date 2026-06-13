@@ -390,8 +390,6 @@ export default function StoryScreen() {
     setTabView(tab);
   }, [tab]);
 
-  const webMounted = tabView === 'web';
-
   const initialScrollY = useStore((state) => state.storyScroll?.get?.(id) || 0);
   const scrollY = useRef(initialScrollY);
   const setStoryScroll = useStore((state) => state.setStoryScroll);
@@ -641,70 +639,69 @@ export default function StoryScreen() {
                 ],
               }}
             >
-              {webMounted && (
-                <WebView
-                  ref={webViewRef}
-                  style={{ backgroundColor: colors.background }}
-                  applicationNameForUserAgent={`${Application.applicationName}/${Application.nativeApplicationVersion}`}
-                  source={{ uri: url }}
-                  originWhitelist={[
-                    'http://*',
-                    'https://*',
-                    'data:*',
-                    'about:*',
-                  ]}
-                  decelerationRate="normal"
-                  allowsInlineMediaPlayback
-                  contentInsetAdjustmentBehavior="automatic"
-                  automaticallyAdjustContentInsets
-                  automaticallyAdjustsScrollIndicatorInsets
-                  allowsBackForwardNavigationGestures
-                  renderLoading={() => null}
-                  onNavigationStateChange={(navState) => {
-                    setNavState(navState);
-                  }}
-                  onLoadStart={() => {
-                    progressAnim.setValue(0);
-                    progressOpacityAnim.setValue(1);
-                    addLink(url);
-                  }}
-                  onLoadEnd={() => {
-                    Animated.timing(progressAnim, {
-                      toValue: 1,
+              <WebView
+                ref={webViewRef}
+                style={{ backgroundColor: colors.background }}
+                applicationNameForUserAgent={`${Application.applicationName}/${Application.nativeApplicationVersion}`}
+                source={{ uri: url }}
+                originWhitelist={[
+                  'http://*',
+                  'https://*',
+                  'data:*',
+                  'about:*',
+                ]}
+                decelerationRate="normal"
+                allowsInlineMediaPlayback
+                contentInsetAdjustmentBehavior="automatic"
+                automaticallyAdjustContentInsets
+                automaticallyAdjustsScrollIndicatorInsets
+                allowsBackForwardNavigationGestures
+                renderLoading={() => null}
+                onNavigationStateChange={(navState) => {
+                  setNavState(navState);
+                }}
+                onLoadStart={() => {
+                  progressAnim.setValue(0);
+                  progressOpacityAnim.setValue(1);
+                  addLink(url);
+                }}
+                onLoadEnd={() => {
+                  Animated.timing(progressAnim, {
+                    toValue: 1,
+                    duration: 300,
+                    useNativeDriver: false,
+                  }).start(() => {
+                    Animated.timing(progressOpacityAnim, {
+                      toValue: 0,
+                      delay: 100,
                       duration: 300,
                       useNativeDriver: false,
-                    }).start(() => {
+                    }).start();
+                  });
+                }}
+                onLoadProgress={(e) => {
+                  const { progress, loading } = e.nativeEvent;
+                  Animated.timing(progressAnim, {
+                    toValue: progress,
+                    duration: 1000,
+                    useNativeDriver: false,
+                  }).start(() => {
+                    if (progress > 0.99) {
                       Animated.timing(progressOpacityAnim, {
                         toValue: 0,
                         delay: 100,
                         duration: 300,
                         useNativeDriver: false,
                       }).start();
-                    });
-                  }}
-                  onLoadProgress={(e) => {
-                    const { progress, loading } = e.nativeEvent;
-                    Animated.timing(progressAnim, {
-                      toValue: progress,
-                      duration: 1000,
-                      useNativeDriver: false,
-                    }).start(() => {
-                      if (progress > 0.99) {
-                        Animated.timing(progressOpacityAnim, {
-                          toValue: 0,
-                          delay: 100,
-                          duration: 300,
-                          useNativeDriver: false,
-                        }).start();
-                      }
-                    });
-                    setNavState({
-                      ...navState,
-                      loading,
-                    });
-                  }}
-                  onMessage={() => {}}
-                  injectedJavaScript={`
+                    }
+                  });
+                  setNavState({
+                    ...navState,
+                    loading,
+                  });
+                }}
+                onMessage={() => {}}
+                injectedJavaScript={`
                     try {
                       document.querySelectorAll('video[autoplay]').forEach(v => v.playsInline = true);
                       var observer = new MutationObserver(function(mutations) {
@@ -714,8 +711,7 @@ export default function StoryScreen() {
                     } catch (e) {}
                     true;
                   `}
-                />
-              )}
+              />
             </Animated.View>
             <ScrollView
               pointerEvents="none"
