@@ -43,6 +43,7 @@ import {
   font,
   foregroundStyle,
   frame,
+  glassEffect,
   shapes,
   tint,
 } from '@expo/ui/swift-ui/modifiers';
@@ -364,10 +365,6 @@ export default function CommentsScreen({ isPreview: isPreviewProp }) {
                 }),
               },
             ],
-            shadowRadius: 5,
-            shadowOpacity: isDark ? 0.2 : 0.1,
-            shadowOffset: { width: 0, height: 3 },
-            shadowColor: isDark ? colors.primary : undefined,
           }}
         >
           <Host
@@ -385,9 +382,8 @@ export default function CommentsScreen({ isPreview: isPreviewProp }) {
                 router.back();
               }}
               modifiers={[
-                buttonStyle('glass'),
-                controlSize('large'),
-                tint(colors.primary),
+                buttonStyle('bordered'),
+                glassEffect({ glass: { variant: 'regular' } }),
               ]}
             >
               <HStack spacing={8} alignment="center">
