@@ -317,8 +317,6 @@ export default function CommentsScreen({ isPreview: isPreviewProp }) {
     isFocused,
   ]);
 
-  if (!isFocused) return null;
-
   const Container = isPreview ? View : Fragment;
   const containerProps = isPreview
     ? {
