@@ -8,7 +8,15 @@ import pMemoize from 'p-memoize';
 import { create } from 'zustand';
 
 const STORIES_TTL = 10 * 60 * 1000; // 10 mins
-const cache = new ExpiryMap(60 * 1000);
+
+// Memoize only the API response, not the storyFetched check.
+// The storyFetched guard must run against the live stories state on every call
+// so that an external stories overwrite (e.g. news2 merge) can be re-recovered.
+const storyApiCache = new ExpiryMap(60 * 1000);
+const memoizedStoryApi = pMemoize(
+  (id) => api(`item/${id}`).json(),
+  { cache: storyApiCache },
+);
 const hooks = {
   beforeRequest: [
     (request) => {
@@ -146,27 +154,24 @@ const useStore = create((set, get) => ({
   },
   isStoriesExpired: async () => await isExpired('stories'),
   fetchStory: pDebounce(
-    pMemoize(
-      async (id) => {
-        console.log(`🥞 fetchStory ${id}`);
-        const { stories } = get();
-        const index = stories.findIndex((s) => s.id === id);
-        let story = stories[index];
-        const storyFetched = !!story?.comments?.length;
-        if (!storyFetched) {
-          story = await api(`item/${id}`).json();
-          const newStories = [...stories];
-          if (index === -1) {
-            newStories.push(story);
-          } else {
-            newStories[index] = story;
-          }
-          set({ stories: newStories });
-          updateItem('stories', newStories, STORIES_TTL);
+    async (id) => {
+      console.log(`🥞 fetchStory ${id}`);
+      const { stories } = get();
+      const index = stories.findIndex((s) => s.id === id);
+      let story = stories[index];
+      const storyFetched = !!story?.comments?.length;
+      if (!storyFetched) {
+        story = await memoizedStoryApi(id);
+        const newStories = [...stories];
+        if (index === -1) {
+          newStories.push(story);
+        } else {
+          newStories[index] = story;
         }
-      },
-      { cache },
-    ),
+        set({ stories: newStories });
+        updateItem('stories', newStories, STORIES_TTL);
+      }
+    },
     100,
   ),
   items: new Map(),
