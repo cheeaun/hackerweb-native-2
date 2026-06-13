@@ -8,7 +8,13 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Updates from 'expo-updates';
 import { StatusBar } from 'expo-status-bar';
 
-import { Stack, usePathname } from 'expo-router';
+import {
+  DarkTheme,
+  DefaultTheme,
+  Stack,
+  ThemeProvider,
+  usePathname,
+} from 'expo-router';
 
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
@@ -112,108 +118,110 @@ export default function RootLayout() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <StatusBar style="auto" animated />
         <SafeAreaProvider>
-          <Stack
-            key={reloadKey}
-            screenOptions={{
-              contentStyle: { backgroundColor: colors.background },
-              headerTransparent: true,
-              headerShadowVisible: false,
-              headerBackButtonDisplayMode: 'minimal',
-              headerBackTitle: 'News',
-              title: '',
-            }}
-          >
-            <Stack.Screen
-              name="index"
-              options={{
-                title: 'HackerWeb',
-                headerLargeTitle: true,
-                headerLargeTitleShadowVisible: false,
-                headerLargeTitleStyle: { color: colors.text },
-                headerTitleStyle: { color: colors.text },
-                headerBackTitle: undefined,
-                headerBackButtonDisplayMode: undefined,
-              }}
-            />
-            <Stack.Screen
-              name="story/[id]"
-              options={{
+          <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
+            <Stack
+              key={reloadKey}
+              screenOptions={{
+                contentStyle: { backgroundColor: colors.background },
+                headerTransparent: true,
+                headerShadowVisible: false,
+                headerBackButtonDisplayMode: 'minimal',
+                headerBackTitle: 'News',
                 title: '',
-                headerTitleStyle: { color: colors.text },
-                headerTransparent: true,
-                headerBackButtonDisplayMode: 'minimal',
               }}
-            />
-            <Stack.Screen
-              name="story-modal/[id]"
-              options={{
-                headerTitleStyle: { color: colors.text },
-                presentation: 'modal',
-                headerTransparent: true,
-                headerShadowVisible: false,
-              }}
-            />
-            <Stack.Screen
-              name="comments/[storyID]/[commentID]"
-              options={{
-                presentation: 'modal',
-                headerTransparent: true,
-              }}
-            />
-            <Stack.Screen
-              name="user/[id]"
-              options={{
-                presentation: 'formSheet',
-                sheetAllowedDetents: 'fitToContents',
-                sheetExpandsWhenScrolledToEdge: true,
-              }}
-            />
-            <Stack.Screen
-              name="settings"
-              options={{
-                title: 'Settings',
-                presentation: 'modal',
-                headerTitleStyle: { color: colors.text },
-              }}
-            />
-            <Stack.Screen
-              name="logs"
-              options={{
-                headerBackButtonDisplayMode: 'minimal',
-                presentation: 'modal',
-                headerTransparent: true,
-                headerShadowVisible: false,
-              }}
-            />
-            <Stack.Screen
-              name="web-view"
-              options={{
-                presentation: 'modal',
-                headerStyle: {
-                  backgroundColor: isDark ? '#1C1C1E' : '#F2F2F7',
-                },
-                headerTintColor: isDark ? '#FFF' : '#007AFF',
-                headerTitleStyle: { color: isDark ? '#FFF' : '#000' },
-              }}
-            />
-            <Stack.Screen
-              name="thread/[storyID]/[commentID]"
-              options={{
-                title: 'Thread',
-                presentation: 'modal',
-                headerTitleStyle: { color: colors.text },
-              }}
-            />
-            {__DEV__ && (
+            >
               <Stack.Screen
-                name="dev-test"
+                name="index"
                 options={{
-                  title: 'Dev Test',
+                  title: 'HackerWeb',
+                  headerLargeTitle: true,
+                  headerLargeTitleShadowVisible: false,
+                  headerLargeTitleStyle: { color: colors.text },
+                  headerTitleStyle: { color: colors.text },
+                  headerBackTitle: undefined,
+                  headerBackButtonDisplayMode: undefined,
+                }}
+              />
+              <Stack.Screen
+                name="story/[id]"
+                options={{
+                  title: '',
+                  headerTitleStyle: { color: colors.text },
+                  headerTransparent: true,
+                  headerBackButtonDisplayMode: 'minimal',
+                }}
+              />
+              <Stack.Screen
+                name="story-modal/[id]"
+                options={{
+                  headerTitleStyle: { color: colors.text },
+                  presentation: 'modal',
+                  headerTransparent: true,
+                  headerShadowVisible: false,
+                }}
+              />
+              <Stack.Screen
+                name="comments/[storyID]/[commentID]"
+                options={{
+                  presentation: 'modal',
+                  headerTransparent: true,
+                }}
+              />
+              <Stack.Screen
+                name="user/[id]"
+                options={{
+                  presentation: 'formSheet',
+                  sheetAllowedDetents: 'fitToContents',
+                  sheetExpandsWhenScrolledToEdge: true,
+                }}
+              />
+              <Stack.Screen
+                name="settings"
+                options={{
+                  title: 'Settings',
+                  presentation: 'modal',
                   headerTitleStyle: { color: colors.text },
                 }}
               />
-            )}
-          </Stack>
+              <Stack.Screen
+                name="logs"
+                options={{
+                  headerBackButtonDisplayMode: 'minimal',
+                  presentation: 'modal',
+                  headerTransparent: true,
+                  headerShadowVisible: false,
+                }}
+              />
+              <Stack.Screen
+                name="web-view"
+                options={{
+                  presentation: 'modal',
+                  headerStyle: {
+                    backgroundColor: isDark ? '#1C1C1E' : '#F2F2F7',
+                  },
+                  headerTintColor: isDark ? '#FFF' : '#007AFF',
+                  headerTitleStyle: { color: isDark ? '#FFF' : '#000' },
+                }}
+              />
+              <Stack.Screen
+                name="thread/[storyID]/[commentID]"
+                options={{
+                  title: 'Thread',
+                  presentation: 'modal',
+                  headerTitleStyle: { color: colors.text },
+                }}
+              />
+              {__DEV__ && (
+                <Stack.Screen
+                  name="dev-test"
+                  options={{
+                    title: 'Dev Test',
+                    headerTitleStyle: { color: colors.text },
+                  }}
+                />
+              )}
+            </Stack>
+          </ThemeProvider>
         </SafeAreaProvider>
       </GestureHandlerRootView>
     </View>
