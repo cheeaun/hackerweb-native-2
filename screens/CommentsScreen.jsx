@@ -11,7 +11,6 @@ import {
   LayoutAnimation,
   Pressable,
   ScrollView,
-  StyleSheet,
   View,
   useWindowDimensions,
 } from 'react-native';
@@ -26,17 +25,34 @@ import {
   useLocalSearchParams,
   useNavigation,
 } from 'expo-router';
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
+import { FlatList } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import {
+  Host,
+  Button,
+  HStack,
+  Image as SwiftUIImage,
+  Text as SwiftUIText,
+  ZStack,
+} from '@expo/ui/swift-ui';
+import {
+  background,
+  buttonStyle,
+  controlSize,
+  font,
+  foregroundStyle,
+  frame,
+  shapes,
+  tint,
+} from '@expo/ui/swift-ui/modifiers';
 
 import useStore from '../hooks/useStore';
 import useTheme from '../hooks/useTheme';
 import useViewport from '../hooks/useViewport';
 
 import * as Haptics from 'expo-haptics';
-import { GlassView } from 'expo-glass-effect';
 import { LinearGradient } from 'expo-linear-gradient';
-import { SymbolView } from 'expo-symbols';
 
 import CommentContainer from '../components/CommentContainer';
 import CommentPage from '../components/CommentPage';
@@ -354,82 +370,55 @@ export default function CommentsScreen({ isPreview: isPreviewProp }) {
             shadowColor: isDark ? colors.primary : undefined,
           }}
         >
-          <GlassView
-            style={{
-              borderRadius: 30,
-              borderCurve: 'continuous',
-              borderWidth: StyleSheet.hairlineWidth,
-              borderColor: colors.opaqueSeparator,
-              overflow: 'hidden',
-            }}
-            onLayout={({ nativeEvent }) => {
-              console.log('📐 GlassView onLayout', nativeEvent.layout);
+          <Host
+            matchContents
+            onLayoutContent={({ nativeEvent }) => {
               footerRef.current?.setNativeProps({
                 style: {
-                  height: nativeEvent.layout.height + 30,
+                  height: nativeEvent.height + 30,
                 },
               });
             }}
           >
-            <TouchableOpacity
-              disallowInterruption
+            <Button
               onPress={() => {
                 router.back();
               }}
-              style={{
-                paddingVertical: 14,
-                paddingHorizontal: 14,
-                alignItems: 'center',
-              }}
-              hitSlop={{
-                top: 44,
-                right: 44,
-                bottom: 44,
-                left: 44,
-              }}
+              modifiers={[
+                buttonStyle('glass'),
+                controlSize('large'),
+                tint(colors.primary),
+              ]}
             >
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-              >
-                <SymbolView
-                  name="xmark.circle"
+              <HStack spacing={8} alignment="center">
+                <SwiftUIImage
+                  systemName="xmark.circle"
                   size={22}
-                  weight="medium"
-                  style={{ marginRight: 8 }}
+                  modifiers={[font({ weight: 'medium' })]}
                 />
-                <Text type="link" bold>
+                <SwiftUIText modifiers={[font({ weight: 'medium' })]}>
                   Close thread
-                </Text>
+                </SwiftUIText>
                 {(parseInt(zIndex) > 1 || showZIndex === 'true') && (
-                  <View
-                    style={{
-                      borderRadius: 100,
-                      backgroundColor: colors.opaqueSeparator,
-                      width: 24,
-                      height: 24,
-                      marginLeft: 8,
-                      overflow: 'hidden',
-                    }}
+                  <ZStack
+                    modifiers={[
+                      frame({ width: 24, height: 24 }),
+                      background(colors.opaqueSeparator, shapes.circle()),
+                    ]}
                   >
-                    <Text
-                      bold
-                      center
-                      style={{
-                        color: colors.secondaryText,
-                        lineHeight: 24,
-                        fontSize: 14,
-                      }}
+                    <SwiftUIText
+                      modifiers={[
+                        font({ size: 14, weight: 'bold' }),
+                        foregroundStyle(colors.secondaryText),
+                      ]}
                     >
                       {parseInt(zIndex)}
-                    </Text>
-                  </View>
+                    </SwiftUIText>
+                  </ZStack>
                 )}
-              </View>
-            </TouchableOpacity>
-          </GlassView>
+              </HStack>
+            </Button>
+          </Host>
         </Animated.View>
       )}
     </Container>
