@@ -512,85 +512,81 @@ export default function StoryScreen() {
     <Container {...containerProps}>
       {!isPreview && (
         <Stack.Toolbar placement="right">
-          <Stack.Toolbar.Menu
-            icon={tabView === 'web' ? 'ellipsis' : 'square.and.arrow.up'}
-          >
-            {tabView === 'web' ? (
-              <>
-                <Stack.Toolbar.MenuAction
-                  icon="arrow.clockwise"
-                  onPress={() => webViewRef.current?.reload()}
-                >
-                  Reload page
+          {tabView === 'web' ? (
+            <Stack.Toolbar.Menu icon="ellipsis">
+              <Stack.Toolbar.MenuAction
+                icon="arrow.clockwise"
+                onPress={() => webViewRef.current?.reload()}
+              >
+                Reload page
+              </Stack.Toolbar.MenuAction>
+              <Stack.Toolbar.MenuAction
+                icon="safari"
+                onPress={() => Linking.openURL(navState.url || url)}
+              >
+                Open in browser&hellip;
+              </Stack.Toolbar.MenuAction>
+              <Stack.Toolbar.MenuAction
+                icon="square.and.arrow.up"
+                onPress={() => openShare({ url: navState.url || url })}
+              >
+                Share&hellip;
+              </Stack.Toolbar.MenuAction>
+            </Stack.Toolbar.Menu>
+          ) : (
+            <Stack.Toolbar.Menu icon="square.and.arrow.up">
+              {!settingsInteractions && (
+                <Stack.Toolbar.MenuAction onPress={() => openBrowser(hnURL)}>
+                  View on HN web site
                 </Stack.Toolbar.MenuAction>
+              )}
+              {settingsInteractions && (
                 <Stack.Toolbar.MenuAction
-                  icon="safari"
-                  onPress={() => Linking.openURL(navState.url || url)}
-                >
-                  Open in browser&hellip;
-                </Stack.Toolbar.MenuAction>
-                <Stack.Toolbar.MenuAction
-                  icon="square.and.arrow.up"
-                  onPress={() => openShare({ url: navState.url || url })}
-                >
-                  Share&hellip;
-                </Stack.Toolbar.MenuAction>
-              </>
-            ) : (
-              <>
-                {!settingsInteractions && (
-                  <Stack.Toolbar.MenuAction onPress={() => openBrowser(hnURL)}>
-                    View on HN web site
-                  </Stack.Toolbar.MenuAction>
-                )}
-                {settingsInteractions && (
-                  <Stack.Toolbar.MenuAction
-                    icon="arrowtriangle.up.fill"
-                    onPress={() => {
-                      const jsKey = `web-view-${Date.now()}`;
-                      useStore.getState().setRouteInjectedJS(
-                        jsKey,
-                        `
+                  icon="arrowtriangle.up.fill"
+                  onPress={() => {
+                    const jsKey = `web-view-${Date.now()}`;
+                    useStore.getState().setRouteInjectedJS(
+                      jsKey,
+                      `
                     try {
                       document.getElementById('up_${id}').click();
                     } catch (e) {}
                     true;
                   `,
-                      );
-                      router.push({
-                        pathname: '/web-view',
-                        params: {
-                          url: hnURL,
-                          jsKey,
-                        },
-                      });
-                    }}
-                  >
-                    Upvote story on HN
-                  </Stack.Toolbar.MenuAction>
-                )}
-                {settingsInteractions && (
-                  <Stack.Toolbar.MenuAction
-                    icon="arrowshape.turn.up.left"
-                    onPress={() =>
-                      router.push({
-                        pathname: '/web-view',
-                        params: { url: hnURL },
-                      })
-                    }
-                  >
-                    View or Reply story on HN
-                  </Stack.Toolbar.MenuAction>
-                )}
-                <Stack.Toolbar.MenuAction
-                  icon="square.and.arrow.up"
-                  onPress={() => openShare({ url: hnURL })}
+                    );
+                    router.push({
+                      pathname: '/web-view',
+                      params: {
+                        url: hnURL,
+                        jsKey,
+                      },
+                    });
+                  }}
                 >
-                  Share story&hellip;
+                  Upvote story on HN
                 </Stack.Toolbar.MenuAction>
-              </>
-            )}
-          </Stack.Toolbar.Menu>
+              )}
+              {settingsInteractions && (
+                <Stack.Toolbar.MenuAction
+                  icon="arrowshape.turn.up.left"
+                  onPress={() =>
+                    router.push({
+                      pathname: '/web-view',
+                      params: { url: hnURL },
+                    })
+                  }
+                >
+                  View or Reply story on HN
+                </Stack.Toolbar.MenuAction>
+              )}
+              <Stack.Toolbar.MenuAction
+                icon="square.and.arrow.up"
+                onPress={() => openShare({ url: hnURL })}
+              >
+                Share story&hellip;
+              </Stack.Toolbar.MenuAction>
+            </Stack.Toolbar.Menu>
+          )}
         </Stack.Toolbar>
       )}
       <FlatList
