@@ -13,10 +13,9 @@ const STORIES_TTL = 10 * 60 * 1000; // 10 mins
 // The storyFetched guard must run against the live stories state on every call
 // so that an external stories overwrite (e.g. news2 merge) can be re-recovered.
 const storyApiCache = new ExpiryMap(60 * 1000);
-const memoizedStoryApi = pMemoize(
-  (id) => api(`item/${id}`).json(),
-  { cache: storyApiCache },
-);
+const memoizedStoryApi = pMemoize((id) => api(`item/${id}`).json(), {
+  cache: storyApiCache,
+});
 const hooks = {
   beforeRequest: [
     (request) => {
@@ -153,27 +152,24 @@ const useStore = create((set, get) => ({
     }
   },
   isStoriesExpired: async () => await isExpired('stories'),
-  fetchStory: pDebounce(
-    async (id) => {
-      console.log(`🥞 fetchStory ${id}`);
-      const { stories } = get();
-      const index = stories.findIndex((s) => s.id === id);
-      let story = stories[index];
-      const storyFetched = !!story?.comments?.length;
-      if (!storyFetched) {
-        story = await memoizedStoryApi(id);
-        const newStories = [...stories];
-        if (index === -1) {
-          newStories.push(story);
-        } else {
-          newStories[index] = story;
-        }
-        set({ stories: newStories });
-        updateItem('stories', newStories, STORIES_TTL);
+  fetchStory: pDebounce(async (id) => {
+    console.log(`🥞 fetchStory ${id}`);
+    const { stories } = get();
+    const index = stories.findIndex((s) => s.id === id);
+    let story = stories[index];
+    const storyFetched = !!story?.comments?.length;
+    if (!storyFetched) {
+      story = await memoizedStoryApi(id);
+      const newStories = [...stories];
+      if (index === -1) {
+        newStories.push(story);
+      } else {
+        newStories[index] = story;
       }
-    },
-    100,
-  ),
+      set({ stories: newStories });
+      updateItem('stories', newStories, STORIES_TTL);
+    }
+  }, 100),
   items: new Map(),
   fetchItem: async (id) => {
     console.log(`🪂 fetchItem ${id}`);

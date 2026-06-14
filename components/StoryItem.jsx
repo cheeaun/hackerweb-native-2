@@ -293,9 +293,7 @@ export default function StoryItem({ id, position }) {
               {storyInfoContent}
             </View>
           </View>
-          <View style={styles.storyComments}>
-            {commentsIcon}
-          </View>
+          <View style={styles.storyComments}>{commentsIcon}</View>
         </View>
       </Link.Trigger>
       <Link.Preview />
