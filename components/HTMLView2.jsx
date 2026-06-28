@@ -50,13 +50,9 @@ function Link({ style, url, ...props }) {
               // 4 types: story, comment, job, poll
               // Ignoring `poll` because Algolia API doesn't contain the poll content
               if (item?.type === 'story' || item?.type === 'poll') {
-                router.push({
-                  pathname: '/story-modal',
-                  params: {
-                    id: item.id,
-                    tab: 'comments',
-                  },
-                });
+                router.push(
+                  `/story-modal/${item.id}?tab=comments`,
+                );
                 // TODO: Add this when Comments screen allow
                 // async loading of comments
                 // } else if (item?.type === 'comment') {
