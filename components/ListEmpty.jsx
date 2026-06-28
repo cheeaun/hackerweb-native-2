@@ -14,6 +14,7 @@ export default function ListEmpty({
     <View
       style={{
         flexGrow: 1,
+        minHeight: '33%',
         justifyContent: 'center',
         alignItems: 'center',
         padding: 15,
