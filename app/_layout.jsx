@@ -147,7 +147,7 @@ export default function RootLayout() {
                 options={{
                   title: '',
                   headerTitleStyle: { color: colors.text },
-                  headerTransparent: true,
+                  // headerTransparent: true,
                   headerBackButtonDisplayMode: 'minimal',
                 }}
               />

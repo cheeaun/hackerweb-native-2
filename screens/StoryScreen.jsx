@@ -511,6 +511,7 @@ export default function StoryScreen() {
 
   return (
     <Container {...containerProps}>
+      <Stack.Header transparent={tabView === 'comments'} />
       {!isPreview && (
         <Stack.Toolbar placement="right">
           {tabView === 'web' ? (
@@ -645,7 +646,6 @@ export default function StoryScreen() {
               {webMounted && (
                 <WebView
                   ref={webViewRef}
-                  style={{ backgroundColor: colors.background }}
                   applicationNameForUserAgent={`${Application.applicationName}/${Application.nativeApplicationVersion}`}
                   source={{ uri: url }}
                   originWhitelist={[
