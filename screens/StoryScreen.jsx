@@ -713,7 +713,11 @@ export default function StoryScreen() {
               {webMounted && (
                 <WebView
                   ref={webViewRef}
-                  style={{ backgroundColor: webViewBgVisible ? colors.background : undefined }}
+                  style={{
+                    backgroundColor: webViewBgVisible
+                      ? colors.background
+                      : '#fff', // default
+                  }}
                   applicationNameForUserAgent={`${Application.applicationName}/${Application.nativeApplicationVersion}`}
                   source={{ uri: url }}
                   originWhitelist={[
