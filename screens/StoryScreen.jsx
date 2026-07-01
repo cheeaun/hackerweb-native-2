@@ -526,8 +526,8 @@ export default function StoryScreen() {
               position: 'absolute',
               left: 0,
               width: 60,
-              top: 0,
-              bottom: 0,
+              top: toolbarPadding,
+              height: 30,
               alignItems: 'center',
               justifyContent: 'center',
             }}
