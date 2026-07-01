@@ -517,58 +517,6 @@ export default function StoryScreen() {
       }
     : {};
 
-  function ToolbarContent() {
-    return (
-      <>
-        {tabView === 'web' && navState.canGoBack && (
-          <View
-            style={{
-              position: 'absolute',
-              left: 0,
-              width: 60,
-              top: toolbarPadding,
-              height: 30,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => webViewRef.current?.goBack()}
-              hitSlop={{
-                top: 22,
-                right: 22,
-                bottom: 22,
-                left: 22,
-              }}
-            >
-              <SymbolView
-                name="chevron.backward"
-                size={18}
-                tintColor={colors.text}
-              />
-            </TouchableOpacity>
-          </View>
-        )}
-        <SegmentedControl
-          style={{ width: segmentWidth }}
-          appearance={isDark ? 'dark' : 'light'}
-          values={tabValues}
-          selectedIndex={Math.max(
-            0,
-            tabViews.findIndex((v) => v === tabView),
-          )}
-          onChange={(e) => {
-            Haptics.selectionAsync();
-            const index = e.nativeEvent.selectedSegmentIndex;
-            const tab = tabViews[index].toLowerCase();
-            setTabView(tab);
-            if (tab === 'web') setWebMounted(true);
-          }}
-        />
-      </>
-    );
-  }
-
   return (
     <Container {...containerProps}>
       <Stack.Header transparent={tabView === 'comments'} />
@@ -857,7 +805,53 @@ export default function StoryScreen() {
                     tabView !== 'comments' ? colors.background : undefined,
                 }}
               >
-                <ToolbarContent />
+                <>
+                  {tabView === 'web' && navState.canGoBack && (
+                    <View
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        width: 60,
+                        top: toolbarPadding,
+                        height: 30,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={() => webViewRef.current?.goBack()}
+                        hitSlop={{
+                          top: 22,
+                          right: 22,
+                          bottom: 22,
+                          left: 22,
+                        }}
+                      >
+                        <SymbolView
+                          name="chevron.backward"
+                          size={18}
+                          tintColor={colors.text}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                  <SegmentedControl
+                    style={{ width: segmentWidth }}
+                    appearance={isDark ? 'dark' : 'light'}
+                    values={tabValues}
+                    selectedIndex={Math.max(
+                      0,
+                      tabViews.findIndex((v) => v === tabView),
+                    )}
+                    onChange={(e) => {
+                      Haptics.selectionAsync();
+                      const index = e.nativeEvent.selectedSegmentIndex;
+                      const tab = tabViews[index].toLowerCase();
+                      setTabView(tab);
+                      if (tab === 'web') setWebMounted(true);
+                    }}
+                  />
+                </>
               </View>
             </Host>
           )}
