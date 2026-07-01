@@ -15,6 +15,7 @@ import {
   Linking,
   ScrollView,
   StyleSheet,
+  TouchableOpacity,
   View,
   useWindowDimensions,
 } from 'react-native';
@@ -35,6 +36,9 @@ import { WebView } from 'react-native-webview';
 
 import * as Application from 'expo-application';
 import * as Haptics from 'expo-haptics';
+import { Host } from '@expo/ui/swift-ui';
+import { glassEffect } from '@expo/ui/swift-ui/modifiers';
+import { SymbolView } from 'expo-symbols';
 
 import CommentContainer from '../components/CommentContainer';
 import CommentPage from '../components/CommentPage';
@@ -182,7 +186,9 @@ export default function StoryScreen() {
   );
 
   const { underViewableHeight } = useViewport();
+  const toolbarPadding = underViewableHeight ? 8 : 15;
   const [navState, setNavState] = useState({});
+
   const progressAnim = useRef(new Animated.Value(0)).current;
   const progressOpacityAnim = useRef(new Animated.Value(1)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -453,7 +459,6 @@ export default function StoryScreen() {
         });
       } catch {}
 
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       Animated.timing(fadeAnim, {
         toValue: tabView === 'web' ? 1 : 0,
         duration: isDark ? 300 : 150,
@@ -465,6 +470,8 @@ export default function StoryScreen() {
 
   const insets = useSafeAreaInsets();
   const { width: windowWidth } = useWindowDimensions();
+  const toolbarHeight =
+    toolbarPadding + 30 + Math.max(toolbarPadding, insets.bottom);
   const buttonWidth = 60;
   const segmentWidth = Math.min(
     Math.max(180, windowWidth - insets.left - insets.right - buttonWidth * 2),
@@ -508,6 +515,58 @@ export default function StoryScreen() {
         },
       }
     : {};
+
+  function ToolbarContent() {
+    return (
+      <>
+        {tabView === 'web' && navState.canGoBack && (
+          <View
+            style={{
+              position: 'absolute',
+              left: 0,
+              width: 60,
+              top: 0,
+              bottom: 0,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => webViewRef.current?.goBack()}
+              hitSlop={{
+                top: 22,
+                right: 22,
+                bottom: 22,
+                left: 22,
+              }}
+            >
+              <SymbolView
+                name="chevron.backward"
+                size={18}
+                tintColor={colors.text}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
+        <SegmentedControl
+          style={{ width: segmentWidth }}
+          appearance={isDark ? 'dark' : 'light'}
+          values={tabValues}
+          selectedIndex={Math.max(
+            0,
+            tabViews.findIndex((v) => v === tabView),
+          )}
+          onChange={(e) => {
+            Haptics.selectionAsync();
+            const index = e.nativeEvent.selectedSegmentIndex;
+            const tab = tabViews[index].toLowerCase();
+            setTabView(tab);
+            if (tab === 'web') setWebMounted(true);
+          }}
+        />
+      </>
+    );
+  }
 
   return (
     <Container {...containerProps}>
@@ -611,6 +670,13 @@ export default function StoryScreen() {
           setStoryScroll(id, y);
         }}
         removeClippedSubviews
+        ListFooterComponent={() => <View style={{ height: toolbarHeight }} />}
+        scrollIndicatorInsets={{
+          top: 0,
+          right: 0,
+          bottom: toolbarHeight,
+          left: 0,
+        }}
         contentOffset={{
           x: 0,
           y: scrollY.current,
@@ -625,7 +691,7 @@ export default function StoryScreen() {
               top: 0,
               left: 0,
               right: 0,
-              bottom: 0,
+              bottom: toolbarHeight,
             }}
           >
             <Animated.View
@@ -758,37 +824,34 @@ export default function StoryScreen() {
             </ScrollView>
           </View>
           {!isPreview && (
-            <Stack.Toolbar placement="bottom">
-              {navState.canGoBack && tabView === 'web' && (
-                <Stack.Toolbar.Button
-                  icon="chevron.backward"
-                  onPress={() => webViewRef.current?.goBack()}
-                  hidden={
-                    navState.canGoBack && tabView === 'web' ? false : true
-                  }
-                />
-              )}
-              <Stack.Toolbar.Spacer width={1} />
-              <Stack.Toolbar.View hidesSharedBackground>
-                <SegmentedControl
-                  style={{ width: segmentWidth }}
-                  appearance={isDark ? 'dark' : 'light'}
-                  values={tabValues}
-                  selectedIndex={Math.max(
-                    0,
-                    tabViews.findIndex((v) => v === tabView),
-                  )}
-                  onChange={(e) => {
-                    Haptics.selectionAsync();
-                    const index = e.nativeEvent.selectedSegmentIndex;
-                    const tab = tabViews[index].toLowerCase();
-                    setTabView(tab);
-                    if (tab === 'web') setWebMounted(true);
-                  }}
-                />
-              </Stack.Toolbar.View>
-              <Stack.Toolbar.Spacer width={1} />
-            </Stack.Toolbar>
+            <Host
+              ignoreSafeArea="all"
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+              modifiers={
+                tabView === 'comments'
+                  ? [glassEffect({ cornerRadius: 0, shape: 'rectangle' })]
+                  : undefined
+              }
+            >
+              <View
+                style={{
+                  paddingTop: toolbarPadding,
+                  paddingBottom: Math.max(toolbarPadding, insets.bottom),
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor:
+                    tabView !== 'comments' ? colors.background : undefined,
+                }}
+              >
+                <ToolbarContent />
+              </View>
+            </Host>
           )}
         </>
       )}
