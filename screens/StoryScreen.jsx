@@ -188,6 +188,7 @@ export default function StoryScreen() {
   const { underViewableHeight } = useViewport();
   const toolbarPadding = underViewableHeight ? 8 : 15;
   const [navState, setNavState] = useState({});
+  const [webViewBgVisible, setWebViewBgVisible] = useState(true);
 
   const progressAnim = useRef(new Animated.Value(0)).current;
   const progressOpacityAnim = useRef(new Animated.Value(1)).current;
@@ -712,6 +713,7 @@ export default function StoryScreen() {
               {webMounted && (
                 <WebView
                   ref={webViewRef}
+                  style={{ backgroundColor: webViewBgVisible ? colors.background : undefined }}
                   applicationNameForUserAgent={`${Application.applicationName}/${Application.nativeApplicationVersion}`}
                   source={{ uri: url }}
                   originWhitelist={[
@@ -733,6 +735,7 @@ export default function StoryScreen() {
                   onLoadStart={() => {
                     progressAnim.setValue(0);
                     progressOpacityAnim.setValue(1);
+                    setWebViewBgVisible(true);
                     addLink(url);
                   }}
                   onLoadEnd={() => {
@@ -751,6 +754,7 @@ export default function StoryScreen() {
                   }}
                   onLoadProgress={(e) => {
                     const { progress, loading } = e.nativeEvent;
+                    if (progress > 0.5) setWebViewBgVisible(false);
                     Animated.timing(progressAnim, {
                       toValue: progress,
                       duration: 1000,
